@@ -4,6 +4,8 @@ import org.filippodeluca.ssoup.SSoup._
 import scala.io.Source
 import java.io.PrintWriter
 
+// This is a test
+
 object FinanceTransactionScraper extends App {
   private val headerRow = 1
 
