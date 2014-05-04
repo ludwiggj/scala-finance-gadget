@@ -13,6 +13,8 @@ class LoginForm(private val baseUrl: String,
   private val webClient = new WebClient(BrowserVersion.FIREFOX_24)
 
   def login(account: Account): HtmlPage = {
+    // Carry on if we get a javascript error
+    webClient.getOptions().setThrowExceptionOnScriptError(false);
     val page: HtmlPage = webClient.getPage(baseUrl)
     val form: HtmlForm = (page.getForms).get(0)
 
