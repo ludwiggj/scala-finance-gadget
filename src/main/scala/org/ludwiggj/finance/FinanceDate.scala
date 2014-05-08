@@ -6,6 +6,14 @@ import java.text.SimpleDateFormat
 class FinanceDate(val date: Date) {
   private val displayFormat = new SimpleDateFormat("dd/MM/yy");
   override def toString = displayFormat.format(date)
+
+  final override def equals(other: Any) = {
+    val that = other.asInstanceOf[FinanceDate]
+    if (that == null) false
+    else date == that.date
+  }
+
+  final override def hashCode = date.hashCode()
 }
 
 object FinanceDate {

@@ -2,6 +2,7 @@ package org.ludwiggj.finance
 
 import scala.io.Source
 import org.filippodeluca.ssoup.SSoup._
+import scala.language.postfixOps
 
 object FinanceValuationScraper extends App {
   private val headerRow = 1

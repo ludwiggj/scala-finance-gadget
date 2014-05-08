@@ -5,6 +5,7 @@ import scala.Some
 import scala.collection.JavaConversions._
 import com.typesafe.config.ConfigFactory
 import org.filippodeluca.ssoup.SSoup._
+import com.gargoylesoftware.htmlunit.BrowserVersion
 
 package object finance {
   def parseNumber(candidateNumber: String) = {
@@ -25,15 +26,13 @@ package object finance {
   def cleanHoldingName(name: String) = name.replaceAll("&amp;", "&").replaceAll("\\^", "").trim
 
   def loginAndParse(page: String) = {
-    java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF)
-
     val config = ConfigFactory.load("cofunds.conf")
     val accounts = config.getConfigList("site.accounts") map (Account(_))
     val account: Account = accounts(0)
 
     println(s"Logging in to ${config.getString("site.name")} as ${account.name}")
 
-    val loginForm = LoginForm(config, page)
+    val loginForm = LoginForm(WebClient(BrowserVersion.FIREFOX_24), config, page)
     val htmlContent = loginForm.login(account)
 
     parse(htmlContent.asXml)

@@ -1,7 +1,5 @@
 package org.ludwiggj.finance
 
-import scala.util.matching.Regex
-
 class Transaction(val holdingName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                   val out: Option[BigDecimal], val priceDate: FinanceDate, val priceInPence: BigDecimal, val units: BigDecimal) {
 
@@ -11,6 +9,40 @@ class Transaction(val holdingName: String, val date: FinanceDate, val descriptio
   def toFileFormat = s"$holdingName${Transaction.separator}$date${Transaction.separator}$description" +
     s"${Transaction.separator}${in.getOrElse("")}${Transaction.separator}${out.getOrElse("")}" +
     s"${Transaction.separator}$priceDate${Transaction.separator}$priceInPence${Transaction.separator}$units"
+
+  // This is likely to be a bit dodge e.g. subclasses etc.
+  final override def equals(other: Any) = {
+    val that =  if (other.isInstanceOf[Transaction]) other.asInstanceOf[Transaction] else null
+    if (that == null) false
+    else (
+        (holdingName == that.holdingName) &&
+        (date == that.date) &&
+        (description == that.description) &&
+        (in == that.in) &&
+        (out == that.out) &&
+        (priceDate == that.priceDate) &&
+        (priceInPence == that.priceInPence) &&
+        (units == that.units)
+    )
+  }
+
+  def optionEquals(val1: Option[BigDecimal], val2: Option[BigDecimal]) = {
+    (val1.isEmpty && val2.isEmpty) ||
+      (val1.isDefined && val2.isDefined && (val1.get == val2.get))
+  }
+
+  final override def hashCode = {
+    var result = 17
+    result = 31 * result + holdingName.hashCode
+    result = 31 * result + date.hashCode
+    result = 31 * result + description.hashCode
+    result = 31 * result + in.hashCode
+    result = 31 * result + out.hashCode
+    result = 31 * result + priceDate.hashCode
+    result = 31 * result + priceInPence.hashCode
+    result = 31 * result + units.hashCode
+    result
+  }
 }
 
 object Transaction {

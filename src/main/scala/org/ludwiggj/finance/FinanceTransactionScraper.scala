@@ -21,6 +21,13 @@ object FinanceTransactionScraper extends App {
 //
 //    val txs = for (txRow <- txRows) yield Transaction(txRow.toString)
 
+  // Get rows from page
+//    val txRows = page.select(s"table[id~=dgTransactions] tr") drop headerRow
+
+//    println("Number of rows = " + txRows.size)
+
+//    val txs = for (txRow <- txRows) yield Transaction(txRow.toString)
+
   // Load from file II...
 
   val source = Source.fromFile("resources/transactionsOut.txt")
@@ -35,7 +42,7 @@ object FinanceTransactionScraper extends App {
   println(txs.toList.groupBy(_.description))
 
   // Output to file
-//    val out = new PrintWriter("resources/transactionsOut.txt")
+//    val out = new PrintWriter("resources/tx140427_A.txt")
 //    for (tx <- txs) out.println(tx.toFileFormat)
 //    out.close
 }
