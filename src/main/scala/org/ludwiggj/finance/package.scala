@@ -1,11 +1,9 @@
 package org.ludwiggj
 
 import scala.io.Source
-import scala.Some
-import scala.collection.JavaConversions._
-import com.typesafe.config.ConfigFactory
 import org.filippodeluca.ssoup.SSoup._
-import com.gargoylesoftware.htmlunit.BrowserVersion
+import org.ludwiggj.finance.builders.LoginFormBuilder._
+import scala.Some
 
 package object finance {
   def parseNumber(candidateNumber: String) = {
@@ -26,16 +24,11 @@ package object finance {
   def cleanHoldingName(name: String) = name.replaceAll("&amp;", "&").replaceAll("\\^", "").trim
 
   def loginAndParse(page: String) = {
-    val config = ConfigFactory.load("cofunds.conf")
-    val accounts = config.getConfigList("site.accounts") map (Account(_))
-    val account: Account = accounts(0)
+    val loginForm = aLoginForm().basedOnConfig(WebSiteConfig("cofunds.conf")).loggingIntoPage(page).build()
+    val htmlContent = loginForm.loginWithAccountAtIndex(0)
 
-    println(s"Logging in to ${config.getString("site.name")} as ${account.name}")
-
-    val loginForm = LoginForm(WebClient(BrowserVersion.FIREFOX_24), config, page)
-    val htmlContent = loginForm.login(account)
-
-    parse(htmlContent.asXml)
+    val xml = htmlContent.asXml
+    parse(xml)
   }
 
   def parsePageFromFile(fileName: String) = {

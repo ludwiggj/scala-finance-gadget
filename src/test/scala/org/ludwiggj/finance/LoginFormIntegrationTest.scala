@@ -1,20 +1,17 @@
 package org.ludwiggj.finance
 
 import org.scalatest.{Matchers, FunSuite}
-import com.gargoylesoftware.htmlunit.BrowserVersion
-import com.typesafe.config.ConfigFactory
-import scala.collection.JavaConversions._
+import org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 
   test("login form works with third party library") {
+    val config = WebSiteConfig("cofunds.conf")
+    val loginForm =
+      aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
-    val config = ConfigFactory.load("cofunds.conf")
-    val accounts = config.getConfigList("site.accounts") map (Account(_))
-    val account: Account = accounts(0)
-
-    val loginForm = LoginForm(WebClient(BrowserVersion.FIREFOX_24), config, "transactions")
-    val loggedInPage = loginForm.login(account)
+    val loginAccount = config.getAccountList()(0).name
+    val loggedInPage = loginForm.loginAs(loginAccount)
 
     val logInText = "Log In"
     val logOffText = "Log off"

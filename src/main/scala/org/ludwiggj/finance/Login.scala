@@ -1,5 +1,5 @@
 package org.ludwiggj.finance
 
 trait Login {
-  def login(account: Account): HtmlPage
+  def loginAs(accountName: String): HtmlPage
 }

@@ -8,10 +8,10 @@ object FinanceValuationScraper extends App {
   private val headerRow = 1
 
   // Retrieve from web site
-//  val page = loginAndParse("valuations")
+  val page = loginAndParse("valuations")
 
   // Load from file...
-  val page = parsePageFromFile("resources/summary.txt")
+//  val page = parsePageFromFile("resources/summary.txt")
 
   val holdingRows = page.select(s"table[id~=Holdings] tr") drop headerRow
 
