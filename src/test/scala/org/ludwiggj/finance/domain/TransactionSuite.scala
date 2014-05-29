@@ -1,4 +1,5 @@
-import org.ludwiggj.finance.{FinanceDate, Transaction}
+package org.ludwiggj.finance.domain
+
 import org.scalatest.{Matchers, FunSuite}
 
 class TransactionSuite extends FunSuite with Matchers {

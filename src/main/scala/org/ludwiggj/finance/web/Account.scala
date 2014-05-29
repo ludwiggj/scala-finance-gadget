@@ -1,4 +1,4 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.web
 
 import com.typesafe.config.Config
 import scala.collection.JavaConversions._

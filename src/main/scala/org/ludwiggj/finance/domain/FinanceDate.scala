@@ -1,4 +1,4 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.domain
 
 import java.util.Date
 import java.text.SimpleDateFormat

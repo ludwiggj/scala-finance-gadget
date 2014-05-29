@@ -1,4 +1,4 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.web
 
 import org.scalatest.{Matchers, FunSuite}
 import org.scalamock.scalatest.MockFactory

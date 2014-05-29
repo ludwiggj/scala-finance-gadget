@@ -1,7 +1,7 @@
 package org.ludwiggj.finance.builders
 
-import org.ludwiggj.finance.{WebSiteConfig, WebClient, LoginForm}
 import com.gargoylesoftware.htmlunit.BrowserVersion
+import org.ludwiggj.finance.web.{WebSiteConfig, LoginForm, Login, WebClient}
 
 class LoginFormBuilder {
   var config: Option[WebSiteConfig] = None
@@ -17,7 +17,7 @@ class LoginFormBuilder {
     this
   }
 
-  def build() = {
+  def build(): Login = {
     LoginForm(WebClient(BrowserVersion.FIREFOX_24), config.get, targetPage.get);
   }
 }

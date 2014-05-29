@@ -1,9 +1,10 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.examples
 
 import org.filippodeluca.ssoup.SSoup._
 import scala.io.Source
 import java.io.PrintWriter
 import org.ludwiggj.finance.builders.LoginFormBuilder._
+import org.ludwiggj.finance.web.{WebSiteTransactionFactory, WebSiteConfig}
 
 // This is a test
 
@@ -11,8 +12,8 @@ object FinanceTransactionScraper extends App {
 
   val config = WebSiteConfig("cofunds.conf")
   val accountName = config.getAccountList()(0).name
-  val loginForm = aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build()
-  val transactionFactory: WebSiteTransactionFactory = WebSiteTransactionFactory(loginForm, accountName)
+  val loginFormBuilder = aLoginForm().basedOnConfig(config)
+  val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
   val txs = transactionFactory.getTransactions()
 
   println(s"${txs.size} rows")

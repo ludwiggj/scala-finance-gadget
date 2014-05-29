@@ -1,4 +1,4 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.domain
 
 class Transaction(val holdingName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                   val out: Option[BigDecimal], val priceDate: FinanceDate, val priceInPence: BigDecimal, val units: BigDecimal) {
@@ -6,29 +6,27 @@ class Transaction(val holdingName: String, val date: FinanceDate, val descriptio
   override def toString =
     s"Tx [holding: $holdingName, date: $date, description: $description, in: $in, out: $out, price date: $priceDate, price: $priceInPence, units: $units]"
 
-  def toFileFormat = s"$holdingName${Transaction.separator}$date${Transaction.separator}$description" +
-    s"${Transaction.separator}${in.getOrElse("")}${Transaction.separator}${out.getOrElse("")}" +
-    s"${Transaction.separator}$priceDate${Transaction.separator}$priceInPence${Transaction.separator}$units"
+  def toFileFormat = s"$holdingName${separator}$date${separator}$description" +
+    s"${separator}${in.getOrElse("")}${separator}${out.getOrElse("")}" +
+    s"${separator}$priceDate${separator}$priceInPence${separator}$units"
 
-  // This is likely to be a bit dodge e.g. subclasses etc.
   final override def equals(other: Any) = {
-    val that =  if (other.isInstanceOf[Transaction]) other.asInstanceOf[Transaction] else null
+    val that = if (other.isInstanceOf[Transaction]) other.asInstanceOf[Transaction] else null
     if (that == null) false
-    else (
-        (holdingName == that.holdingName) &&
-        (date == that.date) &&
-        (description == that.description) &&
-        (in == that.in) &&
-        (out == that.out) &&
-        (priceDate == that.priceDate) &&
-        (priceInPence == that.priceInPence) &&
-        (units == that.units)
-    )
-  }
-
-  def optionEquals(val1: Option[BigDecimal], val2: Option[BigDecimal]) = {
-    (val1.isEmpty && val2.isEmpty) ||
-      (val1.isDefined && val2.isDefined && (val1.get == val2.get))
+    else {
+      val objectsEqual =
+        (
+          (holdingName == that.holdingName) &&
+            (date == that.date) &&
+            (description == that.description) &&
+            (in == that.in) &&
+            (out == that.out) &&
+            (priceDate == that.priceDate) &&
+            (priceInPence == that.priceInPence) &&
+            (units == that.units)
+          )
+      objectsEqual
+    }
   }
 
   final override def hashCode = {
@@ -46,15 +44,14 @@ class Transaction(val holdingName: String, val date: FinanceDate, val descriptio
 }
 
 object Transaction {
-  val separator = '|'
 
-  def apply(holdingName: String,  date: FinanceDate, description: String, in: Option[BigDecimal],
-                    out: Option[BigDecimal], priceDate: FinanceDate, priceInPence: BigDecimal, units: BigDecimal)  =
+  def apply(holdingName: String, date: FinanceDate, description: String, in: Option[BigDecimal],
+            out: Option[BigDecimal], priceDate: FinanceDate, priceInPence: BigDecimal, units: BigDecimal) =
     new Transaction(holdingName, date, description, in, out, priceDate, priceInPence, units)
 
   def apply(row: String): Transaction = {
     val txPattern = (
-        """.*?<td[^>]*>(.*?)</td>""" +
+      """.*?<td[^>]*>(.*?)</td>""" +
         """.*?<td[^>]*>(.*?)</td>.*?""" +
         """.*?<td[^>]*>(.*?)</td>.*?""" +
         """.*?<span.*?>([^<]+)</span>.*?""" +

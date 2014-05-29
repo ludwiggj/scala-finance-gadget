@@ -1,4 +1,4 @@
-package org.ludwiggj.finance
+package org.ludwiggj.finance.web
 
 import com.gargoylesoftware.htmlunit.{BrowserVersion, WebClient => HtmlUnitWebClient}
 import java.util.logging.Logger
@@ -9,7 +9,7 @@ class WebClient(browserVersion: BrowserVersion) {
   // Suppress logging of errors
   Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF)
 
-  def getPage(url: String): HtmlPage = HtmlPage(webClient.getPage(url))
+  def getPage(url: String): HtmlEntity = HtmlPage(webClient.getPage(url))
 
   def setThrowExceptionOnScriptError(setting: Boolean) =
     webClient.getOptions().setThrowExceptionOnScriptError(setting);
