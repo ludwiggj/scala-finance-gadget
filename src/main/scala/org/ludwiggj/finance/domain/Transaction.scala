@@ -1,7 +1,10 @@
 package org.ludwiggj.finance.domain
 
-class Transaction(val holdingName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
-                  val out: Option[BigDecimal], val priceDate: FinanceDate, val priceInPence: BigDecimal, val units: BigDecimal) {
+import org.ludwiggj.finance.persistence.Persistable
+
+class Transaction(val holdingName: String, val date: FinanceDate, val description: String,
+                  val in: Option[BigDecimal], val out: Option[BigDecimal], val priceDate: FinanceDate,
+                  val priceInPence: BigDecimal, val units: BigDecimal) extends Persistable {
 
   override def toString =
     s"Tx [holding: $holdingName, date: $date, description: $description, in: $in, out: $out, price date: $priceDate, price: $priceInPence, units: $units]"

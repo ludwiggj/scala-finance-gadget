@@ -1,12 +1,17 @@
 package org.ludwiggj.finance.domain
 
-class Holding(val name: String, val units: BigDecimal, val priceDate: FinanceDate, priceInPence: BigDecimal) {
+import org.ludwiggj.finance.persistence.Persistable
+
+class Holding(val name: String, val units: BigDecimal,
+              val priceDate: FinanceDate, priceInPence: BigDecimal) extends Persistable {
   val priceInPounds = priceInPence / 100
 
   def value = (units * priceInPounds).setScale(2, BigDecimal.RoundingMode.HALF_UP)
 
   override def toString =
     s"Financial Holding [name: $name, units: $units, price: £$priceInPounds, date: ${priceDate}, value: £$value]"
+
+  def toFileFormat = s"$name$separator$units$separator$priceInPounds$separator$priceDate$separator$value"
 
   final override def equals(other: Any) = {
     val that = if (other.isInstanceOf[Holding]) other.asInstanceOf[Holding] else null
