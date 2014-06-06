@@ -19,3 +19,5 @@ libraryDependencies += "org.scalamock" % "scalamock-scalatest-support_2.10" % "3
 libraryDependencies += "org.scalamock" % "scalamock-core_2.10" % "3.1.RC1" % "test"
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.1.5" % "test"
+
+libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "1.2.0"
