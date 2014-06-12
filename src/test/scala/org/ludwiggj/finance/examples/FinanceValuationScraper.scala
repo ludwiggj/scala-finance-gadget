@@ -12,7 +12,7 @@ object FinanceValuationScraper extends App {
 
   val accounts = config.getAccountList()
 
-  val date = DateTime.now.toString(DateTimeFormat.forPattern("yyyy_MM_dd"))
+  val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
   for (account <- accounts) {
     val accountName = account.name
@@ -20,7 +20,7 @@ object FinanceValuationScraper extends App {
 
     val holdings = holdingFactory.getHoldings()
     println(s"Total holdings ($accountName): £${holdings map (h => h.value) sum}")
-    val persister = Persister(s"resources/${accountName}_${date}.txt")
+    val persister = Persister(s"resources/val_${date}_${accountName}.txt")
 
     persister.write(holdings)
   }

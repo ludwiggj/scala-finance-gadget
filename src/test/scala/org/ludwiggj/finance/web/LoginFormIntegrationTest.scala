@@ -13,6 +13,8 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
     val loginAccount = config.getAccountList()(0).name
     val loggedInPage = loginForm.loginAs(loginAccount)
 
+    println("Logged in")
+
     val logInText = "Log In"
     val logOffText = "Log off"
 
@@ -24,5 +26,7 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
     val loggedOffPage = HtmlPage(logOffLink.click())
     val logInLink = loggedOffPage.getFirstByXPath(s"//a[span[text()='$logInText']]")
     logInLink.asText() should equal (logInText)
+
+    println("Logged out")
   }
 }

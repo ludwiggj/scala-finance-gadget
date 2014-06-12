@@ -5,18 +5,18 @@ import org.scalatest.{Matchers, FunSuite}
 class TransactionSuite extends FunSuite with Matchers {
 
   val tx1 = Transaction(
-    "BT", FinanceDate("29/04/14"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/14"), BigDecimal(123.4), BigDecimal(23.8)
+    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
+    FinanceDate("29/04/2014"), BigDecimal(123.4), BigDecimal(23.8)
   )
 
   val tx2 = Transaction(
-    "BT", FinanceDate("29/04/14"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/14"), BigDecimal(123.4), BigDecimal(23.8)
+    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
+    FinanceDate("29/04/2014"), BigDecimal(123.4), BigDecimal(23.8)
   )
 
   val tx3 = Transaction(
-    "BT", FinanceDate("29/04/14"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/14"), BigDecimal(123.41), BigDecimal(23.8)
+    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
+    FinanceDate("29/04/2014"), BigDecimal(123.41), BigDecimal(23.8)
   )
 
   test("A transaction should equal itself") {

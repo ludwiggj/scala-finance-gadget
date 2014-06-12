@@ -1,11 +1,10 @@
 package org.ludwiggj.finance.domain
 
-import java.util.Date
-import java.text.SimpleDateFormat
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 
-class FinanceDate(val date: Date) {
-  private val displayFormat = new SimpleDateFormat("dd/MM/yy");
-  override def toString = displayFormat.format(date)
+class FinanceDate(val date: DateTime) {
+  override def toString = date.toString(FinanceDate.formatter)
 
   final override def equals(other: Any) = {
     val that = other.asInstanceOf[FinanceDate]
@@ -17,6 +16,12 @@ class FinanceDate(val date: Date) {
 }
 
 object FinanceDate {
-  private val parsingDateFormat = new java.text.SimpleDateFormat("dd/MM/yyyy")
-  def apply(stringyDate: String) = new FinanceDate(parsingDateFormat.parse(stringyDate))
+  private val dateFormat = "dd/MM/yyyy"
+  private val formatter = DateTimeFormat.forPattern(dateFormat)
+  private val dateRegex = s"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*".r
+
+  def apply(stringyDate: String) = stringyDate match {
+    case dateRegex(stringDate) => new FinanceDate(DateTime.parse(stringDate, formatter))
+    case _ => throw new IllegalArgumentException(s"Date must be in format $dateFormat")
+  }
 }
