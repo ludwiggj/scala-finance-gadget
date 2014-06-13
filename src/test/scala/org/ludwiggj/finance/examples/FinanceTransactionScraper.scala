@@ -1,5 +1,7 @@
 package org.ludwiggj.finance.examples
 
+import org.ludwiggj.finance._
+
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{WebSiteTransactionFactory, WebSiteConfig}
@@ -21,7 +23,7 @@ object FinanceTransactionScraper extends App {
 
     println(s"Total transactions ($accountName): ${transactions size}")
 
-    val persister = Persister(s"resources/txs_${date}_${accountName}.txt")
+    val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
 
     persister.write(transactions)
   }

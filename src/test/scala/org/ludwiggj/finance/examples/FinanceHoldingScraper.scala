@@ -5,8 +5,9 @@ import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{WebSiteConfig, WebSiteHoldingFactory}
 import org.ludwiggj.finance.persistence.Persister
 import com.github.nscala_time.time.Imports._
+import org.ludwiggj.finance._
 
-object FinanceValuationScraper extends App {
+object FinanceHoldingScraper extends App {
   val config = WebSiteConfig("cofunds.conf")
   val loginFormBuilder = aLoginForm().basedOnConfig(config)
 
@@ -20,7 +21,7 @@ object FinanceValuationScraper extends App {
 
     val holdings = holdingFactory.getHoldings()
     println(s"Total holdings ($accountName): £${holdings map (h => h.value) sum}")
-    val persister = Persister(s"resources/val_${date}_${accountName}.txt")
+    val persister = Persister(s"$reportHome/holdings_${date}_${accountName}.txt")
 
     persister.write(holdings)
   }

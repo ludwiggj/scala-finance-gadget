@@ -1,46 +1,54 @@
 package org.ludwiggj.finance.domain
 
 import org.scalatest.{Matchers, FunSuite}
+import org.ludwiggj.finance.TestTransactions
 
 class TransactionSuite extends FunSuite with Matchers {
 
-  val tx1 = Transaction(
-    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/2014"), BigDecimal(123.4), BigDecimal(23.8)
+  val tx5 = Transaction(
+    "M&G Feeder of Property Portfolio I Fund Acc", FinanceDate("25/04/2014"), "Investment Regular",
+    Some(BigDecimal(200.00)), None, FinanceDate("25/04/2014"), BigDecimal(1153.08), BigDecimal(17.3449)
   )
 
-  val tx2 = Transaction(
-    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/2014"), BigDecimal(123.4), BigDecimal(23.8)
-  )
-
-  val tx3 = Transaction(
+  val tx6 = Transaction(
     "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
     FinanceDate("29/04/2014"), BigDecimal(123.41), BigDecimal(23.8)
   )
 
   test("A transaction should equal itself") {
-    assert(tx1 == tx1)
+    new TestTransactions {
+      assert(tx4 == tx4)
+    }
   }
 
   test("Two transactions with identical fields should be equal") {
-    assert(tx1 == tx2)
+    new TestTransactions {
+      assert(tx4 == tx5)
+    }
   }
 
   test("Two transactions with different fields should not be equal") {
-    assert(tx1 != tx3)
+    new TestTransactions {
+      assert(tx4 != tx6)
+    }
   }
 
   test("List comparison: order is important") {
-    assert(List(tx1, tx3) !== List(tx3, tx2))
+    new TestTransactions {
+      assert(List(tx4, tx6) !== List(tx6, tx5))
+    }
   }
 
   test("Set comparison: order is not important") {
-    assert(List(tx1, tx3).toSet == List(tx3, tx2).toSet)
+    new TestTransactions {
+      assert(List(tx4, tx6).toSet == List(tx6, tx5).toSet)
+    }
   }
 
   test("Set comparison: should form") {
-    List(tx1, tx3).toSet should equal(List(tx3, tx2).toSet)
+    new TestTransactions {
+      List(tx4, tx6).toSet should equal(List(tx6, tx5).toSet)
+    }
   }
 
   test("filterNot take 1") {
@@ -60,14 +68,20 @@ class TransactionSuite extends FunSuite with Matchers {
   }
 
   test("theSameElementsAs") {
-    List(tx1, tx3) should contain theSameElementsAs List(tx3, tx2)
+    new TestTransactions {
+      List(tx4, tx6) should contain theSameElementsAs List(tx6, tx5)
+    }
   }
 
   test("not theSameElementsAs") {
-    List(tx1, tx3) should not(contain theSameElementsAs List(tx1, tx2))
+    new TestTransactions {
+      List(tx4, tx6) should not(contain theSameElementsAs List(tx4, tx5))
+    }
   }
 
   test("diff take 3") {
-    List(tx1, tx3) diff List(tx3) should equal(List(tx1))
+    new TestTransactions {
+      List(tx4, tx6) diff List(tx6) should equal(List(tx4))
+    }
   }
 }
