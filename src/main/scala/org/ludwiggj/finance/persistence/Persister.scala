@@ -7,6 +7,7 @@ class Persister(private val fileName: String) {
     val out = new PrintWriter(fileName)
     for (persistable <- persistables) out.println(persistable.toFileFormat)
     out.close
+    println(s"Entries persisted to file $fileName")
   }
 }
 

@@ -2,6 +2,7 @@ package org.ludwiggj.finance.web
 
 import org.scalatest.{Matchers, FunSuite}
 import org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
+import org.ludwiggj.finance.domain.FinanceDate
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 
@@ -11,22 +12,31 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
       aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
     val loginAccount = config.getAccountList()(0).name
-    val loggedInPage = loginForm.loginAs(loginAccount)
-
-    println("Logged in")
-
-    val logInText = "Log In"
-    val logOffText = "Log off"
 
     // Log in, and verify that log off link is available
-    val logOffLink = loggedInPage.getAnchorByText(logOffText)
-    logOffLink.asText() should equal (logOffText)
+    val loggedInPage = loginForm.loginAs(loginAccount)
+    loggedInPage.isLoggedIn() should equal(true)
+    println("Logged in")
 
     // Log off, and verify that log in link is available
-    val loggedOffPage = HtmlPage(logOffLink.click())
-    val logInLink = loggedOffPage.getFirstByXPath(s"//a[span[text()='$logInText']]")
-    logInLink.asText() should equal (logInText)
+    val loggedOffPage = loggedInPage.logOff()
+    val loginText = config.getLoginText()
+
+    val logInLink = loggedOffPage.getFirstByXPath(s"//a[span[text()='$loginText']]")
+    logInLink.asText() should equal(loginText)
 
     println("Logged out")
+  }
+
+  test("NotAuthenticatedException thrown if cannot log into target page") {
+    intercept[NotAuthenticatedException] {
+      val config = WebSiteConfig("cofundsWithAccountWithIncorrectPassword.conf")
+      val loginForm =
+        aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
+
+      val loginAccount = config.getAccountList()(0).name
+
+      loginForm.loginAs(loginAccount)
+    }
   }
 }

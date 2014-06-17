@@ -13,6 +13,7 @@ class WebSiteHoldingFactory(private val loginFormBuilder: LoginFormBuilder, priv
     val loginForm = loginFormBuilder.loggingIntoPage("valuations").build()
     val loggedInPage = loginForm.loginAs(accountName)
     val txRows = parseRows(loggedInPage)
+    loggedInPage.logOff()
     (for (txRow <- txRows) yield Holding(txRow.toString)).toList
   }
 }

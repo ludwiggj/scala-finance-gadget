@@ -4,7 +4,7 @@ import org.ludwiggj.finance._
 
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
-import org.ludwiggj.finance.web.{WebSiteTransactionFactory, WebSiteConfig}
+import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteTransactionFactory, WebSiteConfig}
 import org.ludwiggj.finance.persistence.Persister
 import com.github.nscala_time.time.Imports._
 
@@ -18,13 +18,18 @@ object FinanceTransactionScraper extends App {
 
   for (account <- accounts) {
     val accountName = account.name
-    val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
-    val transactions = transactionFactory.getTransactions()
+    try {
+      val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
+      val transactions = transactionFactory.getTransactions()
 
-    println(s"Total transactions ($accountName): ${transactions size}")
+      println(s"Total transactions ($accountName): ${transactions size}")
 
-    val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
+      val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
 
-    persister.write(transactions)
+      persister.write(transactions)
+    } catch {
+      case ex: NotAuthenticatedException =>
+        println(s"Cannot retrieve transactions for $accountName [NotAuthenticatedException]")
+    }
   }
 }

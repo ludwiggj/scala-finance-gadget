@@ -12,6 +12,7 @@ class WebSiteTransactionFactory(private val loginFormBuilder: LoginFormBuilder, 
     val loginForm = loginFormBuilder.loggingIntoPage("transactions").build()
     val loggedInPage = loginForm.loginAs(accountName)
     val txRows = parseRows(loggedInPage)
+    loggedInPage.logOff()
     (for (txRow <- txRows) yield Transaction(txRow.toString)).toList
   }
 }

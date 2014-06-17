@@ -1,13 +1,13 @@
 package org.ludwiggj.finance.web
 
 import com.gargoylesoftware.htmlunit.html.{HtmlSubmitInput, HtmlInput, HtmlForm}
-import org.ludwiggj.finance.web._
 
 class LoginForm(private val webClient: WebClient,
                 private val baseUrl: String,
                 private val fields: List[FormField],
                 private val submitButton: String,
-                private val accounts: List[Account]
+                private val accounts: List[Account],
+                private val logoutText: String
                  ) extends Login {
 
   private def accountByName = Map((for (acc <- accounts) yield (acc.name, acc)): _*)
@@ -28,7 +28,7 @@ class LoginForm(private val webClient: WebClient,
 
     println(s"Logging in to $baseUrl as ${loginAccount.name}")
 
-    HtmlPage(form.getInputByName(submitButton).asInstanceOf[HtmlSubmitInput].click())
+    HtmlPage(form.getInputByName(submitButton).asInstanceOf[HtmlSubmitInput].click(), logoutText)
   }
 }
 
@@ -39,7 +39,8 @@ object LoginForm {
       config.getUrlForPage(targetPage),
       config.getLoginFormFields(),
       config.getSubmitButton(),
-      config.getAccountList()
+      config.getAccountList(),
+      config.getLogoutText()
     )
   }
 }
