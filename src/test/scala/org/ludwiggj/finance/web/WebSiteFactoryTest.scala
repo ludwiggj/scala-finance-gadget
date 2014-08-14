@@ -24,6 +24,7 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
         (loginFormBuilder.build _).expects().returning(loginForm)
         (loginForm.loginAs _).expects(accountName).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedHoldingsXml)
+        (htmlPage.logOff _).expects()
       }
 
       val actualHoldings = WebSiteHoldingFactory(loginFormBuilder, accountName).getHoldings()
@@ -50,6 +51,7 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
         (loginFormBuilder.build _).expects().returning(loginForm)
         (loginForm.loginAs _).expects(accountName).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedTransactionXml)
+        (htmlPage.logOff _).expects()
       }
 
       val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, accountName).getTransactions()
