@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS finance;
+CREATE DATABASE finance;
