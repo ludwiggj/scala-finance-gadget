@@ -15,8 +15,8 @@ DB_DRIVER=`dbProperty driver`
 DB_USER=`dbProperty user`
 DB_PASSWORD=`dbProperty password`
 
-mysql -u root < ${FINANCE_GADGET_DB_HOME}/dropAndRecreateFinanceDatabase.sql
-mysql -u root < ${FINANCE_GADGET_DB_HOME}/createFinanceBaseSchema.sql
+mysql -h 127.0.0.1 -P 3306 -u root < ${FINANCE_GADGET_DB_HOME}/dropAndRecreateFinanceDatabase.sql
+mysql -h 127.0.0.1 -P 3306 -u root < ${FINANCE_GADGET_DB_HOME}/createFinanceBaseSchema.sql
 
 cd ${FINANCE_GADGET_DB_HOME}
 
