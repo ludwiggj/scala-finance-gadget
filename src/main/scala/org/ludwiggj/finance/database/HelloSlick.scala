@@ -3,8 +3,6 @@ package org.ludwiggj.finance.database
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-import Tables.{Suppliers, SuppliersRow, Coffees}
-
 object HelloSlick extends App {
 
   val suppliers: TableQuery[Suppliers] = TableQuery[Suppliers]
@@ -32,9 +30,9 @@ object HelloSlick extends App {
     create(suppliers, coffees)
 
     // Insert some suppliers
-    suppliers += SuppliersRow(101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199")
-    suppliers += SuppliersRow(49, "Superior Coffee", "1 Party Place", "Mendocino", "TX", "95460")
-    suppliers += SuppliersRow(150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966")
+    suppliers += (101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199")
+    suppliers += (49, "Superior Coffee", "1 Party Place", "Mendocino", "TX", "95460")
+    suppliers += (150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966")
 
     def showAllSuppliers {
       println(s"All suppliers:\n${suppliers.list}")
@@ -42,7 +40,7 @@ object HelloSlick extends App {
 
     // Query the Coffees table using a foreach and print each row
     def showIndividualSuppliers {
-      suppliers foreach { case SuppliersRow(supId, supName, street, city, state, zip) =>
+      suppliers foreach { case (supId, supName, street, city, state, zip) =>
         println(s"Supplier [supId: $supId, supName: $supName, street: $street, city: $city, state: $state, zip: $zip]")
       }
     }
