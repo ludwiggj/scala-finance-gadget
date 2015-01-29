@@ -3,8 +3,10 @@ package org.ludwiggj.finance.domain
 import org.ludwiggj.finance.persistence.Persistable
 
 class Holding(val name: String, val units: BigDecimal,
-              val priceDate: FinanceDate, priceInPence: BigDecimal) extends Persistable {
+              val priceDate: FinanceDate, val priceInPence: BigDecimal) extends Persistable {
   def value = (units * (priceInPence / 100)).setScale(2, BigDecimal.RoundingMode.HALF_UP)
+
+  def dateAsSqlDate = priceDate.asSqlDate
 
   override def toString =
     s"Financial Holding [name: $name, units: $units, date: ${priceDate}, price: $priceInPence, value: £$value]"

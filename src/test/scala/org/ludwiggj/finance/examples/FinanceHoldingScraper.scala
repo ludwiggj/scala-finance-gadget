@@ -3,7 +3,7 @@ package org.ludwiggj.finance.examples
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
-import org.ludwiggj.finance.persistence.Persister
+import org.ludwiggj.finance.persistence.{DatabasePersister, Persister}
 import com.github.nscala_time.time.Imports._
 import org.ludwiggj.finance._
 
@@ -25,6 +25,8 @@ object FinanceHoldingScraper extends App {
       val persister = Persister(s"$reportHome/holdings_${date}_${accountName}.txt")
 
       persister.write(holdings)
+
+      new DatabasePersister().persist(accountName, holdings)
     } catch {
       case ex: NotAuthenticatedException =>
         println(s"Cannot retrieve holdings for $accountName [NotAuthenticatedException]")

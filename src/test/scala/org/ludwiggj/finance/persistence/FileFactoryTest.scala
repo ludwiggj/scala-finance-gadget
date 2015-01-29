@@ -1,8 +1,8 @@
 package org.ludwiggj.finance.persistence
 
+import org.ludwiggj.finance.{TestHoldings, TestTransactions}
 import org.scalatest.{Matchers, FunSuite}
 import scala.language.postfixOps
-import org.ludwiggj.finance._
 
 class FileFactoryTest extends FunSuite with Matchers {
 

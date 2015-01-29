@@ -2,9 +2,11 @@ package org.ludwiggj.finance.domain
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import java.sql.Date
 
 class FinanceDate(val date: DateTime) {
   override def toString = date.toString(FinanceDate.formatter)
+  def asSqlDate = Date.valueOf(date.toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
 
   final override def equals(other: Any) = {
     val that = other.asInstanceOf[FinanceDate]
