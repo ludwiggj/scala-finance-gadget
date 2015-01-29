@@ -4,7 +4,6 @@ import org.ludwiggj.finance.domain.{Holding, FinanceDate, Transaction}
 
 package object finance {
   val reportHome = "reports"
-  val testHome = "target/scala-2.10/test-classes"
 
   trait TestTransactions {
     val tx1 = Transaction(

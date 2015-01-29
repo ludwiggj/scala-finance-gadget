@@ -11,7 +11,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       println(s"About to persist transactions: $transactions")
 
-      Persister(s"$testHome/$txFile").write(transactions)
+      Persister(txFile).write(transactions)
 
       val reconstitutedTransactions = new FileTransactionFactory(txFile).getTransactions()
 
@@ -27,7 +27,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       println(s"About to persist transactions: $holdings")
 
-      Persister(s"$testHome/$holdingFile").write(holdings)
+      Persister(holdingFile).write(holdings)
 
       val reconstitutedHoldings = new FileHoldingFactory(holdingFile).getHoldings()
 

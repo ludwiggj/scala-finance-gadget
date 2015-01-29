@@ -9,7 +9,7 @@ class FileFactoryTest extends FunSuite with Matchers {
   test("Retrieve transactions from file") {
     new TestTransactions {
 
-      val actualTransactions = new FileTransactionFactory("fileTransactions.txt").getTransactions()
+      val actualTransactions = new FileTransactionFactory("/fileTransactions.txt").getTransactions()
 
       actualTransactions should contain theSameElementsAs transactions
     }
@@ -18,7 +18,7 @@ class FileFactoryTest extends FunSuite with Matchers {
   test("Retrieve holdings from file") {
     new TestHoldings {
 
-      val actualHoldings = new FileHoldingFactory("fileHoldings.txt").getHoldings()
+      val actualHoldings = new FileHoldingFactory("/fileHoldings.txt").getHoldings()
 
       actualHoldings should contain theSameElementsAs holdings
     }
