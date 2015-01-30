@@ -76,12 +76,8 @@ object ShowFinanceHoldings extends App {
     }
   }
 
-  showHoldings(Date.valueOf("2015-01-28"))
+  showHoldings(Date.valueOf("2014-12-29"))
 }
-
-/*
-
- */
 
 // Drop and recreate the schema
 //      drop(prices, holdings, funds, users)
