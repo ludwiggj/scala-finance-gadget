@@ -3,15 +3,15 @@ package org.ludwiggj.finance.domain
 import org.ludwiggj.finance.persistence.Persistable
 
 class Holding(val name: String, val units: BigDecimal,
-              val priceDate: FinanceDate, val priceInPence: BigDecimal) extends Persistable {
-  def value = (units * (priceInPence / 100)).setScale(2, BigDecimal.RoundingMode.HALF_UP)
+              val priceDate: FinanceDate, val price: BigDecimal) extends Persistable {
+  def value = (units * price).setScale(2, BigDecimal.RoundingMode.HALF_UP)
 
   def dateAsSqlDate = priceDate.asSqlDate
 
   override def toString =
-    s"Financial Holding [name: $name, units: $units, date: ${priceDate}, price: $priceInPence, value: £$value]"
+    s"Financial Holding [name: $name, units: $units, date: ${priceDate}, price: £$price, value: £$value]"
 
-  def toFileFormat = s"$name$separator$units$separator$priceDate$separator$priceInPence$separator$value"
+  def toFileFormat = s"$name$separator$units$separator$priceDate$separator$price$separator$value"
 
   final override def equals(other: Any) = {
     val that = if (other.isInstanceOf[Holding]) other.asInstanceOf[Holding] else null
@@ -22,7 +22,7 @@ class Holding(val name: String, val units: BigDecimal,
           (name == that.name) &&
             (units == that.units) &&
             (priceDate == that.priceDate) &&
-            (priceInPence == priceInPence)
+            (price == price)
           )
       objectsEqual
     }
@@ -33,7 +33,7 @@ class Holding(val name: String, val units: BigDecimal,
     result = 31 * result + name.hashCode
     result = 31 * result + units.hashCode
     result = 31 * result + priceDate.hashCode
-    result = 31 * result + priceInPence.hashCode
+    result = 31 * result + price.hashCode
     result
   }
 }
@@ -53,7 +53,8 @@ object Holding {
       ).r
 
     val holdingPattern(holdingName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
-    Holding(cleanHoldingName(holdingName), parseNumber(units), FinanceDate(date), parseNumber(priceInPence))
+    val priceInPounds = parseNumber(priceInPence) / 100;
+    Holding(cleanHoldingName(holdingName), parseNumber(units), FinanceDate(date), priceInPounds)
   }
 
   def apply(row: Array[String]): Holding = {

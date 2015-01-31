@@ -13,7 +13,7 @@ trait Tables {
   val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
 
-import scala.slick.model.ForeignKeyAction
+  import scala.slick.model.ForeignKeyAction
 
   /** DDL for all tables. Call .create to execute. */
   lazy val ddl = Changelog.ddl ++ Funds.ddl ++ Holdings.ddl ++ Prices.ddl ++ Users.ddl
@@ -68,14 +68,14 @@ import scala.slick.model.ForeignKeyAction
   /** Row type of table Holdings */
   type HoldingsRow = (Long, Long, Double, java.sql.Date)
   /** Constructor for HoldingsRow providing default values if available in the database schema. */
-  def HoldingsRow(fundId: Long, userId: Long, units: Double, dateOfRecord: java.sql.Date): HoldingsRow = {
-    (fundId, userId, units, dateOfRecord)
+  def HoldingsRow(fundId: Long, userId: Long, units: Double, holdingDate: java.sql.Date): HoldingsRow = {
+    (fundId, userId, units, holdingDate)
   }
   /** Table description of table HOLDINGS. Objects of this class serve as prototypes for rows in queries. */
   class Holdings(_tableTag: Tag) extends Table[HoldingsRow](_tableTag, "HOLDINGS") {
-    def * = (fundId, userId, units, dateOfRecord)
+    def * = (fundId, userId, units, holdingDate)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, userId.?, units.?, dateOfRecord.?).shaped.<>({r=>import r._; _1.map(_=> HoldingsRow(_1.get, _2.get, _3.get, _4.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (fundId.?, userId.?, units.?, holdingDate.?).shaped.<>({r=>import r._; _1.map(_=> HoldingsRow(_1.get, _2.get, _3.get, _4.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column FUND_ID DBType(BIGINT) */
     val fundId: Column[Long] = column[Long]("FUND_ID")
@@ -83,11 +83,11 @@ import scala.slick.model.ForeignKeyAction
     val userId: Column[Long] = column[Long]("USER_ID")
     /** Database column UNITS DBType(DOUBLE) */
     val units: Column[Double] = column[Double]("UNITS")
-    /** Database column DATE_OF_RECORD DBType(DATE) */
-    val dateOfRecord: Column[java.sql.Date] = column[java.sql.Date]("DATE_OF_RECORD")
+    /** Database column HOLDING_DATE DBType(DATE) */
+    val holdingDate: Column[java.sql.Date] = column[java.sql.Date]("HOLDING_DATE")
 
     /** Primary key of Holdings (database name HOLDINGS_PK) */
-    val pk = primaryKey("HOLDINGS_PK", (fundId, userId, dateOfRecord))
+    val pk = primaryKey("HOLDINGS_PK", (fundId, userId, holdingDate))
 
     /** Foreign key referencing Funds (database name HOLDINGS_FUND_FK) */
     lazy val fundsFk = foreignKey("HOLDINGS_FUND_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -100,21 +100,21 @@ import scala.slick.model.ForeignKeyAction
   /** Row type of table Prices */
   type PricesRow = (Long, java.sql.Date, Double)
   /** Constructor for PricesRow providing default values if available in the database schema. */
-  def PricesRow(fundId: Long, priceDate: java.sql.Date, priceInPence: Double): PricesRow = {
-    (fundId, priceDate, priceInPence)
+  def PricesRow(fundId: Long, priceDate: java.sql.Date, price: Double): PricesRow = {
+    (fundId, priceDate, price)
   }
   /** Table description of table PRICES. Objects of this class serve as prototypes for rows in queries. */
   class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
-    def * = (fundId, priceDate, priceInPence)
+    def * = (fundId, priceDate, price)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, priceDate.?, priceInPence.?).shaped.<>({r=>import r._; _1.map(_=> PricesRow(_1.get, _2.get, _3.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (fundId.?, priceDate.?, price.?).shaped.<>({r=>import r._; _1.map(_=> PricesRow(_1.get, _2.get, _3.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column FUND_ID DBType(BIGINT) */
     val fundId: Column[Long] = column[Long]("FUND_ID")
     /** Database column PRICE_DATE DBType(DATE) */
     val priceDate: Column[java.sql.Date] = column[java.sql.Date]("PRICE_DATE")
-    /** Database column PRICE_IN_PENCE DBType(DOUBLE) */
-    val priceInPence: Column[Double] = column[Double]("PRICE_IN_PENCE")
+    /** Database column PRICE DBType(DOUBLE) */
+    val price: Column[Double] = column[Double]("PRICE")
 
     /** Primary key of Prices (database name PRICES_PK) */
     val pk = primaryKey("PRICES_PK", (fundId, priceDate))

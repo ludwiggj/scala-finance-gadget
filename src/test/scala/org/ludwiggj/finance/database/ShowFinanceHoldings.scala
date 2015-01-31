@@ -31,35 +31,28 @@ object ShowFinanceHoldings extends App {
       implicit session =>
 
         def getHoldings(userName: String) = {
-          val joinQuery = for {
+          (for {
             h <- holdings
             u <- h.usersFk if (u.name === userName)
             f <- h.fundsFk
-            p <- prices if (p.fundId === f.id && p.priceDate === h.dateOfRecord && p.priceDate === desiredDate)
-          } yield (u.name, f.name, h.dateOfRecord, h.units, p.priceInPence)
-
-          joinQuery.list.map {
-            case (_, fund, date, units, priceInPence)
-            => (fund, date, units, priceInPence, units * priceInPence / 100)
-          }
+            p <- prices if (p.fundId === f.id && p.priceDate === h.holdingDate && p.priceDate === desiredDate)
+           } yield (f.name, h.holdingDate, h.units, p.price, h.units * p.price)
+          ).list
         }
 
         def evaluateHoldings(userName: String) = {
-          println(s"Holdings for $userName on $desiredDate")
-          println
+          println(s"Holdings for $userName on $desiredDate\n")
 
           val myHoldings = getHoldings(userName)
 
           for (myHolding <- myHoldings) {
             println(f"${myHolding._1}%-50s ${myHolding._2} " +
-              f"${myHolding._3}%10.4f ${myHolding._4}%8.2f p  £${(myHolding._5)}%9.2f")
+              f"${myHolding._3}%10.4f £${myHolding._4}%8.4f £${(myHolding._5)}%9.2f")
           }
 
           val totalHoldings = (myHoldings map { case (_, _, _, _, value) => value}).sum
 
-          println
-          println(f"Total holdings ($userName) £${totalHoldings}%9.2f")
-          println
+          println(f"\nTotal holdings ($userName) £${totalHoldings}%9.2f\n")
 
           totalHoldings
         }
@@ -76,7 +69,14 @@ object ShowFinanceHoldings extends App {
     }
   }
 
+  showHoldings(Date.valueOf("2014-10-28"))
+  showHoldings(Date.valueOf("2014-11-25"))
+  showHoldings(Date.valueOf("2014-12-23"))
   showHoldings(Date.valueOf("2014-12-29"))
+  showHoldings(Date.valueOf("2015-01-23"))
+  showHoldings(Date.valueOf("2015-01-27"))
+  showHoldings(Date.valueOf("2015-01-28"))
+  showHoldings(Date.valueOf("2015-01-30"))
 }
 
 // Drop and recreate the schema

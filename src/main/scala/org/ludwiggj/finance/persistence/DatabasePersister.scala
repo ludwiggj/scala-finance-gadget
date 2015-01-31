@@ -1,7 +1,7 @@
 package org.ludwiggj.finance.persistence
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import org.ludwiggj.finance.database.Tables.{Funds, Holdings, HoldingsRow, Users, Prices, PricesRow}
+import org.ludwiggj.finance.database.Tables.{Funds, Holdings, Users, Prices}
 import org.ludwiggj.finance.domain.Holding
 import scala.slick.driver.MySQLDriver.simple._
 
@@ -25,18 +25,18 @@ class DatabasePersister {
             }
           }
 
-          def insertHolding(holding: HoldingsRow) {
+          def insertHolding(fundId: Long, holding: Holding) {
             try {
-              holdings += holding
+              holdings += (fundId, userId, holding.units.toDouble, holding.dateAsSqlDate)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Holding: ${ex.getMessage}")
             }
           }
 
-          def insertPrice(price: PricesRow) {
+          def insertPrice(fundId: Long, holding: Holding) {
             try {
-              prices += price
+              prices += (fundId, holding.dateAsSqlDate, holding.price.toDouble)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Price: ${ex.getMessage}")
@@ -44,8 +44,8 @@ class DatabasePersister {
           }
 
           val fundId = insertOrCreateFund(holding.name)
-          insertHolding(fundId, userId, holding.units.toDouble, holding.dateAsSqlDate)
-          insertPrice(fundId, holding.dateAsSqlDate, holding.priceInPence.toDouble)
+          insertHolding(fundId, holding)
+          insertPrice(fundId, holding)
         }
 
         def insertOrCreateUser(name: String): Long = {
