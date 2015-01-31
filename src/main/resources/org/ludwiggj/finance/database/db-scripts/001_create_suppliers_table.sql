@@ -1,9 +1,0 @@
-CREATE TABLE SUPPLIERS (
-  ID int(11) NOT NULL,
-  NAME varchar(254) NOT NULL,
-  STREET varchar(254) NOT NULL,
-  CITY varchar(254) NOT NULL,
-  STATE varchar(254) NOT NULL,
-  ZIP varchar(254) NOT NULL,
-  PRIMARY KEY (ID)
-);
