@@ -27,7 +27,7 @@ class DatabasePersister {
 
           def insertHolding(fundId: Long, holding: Holding) {
             try {
-              holdings += (fundId, userId, holding.units.toDouble, holding.dateAsSqlDate)
+              holdings += (fundId, userId, holding.units, holding.dateAsSqlDate)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Holding: ${ex.getMessage}")
@@ -36,7 +36,7 @@ class DatabasePersister {
 
           def insertPrice(fundId: Long, holding: Holding) {
             try {
-              prices += (fundId, holding.dateAsSqlDate, holding.price.toDouble)
+              prices += (fundId, holding.dateAsSqlDate, holding.price)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Price: ${ex.getMessage}")

@@ -12,7 +12,6 @@ object Tables extends {
 trait Tables {
   val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
-
   import scala.slick.model.ForeignKeyAction
 
   /** DDL for all tables. Call .create to execute. */
@@ -66,9 +65,9 @@ trait Tables {
   lazy val Funds = new TableQuery(tag => new Funds(tag))
 
   /** Row type of table Holdings */
-  type HoldingsRow = (Long, Long, Double, java.sql.Date)
+  type HoldingsRow = (Long, Long, scala.math.BigDecimal, java.sql.Date)
   /** Constructor for HoldingsRow providing default values if available in the database schema. */
-  def HoldingsRow(fundId: Long, userId: Long, units: Double, holdingDate: java.sql.Date): HoldingsRow = {
+  def HoldingsRow(fundId: Long, userId: Long, units: scala.math.BigDecimal, holdingDate: java.sql.Date): HoldingsRow = {
     (fundId, userId, units, holdingDate)
   }
   /** Table description of table HOLDINGS. Objects of this class serve as prototypes for rows in queries. */
@@ -81,8 +80,8 @@ trait Tables {
     val fundId: Column[Long] = column[Long]("FUND_ID")
     /** Database column USER_ID DBType(BIGINT) */
     val userId: Column[Long] = column[Long]("USER_ID")
-    /** Database column UNITS DBType(DOUBLE) */
-    val units: Column[Double] = column[Double]("UNITS")
+    /** Database column UNITS DBType(DECIMAL) */
+    val units: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("UNITS")
     /** Database column HOLDING_DATE DBType(DATE) */
     val holdingDate: Column[java.sql.Date] = column[java.sql.Date]("HOLDING_DATE")
 
@@ -98,9 +97,9 @@ trait Tables {
   lazy val Holdings = new TableQuery(tag => new Holdings(tag))
 
   /** Row type of table Prices */
-  type PricesRow = (Long, java.sql.Date, Double)
+  type PricesRow = (Long, java.sql.Date, scala.math.BigDecimal)
   /** Constructor for PricesRow providing default values if available in the database schema. */
-  def PricesRow(fundId: Long, priceDate: java.sql.Date, price: Double): PricesRow = {
+  def PricesRow(fundId: Long, priceDate: java.sql.Date, price: scala.math.BigDecimal): PricesRow = {
     (fundId, priceDate, price)
   }
   /** Table description of table PRICES. Objects of this class serve as prototypes for rows in queries. */
@@ -113,8 +112,8 @@ trait Tables {
     val fundId: Column[Long] = column[Long]("FUND_ID")
     /** Database column PRICE_DATE DBType(DATE) */
     val priceDate: Column[java.sql.Date] = column[java.sql.Date]("PRICE_DATE")
-    /** Database column PRICE DBType(DOUBLE) */
-    val price: Column[Double] = column[Double]("PRICE")
+    /** Database column PRICE DBType(DECIMAL) */
+    val price: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("PRICE")
 
     /** Primary key of Prices (database name PRICES_PK) */
     val pk = primaryKey("PRICES_PK", (fundId, priceDate))
