@@ -1,11 +1,12 @@
 package org.ludwiggj.finance.examples
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import org.ludwiggj.finance._
 
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteTransactionFactory, WebSiteConfig}
-import org.ludwiggj.finance.persistence.Persister
+import org.ludwiggj.finance.persistence.{DatabasePersister, Persister}
 import com.github.nscala_time.time.Imports._
 
 object FinanceTransactionScraper extends App {
@@ -18,18 +19,22 @@ object FinanceTransactionScraper extends App {
 
   for (account <- accounts) {
     val accountName = account.name
-    try {
-      val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
-      val transactions = transactionFactory.getTransactions()
+    time(s"processTransactions($accountName)",
+      try {
+        val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
+        val transactions = transactionFactory.getTransactions()
 
-      println(s"Total transactions ($accountName): ${transactions size}")
+        println(s"Total transactions ($accountName): ${transactions size}")
 
-      val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
+        val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
 
-      persister.write(transactions)
-    } catch {
-      case ex: NotAuthenticatedException =>
-        println(s"Cannot retrieve transactions for $accountName [NotAuthenticatedException]")
-    }
+        persister.write(transactions)
+        new DatabasePersister().persistTransactions(accountName, transactions)
+      } catch {
+        case ex: ElementNotFoundException =>
+          println(s"Cannot retrieve transactions for $accountName, ${ex.toString}")
+        case ex: NotAuthenticatedException =>
+          println(s"Cannot retrieve transactions for $accountName [NotAuthenticatedException]")
+      })
   }
 }

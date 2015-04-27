@@ -2,7 +2,6 @@ package org.ludwiggj.finance.web
 
 import org.scalatest.{Matchers, FunSuite}
 import org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
-import org.ludwiggj.finance.domain.FinanceDate
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 

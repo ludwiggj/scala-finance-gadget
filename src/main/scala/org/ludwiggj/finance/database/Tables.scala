@@ -15,7 +15,7 @@ trait Tables {
   import scala.slick.model.ForeignKeyAction
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = Changelog.ddl ++ Funds.ddl ++ Holdings.ddl ++ Prices.ddl ++ Users.ddl
+  lazy val ddl = Changelog.ddl ++ Funds.ddl ++ Holdings.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
 
   /** Row type of table Changelog */
   type ChangelogRow = (Long, java.sql.Timestamp, String, String)
@@ -89,9 +89,11 @@ trait Tables {
     val pk = primaryKey("HOLDINGS_PK", (fundId, userId, holdingDate))
 
     /** Foreign key referencing Funds (database name HOLDINGS_FUND_FK) */
-    lazy val fundsFk = foreignKey("HOLDINGS_FUND_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing Users (database name HOLDINGS_USER_FK) */
-    lazy val usersFk = foreignKey("HOLDINGS_USER_FK", userId, Users)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    lazy val fundsFk = foreignKey("HOLDINGS_FUNDS_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Prices (database name HOLDINGS_PRICES_FK) */
+    lazy val pricesFk = foreignKey("HOLDINGS_PRICES_FK", (fundId, holdingDate), Prices)(r => (r.fundId, r.priceDate), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Users (database name HOLDINGS_USERS_FK) */
+    lazy val usersFk = foreignKey("HOLDINGS_USERS_FK", userId, Users)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table Holdings */
   lazy val Holdings = new TableQuery(tag => new Holdings(tag))
@@ -118,11 +120,54 @@ trait Tables {
     /** Primary key of Prices (database name PRICES_PK) */
     val pk = primaryKey("PRICES_PK", (fundId, priceDate))
 
-    /** Foreign key referencing Funds (database name PRICES_FUND_FK) */
-    lazy val fundsFk = foreignKey("PRICES_FUND_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Funds (database name PRICES_FUNDS_FK) */
+    lazy val fundsFk = foreignKey("PRICES_FUNDS_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table Prices */
   lazy val Prices = new TableQuery(tag => new Prices(tag))
+
+  /** Row type of table Transactions */
+  type TransactionsRow = (Long, Long, java.sql.Date, String, scala.math.BigDecimal, scala.math.BigDecimal, java.sql.Date, scala.math.BigDecimal)
+  /** Constructor for TransactionsRow providing default values if available in the database schema. */
+  def TransactionsRow(fundId: Long, userId: Long, transactionDate: java.sql.Date, description: String, amountIn: scala.math.BigDecimal, amountOut: scala.math.BigDecimal, priceDate: java.sql.Date, units: scala.math.BigDecimal): TransactionsRow = {
+    (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units)
+  }
+  /** Table description of table TRANSACTIONS. Objects of this class serve as prototypes for rows in queries. */
+  class Transactions(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
+    def * = (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (fundId.?, userId.?, transactionDate.?, description.?, amountIn.?, amountOut.?, priceDate.?, units.?).shaped.<>({r=>import r._; _1.map(_=> TransactionsRow(_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column FUND_ID DBType(BIGINT) */
+    val fundId: Column[Long] = column[Long]("FUND_ID")
+    /** Database column USER_ID DBType(BIGINT) */
+    val userId: Column[Long] = column[Long]("USER_ID")
+    /** Database column TRANSACTION_DATE DBType(DATE) */
+    val transactionDate: Column[java.sql.Date] = column[java.sql.Date]("TRANSACTION_DATE")
+    /** Database column DESCRIPTION DBType(VARCHAR), Length(254,true) */
+    val description: Column[String] = column[String]("DESCRIPTION", O.Length(254,varying=true))
+    /** Database column AMOUNT_IN DBType(DECIMAL) */
+    val amountIn: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_IN")
+    /** Database column AMOUNT_OUT DBType(DECIMAL) */
+    val amountOut: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_OUT")
+    /** Database column PRICE_DATE DBType(DATE) */
+    val priceDate: Column[java.sql.Date] = column[java.sql.Date]("PRICE_DATE")
+    /** Database column UNITS DBType(DECIMAL) */
+    val units: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("UNITS")
+
+    /** Primary key of Prices (database name PRICES_PK) */
+    val pk = primaryKey("TRANSACTIONS_PK", (fundId, userId, transactionDate, description,
+      amountIn, amountOut, priceDate, units))
+
+    /** Foreign key referencing Funds (database name TRANSACTIONS_FUNDS_FK) */
+    lazy val fundsFk = foreignKey("TRANSACTIONS_FUNDS_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Prices (database name TRANSACTIONS_PRICES_FK) */
+    lazy val pricesFk = foreignKey("TRANSACTIONS_PRICES_FK", (fundId, priceDate), Prices)(r => (r.fundId, r.priceDate), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Users (database name TRANSACTIONS_USERS_FK) */
+    lazy val usersFk = foreignKey("TRANSACTIONS_USERS_FK", userId, Users)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table Transactions */
+  lazy val Transactions = new TableQuery(tag => new Transactions(tag))
 
   /** Row type of table Users */
   type UsersRow = (Long, String)

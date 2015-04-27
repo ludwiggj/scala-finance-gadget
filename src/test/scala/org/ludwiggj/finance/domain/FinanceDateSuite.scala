@@ -1,27 +1,34 @@
 package org.ludwiggj.finance.domain
 
+import java.sql.Date
+
 import org.scalatest.{Matchers, FunSuite}
 
 class FinanceDateSuite extends FunSuite with Matchers {
 
   test("A finance date should display correct output") {
-    assert(FinanceDate("29/04/2014").toString == "29/04/2014")
+    FinanceDate("29/04/2014").toString equals ("29/04/2014")
   }
 
   test("Equality returns true for equal dates") {
-    assert(FinanceDate("29/04/2014").equals(FinanceDate("29/04/2014")) == true)
+    FinanceDate("29/04/2014") should equal (FinanceDate("29/04/2014"))
   }
 
   test("Equality returns false for unequal dates") {
-    assert(FinanceDate("29/04/2014").equals(FinanceDate("30/04/2014")) == false)
+    FinanceDate("29/04/2014") should not equal (FinanceDate("30/04/2014"))
   }
 
   test("Equality returns false when other argument is null") {
-    assert(FinanceDate("29/04/2014").equals(null) == false)
+    FinanceDate("29/04/2014") should not equal (null)
   }
 
   test("Can parse date with leading and trailing spaces") {
-    assert(FinanceDate("  15/03/2012 ").toString == "15/03/2012")
+    FinanceDate("  15/03/2012 ").toString should equal ("15/03/2012")
+  }
+
+  test("Can create finance date from sql date") {
+    val sqlDate = Date.valueOf("2014-12-31")
+    FinanceDate(sqlDate).toString should equal ("31/12/2014")
   }
 
   test("Parse date throws IllegalArgumentException if date has incorrect format") {

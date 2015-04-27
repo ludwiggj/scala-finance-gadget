@@ -7,41 +7,41 @@ class TransactionSuite extends FunSuite with Matchers {
 
   val tx5 = Transaction(
     "M&G Feeder of Property Portfolio I Fund Acc", FinanceDate("25/04/2014"), "Investment Regular",
-    Some(BigDecimal(200.00)), None, FinanceDate("25/04/2014"), BigDecimal(1153.08), BigDecimal(17.3449)
+    Some(BigDecimal(200.00)), None, FinanceDate("25/04/2014"), BigDecimal(11.5308), BigDecimal(17.3449)
   )
 
   val tx6 = Transaction(
     "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/2014"), BigDecimal(123.41), BigDecimal(23.8)
+    FinanceDate("29/04/2014"), BigDecimal(1.2341), BigDecimal(23.8)
   )
 
   test("A transaction should equal itself") {
     new TestTransactions {
-      assert(tx4 == tx4)
+      tx4 should equal(tx4)
     }
   }
 
   test("Two transactions with identical fields should be equal") {
     new TestTransactions {
-      assert(tx4 == tx5)
+      tx4 should equal(tx5)
     }
   }
 
   test("Two transactions with different fields should not be equal") {
     new TestTransactions {
-      assert(tx4 != tx6)
+      tx4 should not equal (tx6)
     }
   }
 
   test("List comparison: order is important") {
     new TestTransactions {
-      assert(List(tx4, tx6) !== List(tx6, tx5))
+      List(tx4, tx6) should not equal (List(tx6, tx5))
     }
   }
 
   test("Set comparison: order is not important") {
     new TestTransactions {
-      assert(List(tx4, tx6).toSet == List(tx6, tx5).toSet)
+      List(tx4, tx6).toSet should equal(List(tx6, tx5).toSet)
     }
   }
 
@@ -82,6 +82,71 @@ class TransactionSuite extends FunSuite with Matchers {
   test("diff take 3") {
     new TestTransactions {
       List(tx4, tx6) diff List(tx6) should equal(List(tx4))
+    }
+  }
+
+  test("Transaction.holdingName is correct") {
+    new TestTransactions {
+      tx1.holdingName should equal("Aberdeen Ethical World Equity A Fund Inc")
+    }
+  }
+
+  test("Transaction.date is correct") {
+    new TestTransactions {
+      tx1.date should equal(FinanceDate("02/05/2014"))
+    }
+  }
+
+  test("Transaction.description is correct") {
+    new TestTransactions {
+      tx1.description should equal("Dividend Reinvestment")
+    }
+  }
+
+  test("Transaction.in is correct") {
+    new TestTransactions {
+      tx1.in should equal(Some(0.27))
+    }
+  }
+
+  test("Transaction.out is correct") {
+    new TestTransactions {
+      tx1.out should equal(None)
+    }
+  }
+
+  test("Transaction.priceDate is correct") {
+    new TestTransactions {
+      tx1.priceDate should equal(FinanceDate("02/05/2014"))
+    }
+  }
+
+  test("Transaction.priceInPounds is correct") {
+    new TestTransactions {
+      tx1.priceInPounds should equal(1.4123)
+    }
+  }
+
+  test("Transaction.units is correct") {
+    new TestTransactions {
+      tx1.units should equal(0.1912)
+    }
+  }
+
+  test("Transaction.toFileFormat is correct") {
+    new TestTransactions {
+      tx1.toFileFormat should equal(
+        "Aberdeen Ethical World Equity A Fund Inc|02/05/2014|Dividend Reinvestment|0.27||02/05/2014|1.4123|0.1912"
+      )
+    }
+  }
+
+  test("Transaction.toString is correct") {
+    new TestTransactions {
+      tx1.toString should equal(
+        "Tx [holding: Aberdeen Ethical World Equity A Fund Inc, date: 02/05/2014, description: " +
+          "Dividend Reinvestment, in: Some(0.27), out: None, price date: 02/05/2014, price: 1.4123, units: 0.1912]"
+      )
     }
   }
 }

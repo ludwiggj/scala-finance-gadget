@@ -31,3 +31,5 @@ libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.6.4"
 libraryDependencies += "mysql" % "mysql-connector-java" % "latest.release"
 
 libraryDependencies += "com.dbdeploy" % "dbdeploy-cli" % "3.0M3"
+
+libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value

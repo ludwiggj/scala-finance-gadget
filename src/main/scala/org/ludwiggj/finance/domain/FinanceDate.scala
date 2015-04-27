@@ -26,4 +26,6 @@ object FinanceDate {
     case dateRegex(stringDate) => new FinanceDate(DateTime.parse(stringDate, formatter))
     case _ => throw new IllegalArgumentException(s"Date must be in format $dateFormat")
   }
+
+  def apply(sqlDate: Date) = new FinanceDate(new DateTime(sqlDate))
 }

@@ -5,7 +5,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.codegen.SourceCodeGenerator
 import scala.slick.model.Model
 
-object SlickAutoGen {
+object SlickAutoGenWithTuples {
   def main(args: Array[String]) {
 
     val db = Database.forConfig("db")

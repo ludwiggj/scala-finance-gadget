@@ -3,6 +3,7 @@ package org.ludwiggj.finance.database
 import java.sql.Date
 import org.ludwiggj.finance.database.Tables.{Funds, Holdings, Prices, Users}
 import scala.slick.driver.MySQLDriver.simple._
+import org.ludwiggj.finance.domain.FinanceDate
 import scala.slick.jdbc.meta.MTable
 
 object ShowFinanceHoldings extends App {
@@ -19,7 +20,7 @@ object ShowFinanceHoldings extends App {
     }
   }
 
-  def showHoldings(desiredDate: Date) {
+  def showHoldings() {
     val users: TableQuery[Users] = TableQuery[Users]
     val funds: TableQuery[Funds] = TableQuery[Funds]
     val prices: TableQuery[Prices] = TableQuery[Prices]
@@ -30,53 +31,63 @@ object ShowFinanceHoldings extends App {
     db.withSession {
       implicit session =>
 
-        def getHoldings(userName: String) = {
+        def getHoldingDates() = {
+          (for {
+            h <- holdings
+          } yield (h.holdingDate)
+            ).sortBy(date => date).list.distinct
+        }
+
+        def getHoldings(userName: String, desiredDate: Date) = {
           (for {
             h <- holdings
             u <- h.usersFk if (u.name === userName)
             f <- h.fundsFk
             p <- prices if (p.fundId === f.id && p.priceDate === h.holdingDate && p.priceDate === desiredDate)
-           } yield (f.name, h.holdingDate, h.units, p.price, h.units * p.price)
-          ).list
+          } yield (f.name, h.holdingDate, h.units, p.price, h.units * p.price)
+            ).list
         }
 
-        def evaluateHoldings(userName: String) = {
-          println(s"Holdings for $userName on $desiredDate\n")
+        def evaluateHoldings(userName: String, desiredDate: Date) = {
+          println(s"Holdings for $userName on ${FinanceDate(desiredDate)}\n")
 
-          val myHoldings = getHoldings(userName)
+          val myHoldings = getHoldings(userName, desiredDate)
+
+          println("Fund Name                                          Date        Units     Price       Total")
+          println("---------                                          ----        -----     -----       -----")
 
           for (myHolding <- myHoldings) {
-            println(f"${myHolding._1}%-50s ${myHolding._2} " +
-              f"${myHolding._3}%10.4f £${myHolding._4}%8.4f £${(myHolding._5)}%9.2f")
+            val (fundName, holdingDate, units, sharePrice, total) = myHolding
+            println(f"${fundName}%-50s ${FinanceDate(holdingDate)} ${units}%10.4f £${sharePrice}%8.4f £${(total)}%9.2f")
           }
 
-          val totalHoldings = (myHoldings map { case (_, _, _, _, value) => value}).sum
+          val totalHoldings = (myHoldings map { case (_, _, _, _, value) => value }).sum
 
           println(f"\nTotal holdings ($userName) £${totalHoldings}%9.2f\n")
 
           totalHoldings
         }
 
-        val allUsers = (for {
-          userName <- users.map(_.name)
-        } yield (userName)).list
+        def allUsers() = {
+          (for {
+            userName <- users.map(_.name)
+          } yield (userName)).list
+        }
 
-        val totalHoldingsForAllUsers = (for {
-          user <- allUsers
-        } yield (evaluateHoldings(user))).sum
+        for (holdingDate <- getHoldingDates()) {
+          val users = allUsers()
 
-        println(f"Total holdings (${allUsers.mkString(", ")}) £${totalHoldingsForAllUsers}%9.2f")
+          val totalHoldingsForAllUsers = (for {
+            user <- users
+          } yield (evaluateHoldings(user, holdingDate))).sum
+
+          println(f"Total holdings (${users.mkString(", ")}) £${totalHoldingsForAllUsers}%9.2f")
+          println
+        }
     }
   }
 
-  showHoldings(Date.valueOf("2014-10-28"))
-  showHoldings(Date.valueOf("2014-11-25"))
-  showHoldings(Date.valueOf("2014-12-23"))
-  showHoldings(Date.valueOf("2014-12-29"))
-  showHoldings(Date.valueOf("2015-01-23"))
-  showHoldings(Date.valueOf("2015-01-27"))
-  showHoldings(Date.valueOf("2015-01-28"))
-  showHoldings(Date.valueOf("2015-01-30"))
+  showHoldings()
 }
 
 // Drop and recreate the schema

@@ -56,6 +56,8 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
 
       val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, accountName).getTransactions()
 
+      println(actualTransactions)
+
       actualTransactions should contain theSameElementsAs transactions
     }
   }
