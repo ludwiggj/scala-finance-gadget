@@ -1,12 +1,11 @@
-package org.ludwiggj.finance.examples
+package org.ludwiggj.finance.application
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
-import org.ludwiggj.finance._
-
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
-import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteTransactionFactory, WebSiteConfig}
-import org.ludwiggj.finance.persistence.{DatabasePersister, Persister}
+import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory}
+import org.ludwiggj.finance.persistence.database.DatabasePersister
+import org.ludwiggj.finance.persistence.file.FilePersister
 import com.github.nscala_time.time.Imports._
 
 object FinanceTransactionScraper extends App {
@@ -26,7 +25,7 @@ object FinanceTransactionScraper extends App {
 
         println(s"Total transactions ($accountName): ${transactions size}")
 
-        val persister = Persister(s"$reportHome/txs_${date}_${accountName}.txt")
+        val persister = FilePersister(s"$reportHome/txs_${date}_${accountName}.txt")
 
         persister.write(transactions)
         new DatabasePersister().persistTransactions(accountName, transactions)

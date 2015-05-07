@@ -1,0 +1,206 @@
+Aberdeen Ethical World Equity A Fund Inc|25/05/2011|1.2957
+Aberdeen Ethical World Equity A Fund Inc|25/06/2011|1.3310
+Aberdeen Ethical World Equity A Fund Inc|25/07/2011|1.3018
+Aberdeen Ethical World Equity A Fund Inc|25/08/2011|1.1253
+Aberdeen Ethical World Equity A Fund Inc|25/09/2011|1.1271
+Aberdeen Ethical World Equity A Fund Inc|25/10/2011|1.2247
+Aberdeen Ethical World Equity A Fund Inc|25/11/2011|1.1283
+Aberdeen Ethical World Equity A Fund Inc|25/12/2011|1.1895
+Aberdeen Ethical World Equity A Fund Inc|25/01/2012|1.2485
+Aberdeen Ethical World Equity A Fund Inc|25/02/2012|1.2645
+Aberdeen Ethical World Equity A Fund Inc|25/03/2012|1.2701
+Aberdeen Ethical World Equity A Fund Inc|25/04/2012|1.2202
+Aberdeen Ethical World Equity A Fund Inc|25/05/2012|1.1598
+Aberdeen Ethical World Equity A Fund Inc|25/06/2012|1.1636
+Aberdeen Ethical World Equity A Fund Inc|25/07/2012|1.1942
+Aberdeen Ethical World Equity A Fund Inc|25/08/2012|1.2523
+Aberdeen Ethical World Equity A Fund Inc|25/09/2012|1.2382
+Aberdeen Ethical World Equity A Fund Inc|25/10/2012|1.2240
+Aberdeen Ethical World Equity A Fund Inc|25/11/2012|1.2462
+Aberdeen Ethical World Equity A Fund Inc|25/12/2012|1.2849
+Aberdeen Ethical World Equity A Fund Inc|25/01/2013|1.3462
+Aberdeen Ethical World Equity A Fund Inc|25/02/2013|1.4047
+Aberdeen Ethical World Equity A Fund Inc|25/03/2013|1.4088
+Aberdeen Ethical World Equity A Fund Inc|25/04/2013|1.4109
+Aberdeen Ethical World Equity A Fund Inc|25/05/2013|1.4803
+Aberdeen Ethical World Equity A Fund Inc|25/06/2013|1.3334
+Aberdeen Ethical World Equity A Fund Inc|25/07/2013|1.4280
+Aberdeen Ethical World Equity A Fund Inc|25/08/2013|1.3674
+Aberdeen Ethical World Equity A Fund Inc|25/09/2013|1.3990
+Aberdeen Ethical World Equity A Fund Inc|25/10/2013|1.4182
+Aberdeen Ethical World Equity A Fund Inc|25/11/2013|1.3820
+Aberdeen Ethical World Equity A Fund Inc|25/12/2013|1.3612
+Aberdeen Ethical World Equity A Fund Inc|25/01/2014|1.3039
+Aberdeen Ethical World Equity A Fund Inc|25/02/2014|1.3440
+Aberdeen Ethical World Equity A Fund Inc|25/03/2014|1.3764
+Aberdeen Ethical World Equity A Fund Inc|25/04/2014|1.4144
+Aberdeen Ethical World Equity A Fund Inc|25/05/2014|1.4559
+Aberdeen Ethical World Equity A Fund Inc|25/06/2014|1.4440
+Aberdeen Ethical World Equity A Fund Inc|25/07/2014|1.4740
+Aberdeen Ethical World Equity A Fund Inc|25/08/2014|1.4799
+Aberdeen Ethical World Equity A Fund Inc|25/09/2014|1.4480
+Aberdeen Ethical World Equity A Fund Inc|25/10/2014|1.3898
+Aberdeen Ethical World Equity A Fund Inc|25/01/2015|1.4753
+CIS Sustainable Leaders C Trust Inc|25/04/2014|1.2660
+CIS Sustainable Leaders C Trust Inc|25/05/2014|1.3070
+CIS Sustainable Leaders C Trust Inc|25/06/2014|1.2760
+CIS Sustainable Leaders C Trust Inc|25/07/2014|1.2910
+CIS Sustainable Leaders C Trust Inc|25/08/2014|1.3140
+CIS Sustainable Leaders C Trust Inc|25/09/2014|1.2990
+CIS Sustainable Leaders C Trust Inc|25/10/2014|1.2750
+CIS Sustainable Leaders C Trust Inc|25/01/2015|1.4050
+Ecclesiastical Amity European A Fund Inc|25/08/2013|1.8450
+Ecclesiastical Amity European A Fund Inc|25/09/2013|1.9010
+Ecclesiastical Amity European A Fund Inc|25/10/2013|2.0020
+Ecclesiastical Amity European A Fund Inc|25/11/2013|1.9990
+Ecclesiastical Amity European A Fund Inc|25/12/2013|2.0170
+Ecclesiastical Amity European A Fund Inc|25/01/2014|1.9440
+Ecclesiastical Amity European A Fund Inc|25/02/2014|2.0090
+Ecclesiastical Amity European A Fund Inc|25/03/2014|2.0320
+Ecclesiastical Amity European A Fund Inc|25/04/2014|2.0070
+Ecclesiastical Amity European A Fund Inc|25/05/2014|2.0620
+Ecclesiastical Amity European A Fund Inc|25/06/2014|2.0250
+Ecclesiastical Amity European A Fund Inc|25/07/2014|1.9650
+Ecclesiastical Amity European A Fund Inc|25/08/2014|1.9770
+Ecclesiastical Amity European A Fund Inc|25/09/2014|1.9450
+Ecclesiastical Amity European A Fund Inc|25/10/2014|1.8490
+Ecclesiastical Amity European A Fund Inc|25/01/2015|1.9750
+Ecclesiastical Amity European B Fund Inc|25/04/2014|2.0280
+Ecclesiastical Amity European B Fund Inc|25/05/2014|2.0840
+Ecclesiastical Amity European B Fund Inc|25/06/2014|2.0490
+Ecclesiastical Amity European B Fund Inc|25/07/2014|1.9860
+Ecclesiastical Amity European B Fund Inc|25/08/2014|1.9990
+Ecclesiastical Amity European B Fund Inc|25/09/2014|1.9680
+Ecclesiastical Amity European B Fund Inc|25/10/2014|1.8720
+Ecclesiastical Amity European B Fund Inc|25/01/2015|1.9920
+F&C Responsible UK Equity Growth 1 Fund Inc|25/05/2011|6.6570
+F&C Responsible UK Equity Growth 1 Fund Inc|25/06/2011|6.7170
+F&C Responsible UK Equity Growth 1 Fund Inc|25/07/2011|6.5750
+F&C Responsible UK Equity Growth 1 Fund Inc|25/08/2011|5.6260
+F&C Responsible UK Equity Growth 1 Fund Inc|25/09/2011|5.8060
+F&C Responsible UK Equity Growth 1 Fund Inc|25/10/2011|6.1840
+F&C Responsible UK Equity Growth 1 Fund Inc|25/11/2011|5.5510
+F&C Responsible UK Equity Growth 1 Fund Inc|25/12/2011|5.8480
+F&C Responsible UK Equity Growth 1 Fund Inc|25/01/2012|6.2030
+F&C Responsible UK Equity Growth 1 Fund Inc|25/02/2012|6.4480
+F&C Responsible UK Equity Growth 1 Fund Inc|25/03/2012|6.5650
+F&C Responsible UK Equity Growth 1 Fund Inc|25/04/2012|6.4290
+F&C Responsible UK Equity Growth 1 Fund Inc|25/05/2012|6.0270
+F&C Responsible UK Equity Growth 1 Fund Inc|25/06/2012|6.1250
+F&C Responsible UK Equity Growth 1 Fund Inc|25/07/2012|6.2120
+F&C Responsible UK Equity Growth 1 Fund Inc|25/08/2012|6.5200
+F&C Responsible UK Equity Growth 1 Fund Inc|25/09/2012|6.6450
+F&C Responsible UK Equity Growth 1 Fund Inc|25/10/2012|6.6320
+F&C Responsible UK Equity Growth 1 Fund Inc|25/11/2012|6.6600
+F&C Responsible UK Equity Growth 1 Fund Inc|25/12/2012|6.8090
+F&C Responsible UK Equity Growth 1 Fund Inc|25/01/2013|7.2120
+F&C Responsible UK Equity Growth 1 Fund Inc|25/02/2013|7.4630
+F&C Responsible UK Equity Growth 1 Fund Inc|25/03/2013|7.6810
+F&C Responsible UK Equity Growth 1 Fund Inc|25/04/2013|7.5820
+F&C Responsible UK Equity Growth 1 Fund Inc|25/05/2013|8.0020
+F&C Responsible UK Equity Growth 1 Fund Inc|25/06/2013|7.2730
+F&C Responsible UK Equity Growth 1 Fund Inc|25/07/2013|7.9340
+F&C Responsible UK Equity Growth 1 Fund Inc|25/08/2013|7.9410
+F&C Responsible UK Equity Growth 1 Fund Inc|25/09/2013|8.0140
+F&C Responsible UK Equity Growth 1 Fund Inc|25/10/2013|8.3120
+F&C Responsible UK Equity Growth 1 Fund Inc|25/11/2013|8.2850
+F&C Responsible UK Equity Growth 1 Fund Inc|25/12/2013|8.4260
+F&C Responsible UK Equity Growth 1 Fund Inc|25/01/2014|8.2890
+F&C Responsible UK Equity Growth 1 Fund Inc|25/02/2014|8.6590
+F&C Responsible UK Equity Growth 1 Fund Inc|25/03/2014|8.5490
+F&C Responsible UK Equity Growth 1 Fund Inc|25/04/2014|8.4620
+F&C Responsible UK Equity Growth 1 Fund Inc|25/05/2014|8.6180
+F&C Responsible UK Equity Growth 1 Fund Inc|25/06/2014|8.4090
+F&C Responsible UK Equity Growth 1 Fund Inc|25/07/2014|8.5320
+F&C Responsible UK Equity Growth 1 Fund Inc|25/08/2014|8.7260
+F&C Responsible UK Equity Growth 1 Fund Inc|25/09/2014|8.5490
+F&C Responsible UK Equity Growth 1 Fund Inc|25/10/2014|8.2910
+F&C Responsible UK Equity Growth 1 Fund Inc|25/01/2015|8.9740
+F&C Responsible UK Income 1 Fund Inc|25/05/2012|1.0050
+F&C Responsible UK Income 1 Fund Inc|25/06/2012|1.0110
+F&C Responsible UK Income 1 Fund Inc|25/07/2012|1.0270
+F&C Responsible UK Income 1 Fund Inc|25/08/2012|1.0800
+F&C Responsible UK Income 1 Fund Inc|25/09/2012|1.0910
+F&C Responsible UK Income 1 Fund Inc|25/10/2012|1.0910
+F&C Responsible UK Income 1 Fund Inc|25/11/2012|1.0920
+F&C Responsible UK Income 1 Fund Inc|25/12/2012|1.1130
+F&C Responsible UK Income 1 Fund Inc|25/01/2013|1.1650
+F&C Responsible UK Income 1 Fund Inc|25/02/2013|1.1970
+F&C Responsible UK Income 1 Fund Inc|25/03/2013|1.2200
+F&C Responsible UK Income 1 Fund Inc|25/04/2013|1.2160
+F&C Responsible UK Income 1 Fund Inc|25/05/2013|1.2750
+F&C Responsible UK Income 1 Fund Inc|25/06/2013|1.1660
+F&C Responsible UK Income 1 Fund Inc|25/07/2013|1.2570
+F&C Responsible UK Income 1 Fund Inc|25/08/2013|1.2630
+F&C Responsible UK Income 1 Fund Inc|25/09/2013|1.2660
+F&C Responsible UK Income 1 Fund Inc|25/10/2013|1.3150
+F&C Responsible UK Income 1 Fund Inc|25/11/2013|1.3100
+F&C Responsible UK Income 1 Fund Inc|25/12/2013|1.3190
+F&C Responsible UK Income 1 Fund Inc|25/01/2014|1.3100
+F&C Responsible UK Income 1 Fund Inc|25/02/2014|1.3570
+F&C Responsible UK Income 1 Fund Inc|25/03/2014|1.3240
+F&C Responsible UK Income 1 Fund Inc|25/04/2014|1.3150
+F&C Responsible UK Income 1 Fund Inc|25/05/2014|1.3310
+F&C Responsible UK Income 1 Fund Inc|25/06/2014|1.2870
+F&C Responsible UK Income 1 Fund Inc|25/07/2014|1.3040
+F&C Responsible UK Income 1 Fund Inc|25/08/2014|1.3280
+F&C Responsible UK Income 1 Fund Inc|25/09/2014|1.2910
+F&C Responsible UK Income 1 Fund Inc|25/10/2014|1.2590
+F&C Responsible UK Income 1 Fund Inc|25/01/2015|1.3480
+Henderson Global Care UK Income A Fund Inc|25/04/2010|0.8199
+Henderson Global Care UK Income A Fund Inc|25/05/2010|0.7568
+Henderson Global Care UK Income A Fund Inc|25/06/2010|0.7618
+Henderson Global Care UK Income A Fund Inc|25/07/2010|0.7618
+Henderson Global Care UK Income A Fund Inc|25/08/2010|0.7837
+Henderson Global Care UK Income A Fund Inc|25/09/2010|0.8354
+Henderson Global Care UK Income A Fund Inc|25/10/2010|0.8354
+Henderson Global Care UK Income A Fund Inc|25/11/2010|0.8185
+Henderson Global Care UK Income A Fund Inc|25/12/2010|0.8688
+Henderson Global Care UK Income A Fund Inc|25/01/2011|0.8685
+Henderson Global Care UK Income A Fund Inc|25/02/2011|0.8685
+Henderson Global Care UK Income A Fund Inc|25/03/2011|0.8858
+Henderson Global Care UK Income A Fund Inc|25/04/2011|0.8965
+Henderson Global Care UK Income A Fund Inc|25/05/2011|0.8997
+Henderson Global Care UK Income A Fund Inc|25/06/2011|0.9222
+Henderson Global Care UK Income A Fund Inc|25/07/2011|0.9070
+Henderson Global Care UK Income A Fund Inc|25/08/2011|0.7913
+Henderson Global Care UK Income A Fund Inc|25/09/2011|0.8110
+Henderson Global Care UK Income A Fund Inc|25/10/2011|0.8463
+Henderson Global Care UK Income A Fund Inc|25/11/2011|0.7639
+Henderson Global Care UK Income A Fund Inc|25/12/2011|0.8176
+Henderson Global Care UK Income A Fund Inc|25/01/2012|0.8638
+Henderson Global Care UK Income A Fund Inc|25/02/2012|0.8973
+Henderson Global Care UK Income A Fund Inc|25/03/2012|0.9145
+Henderson Global Care UK Income A Fund Inc|25/04/2012|0.8762
+Henderson Global Care UK Income A Fund Inc|25/08/2013|1.1110
+Henderson Global Care UK Income A Fund Inc|25/09/2013|1.1300
+Henderson Global Care UK Income A Fund Inc|25/10/2013|1.1430
+Henderson Global Care UK Income A Fund Inc|25/11/2013|1.1450
+Henderson Global Care UK Income A Fund Inc|25/12/2013|1.1760
+Henderson Global Care UK Income A Fund Inc|25/01/2014|1.1570
+Henderson Global Care UK Income A Fund Inc|25/02/2014|1.2110
+Henderson Global Care UK Income A Fund Inc|25/03/2014|1.1860
+Henderson Global Care UK Income A Fund Inc|25/04/2014|1.1560
+Henderson Global Care UK Income A Fund Inc|25/05/2014|1.1930
+Henderson Global Care UK Income A Fund Inc|25/06/2014|1.1630
+Henderson Global Care UK Income A Fund Inc|25/07/2014|1.1720
+Henderson Global Care UK Income A Fund Inc|25/08/2014|1.2040
+Henderson Global Care UK Income A Fund Inc|25/09/2014|1.1810
+Henderson Global Care UK Income A Fund Inc|25/10/2014|1.1280
+Henderson Global Care UK Income A Fund Inc|25/01/2015|1.2530
+Henderson Global Care UK Income I Fund Inc|25/04/2014|1.3050
+Henderson Global Care UK Income I Fund Inc|25/05/2014|1.3480
+Henderson Global Care UK Income I Fund Inc|25/06/2014|1.3140
+Henderson Global Care UK Income I Fund Inc|25/07/2014|1.3250
+Henderson Global Care UK Income I Fund Inc|25/08/2014|1.3620
+Henderson Global Care UK Income I Fund Inc|25/09/2014|1.3380
+Henderson Global Care UK Income I Fund Inc|25/10/2014|1.2780
+Henderson Global Care UK Income I Fund Inc|25/01/2015|1.4220
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/04/2014|0.4800
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/05/2014|0.4885
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/06/2014|0.4791
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/07/2014|0.4882
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/08/2014|0.4906
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/09/2014|0.4678
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/10/2014|0.4871
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/01/2015|0.5232

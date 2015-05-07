@@ -1,6 +1,6 @@
-package org.ludwiggj.finance.database
+package org.ludwiggj.finance.application
 
-import org.ludwiggj.finance.database.Tables.{Users, Transactions}
+import org.ludwiggj.finance.persistence.database.Tables.{Transactions, Users}
 import org.ludwiggj.finance.domain.FinanceDate
 
 import scala.slick.driver.MySQLDriver.simple._

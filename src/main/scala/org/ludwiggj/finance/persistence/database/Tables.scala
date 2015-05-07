@@ -1,8 +1,7 @@
-package org.ludwiggj.finance.database
-
-import scala.slick.lifted.ProvenShape
+package org.ludwiggj.finance.persistence.database
 
 // AUTO-GENERATED Slick data model
+
 /** Stand-alone Slick data model for immediate use */
 object Tables extends {
   val profile = scala.slick.driver.MySQLDriver
@@ -10,24 +9,37 @@ object Tables extends {
 
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 trait Tables {
+
+  // Graeme, added to handle BigDecimal bug
+  import scala.language.implicitConversions
+  implicit def string2BigDecimal(value: String) = new scala.math.BigDecimal(new java.math.BigDecimal(value))
+
   val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
+
   import scala.slick.model.ForeignKeyAction
+  // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
+  import scala.slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
   lazy val ddl = Changelog.ddl ++ Funds.ddl ++ Holdings.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
 
-  /** Row type of table Changelog */
-  type ChangelogRow = (Long, java.sql.Timestamp, String, String)
-  /** Constructor for ChangelogRow providing default values if available in the database schema. */
-  def ChangelogRow(changeNumber: Long, completeDt: java.sql.Timestamp, appliedBy: String, description: String): ChangelogRow = {
-    (changeNumber, completeDt, appliedBy, description)
+  /** Entity class storing rows of table Changelog
+   *  @param changeNumber Database column change_number DBType(BIGINT), PrimaryKey
+   *  @param completeDt Database column complete_dt DBType(TIMESTAMP)
+   *  @param appliedBy Database column applied_by DBType(VARCHAR), Length(100,true)
+   *  @param description Database column description DBType(VARCHAR), Length(500,true) */
+  case class ChangelogRow(changeNumber: Long, completeDt: java.sql.Timestamp, appliedBy: String, description: String)
+  /** GetResult implicit for fetching ChangelogRow objects using plain SQL queries */
+  implicit def GetResultChangelogRow(implicit e0: GR[Long], e1: GR[java.sql.Timestamp], e2: GR[String]): GR[ChangelogRow] = GR{
+    prs => import prs._
+    ChangelogRow.tupled((<<[Long], <<[java.sql.Timestamp], <<[String], <<[String]))
   }
   /** Table description of table changelog. Objects of this class serve as prototypes for rows in queries. */
   class Changelog(_tableTag: Tag) extends Table[ChangelogRow](_tableTag, "changelog") {
-    def * = (changeNumber, completeDt, appliedBy, description)
+    def * = (changeNumber, completeDt, appliedBy, description) <> (ChangelogRow.tupled, ChangelogRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (changeNumber.?, completeDt.?, appliedBy.?, description.?).shaped.<>({r=>import r._; _1.map(_=> ChangelogRow(_1.get, _2.get, _3.get, _4.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (changeNumber.?, completeDt.?, appliedBy.?, description.?).shaped.<>({r=>import r._; _1.map(_=> ChangelogRow.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column change_number DBType(BIGINT), PrimaryKey */
     val changeNumber: Column[Long] = column[Long]("change_number", O.PrimaryKey)
@@ -41,17 +53,20 @@ trait Tables {
   /** Collection-like TableQuery object for table Changelog */
   lazy val Changelog = new TableQuery(tag => new Changelog(tag))
 
-  /** Row type of table Funds */
-  type FundsRow = (Long, String)
-  /** Constructor for FundsRow providing default values if available in the database schema. */
-  def FundsRow(id: Long, name: String): FundsRow = {
-    (id, name)
+  /** Entity class storing rows of table Funds
+   *  @param id Database column ID DBType(BIGINT), AutoInc, PrimaryKey
+   *  @param name Database column NAME DBType(VARCHAR), Length(254,true) */
+  case class FundsRow(id: Long, name: String)
+  /** GetResult implicit for fetching FundsRow objects using plain SQL queries */
+  implicit def GetResultFundsRow(implicit e0: GR[Long], e1: GR[String]): GR[FundsRow] = GR{
+    prs => import prs._
+    FundsRow.tupled((<<[Long], <<[String]))
   }
   /** Table description of table FUNDS. Objects of this class serve as prototypes for rows in queries. */
   class Funds(_tableTag: Tag) extends Table[FundsRow](_tableTag, "FUNDS") {
-    def * = (id, name)
+    def * = (id, name) <> (FundsRow.tupled, FundsRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, name.?).shaped.<>({r=>import r._; _1.map(_=> FundsRow(_1.get, _2.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, name.?).shaped.<>({r=>import r._; _1.map(_=> FundsRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column ID DBType(BIGINT), AutoInc, PrimaryKey */
     val id: Column[Long] = column[Long]("ID", O.AutoInc, O.PrimaryKey)
@@ -64,17 +79,22 @@ trait Tables {
   /** Collection-like TableQuery object for table Funds */
   lazy val Funds = new TableQuery(tag => new Funds(tag))
 
-  /** Row type of table Holdings */
-  type HoldingsRow = (Long, Long, scala.math.BigDecimal, java.sql.Date)
-  /** Constructor for HoldingsRow providing default values if available in the database schema. */
-  def HoldingsRow(fundId: Long, userId: Long, units: scala.math.BigDecimal, holdingDate: java.sql.Date): HoldingsRow = {
-    (fundId, userId, units, holdingDate)
+  /** Entity class storing rows of table Holdings
+   *  @param fundId Database column FUND_ID DBType(BIGINT)
+   *  @param userId Database column USER_ID DBType(BIGINT)
+   *  @param units Database column UNITS DBType(DECIMAL)
+   *  @param holdingDate Database column HOLDING_DATE DBType(DATE) */
+  case class HoldingsRow(fundId: Long, userId: Long, units: scala.math.BigDecimal, holdingDate: java.sql.Date)
+  /** GetResult implicit for fetching HoldingsRow objects using plain SQL queries */
+  implicit def GetResultHoldingsRow(implicit e0: GR[Long], e1: GR[scala.math.BigDecimal], e2: GR[java.sql.Date]): GR[HoldingsRow] = GR{
+    prs => import prs._
+    HoldingsRow.tupled((<<[Long], <<[Long], <<[scala.math.BigDecimal], <<[java.sql.Date]))
   }
   /** Table description of table HOLDINGS. Objects of this class serve as prototypes for rows in queries. */
   class Holdings(_tableTag: Tag) extends Table[HoldingsRow](_tableTag, "HOLDINGS") {
-    def * = (fundId, userId, units, holdingDate)
+    def * = (fundId, userId, units, holdingDate) <> (HoldingsRow.tupled, HoldingsRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, userId.?, units.?, holdingDate.?).shaped.<>({r=>import r._; _1.map(_=> HoldingsRow(_1.get, _2.get, _3.get, _4.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (fundId.?, userId.?, units.?, holdingDate.?).shaped.<>({r=>import r._; _1.map(_=> HoldingsRow.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column FUND_ID DBType(BIGINT) */
     val fundId: Column[Long] = column[Long]("FUND_ID")
@@ -89,7 +109,7 @@ trait Tables {
     val pk = primaryKey("HOLDINGS_PK", (fundId, userId, holdingDate))
 
     /** Foreign key referencing Funds (database name HOLDINGS_FUND_FK) */
-    lazy val fundsFk = foreignKey("HOLDINGS_FUNDS_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    lazy val fundsFk = foreignKey("HOLDINGS_FUND_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing Prices (database name HOLDINGS_PRICES_FK) */
     lazy val pricesFk = foreignKey("HOLDINGS_PRICES_FK", (fundId, holdingDate), Prices)(r => (r.fundId, r.priceDate), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing Users (database name HOLDINGS_USERS_FK) */
@@ -98,17 +118,21 @@ trait Tables {
   /** Collection-like TableQuery object for table Holdings */
   lazy val Holdings = new TableQuery(tag => new Holdings(tag))
 
-  /** Row type of table Prices */
-  type PricesRow = (Long, java.sql.Date, scala.math.BigDecimal)
-  /** Constructor for PricesRow providing default values if available in the database schema. */
-  def PricesRow(fundId: Long, priceDate: java.sql.Date, price: scala.math.BigDecimal): PricesRow = {
-    (fundId, priceDate, price)
+  /** Entity class storing rows of table Prices
+   *  @param fundId Database column FUND_ID DBType(BIGINT)
+   *  @param priceDate Database column PRICE_DATE DBType(DATE)
+   *  @param price Database column PRICE DBType(DECIMAL) */
+  case class PricesRow(fundId: Long, priceDate: java.sql.Date, price: scala.math.BigDecimal)
+  /** GetResult implicit for fetching PricesRow objects using plain SQL queries */
+  implicit def GetResultPricesRow(implicit e0: GR[Long], e1: GR[java.sql.Date], e2: GR[scala.math.BigDecimal]): GR[PricesRow] = GR{
+    prs => import prs._
+    PricesRow.tupled((<<[Long], <<[java.sql.Date], <<[scala.math.BigDecimal]))
   }
   /** Table description of table PRICES. Objects of this class serve as prototypes for rows in queries. */
   class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
-    def * = (fundId, priceDate, price)
+    def * = (fundId, priceDate, price) <> (PricesRow.tupled, PricesRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, priceDate.?, price.?).shaped.<>({r=>import r._; _1.map(_=> PricesRow(_1.get, _2.get, _3.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (fundId.?, priceDate.?, price.?).shaped.<>({r=>import r._; _1.map(_=> PricesRow.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column FUND_ID DBType(BIGINT) */
     val fundId: Column[Long] = column[Long]("FUND_ID")
@@ -126,17 +150,26 @@ trait Tables {
   /** Collection-like TableQuery object for table Prices */
   lazy val Prices = new TableQuery(tag => new Prices(tag))
 
-  /** Row type of table Transactions */
-  type TransactionsRow = (Long, Long, java.sql.Date, String, scala.math.BigDecimal, scala.math.BigDecimal, java.sql.Date, scala.math.BigDecimal)
-  /** Constructor for TransactionsRow providing default values if available in the database schema. */
-  def TransactionsRow(fundId: Long, userId: Long, transactionDate: java.sql.Date, description: String, amountIn: scala.math.BigDecimal, amountOut: scala.math.BigDecimal, priceDate: java.sql.Date, units: scala.math.BigDecimal): TransactionsRow = {
-    (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units)
+  /** Entity class storing rows of table Transactions
+   *  @param fundId Database column FUND_ID DBType(BIGINT)
+   *  @param userId Database column USER_ID DBType(BIGINT)
+   *  @param transactionDate Database column TRANSACTION_DATE DBType(DATE)
+   *  @param description Database column DESCRIPTION DBType(VARCHAR), Length(254,true)
+   *  @param amountIn Database column AMOUNT_IN DBType(DECIMAL), Default(0.0000)
+   *  @param amountOut Database column AMOUNT_OUT DBType(DECIMAL), Default(0.0000)
+   *  @param priceDate Database column PRICE_DATE DBType(DATE)
+   *  @param units Database column UNITS DBType(DECIMAL) */
+  case class TransactionsRow(fundId: Long, userId: Long, transactionDate: java.sql.Date, description: String, amountIn: scala.math.BigDecimal = "0.0000", amountOut: scala.math.BigDecimal = "0.0000", priceDate: java.sql.Date, units: scala.math.BigDecimal)
+  /** GetResult implicit for fetching TransactionsRow objects using plain SQL queries */
+  implicit def GetResultTransactionsRow(implicit e0: GR[Long], e1: GR[java.sql.Date], e2: GR[String], e3: GR[scala.math.BigDecimal]): GR[TransactionsRow] = GR{
+    prs => import prs._
+    TransactionsRow.tupled((<<[Long], <<[Long], <<[java.sql.Date], <<[String], <<[scala.math.BigDecimal], <<[scala.math.BigDecimal], <<[java.sql.Date], <<[scala.math.BigDecimal]))
   }
   /** Table description of table TRANSACTIONS. Objects of this class serve as prototypes for rows in queries. */
   class Transactions(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
-    def * = (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units)
+    def * = (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units) <> (TransactionsRow.tupled, TransactionsRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, userId.?, transactionDate.?, description.?, amountIn.?, amountOut.?, priceDate.?, units.?).shaped.<>({r=>import r._; _1.map(_=> TransactionsRow(_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (fundId.?, userId.?, transactionDate.?, description.?, amountIn.?, amountOut.?, priceDate.?, units.?).shaped.<>({r=>import r._; _1.map(_=> TransactionsRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column FUND_ID DBType(BIGINT) */
     val fundId: Column[Long] = column[Long]("FUND_ID")
@@ -146,18 +179,17 @@ trait Tables {
     val transactionDate: Column[java.sql.Date] = column[java.sql.Date]("TRANSACTION_DATE")
     /** Database column DESCRIPTION DBType(VARCHAR), Length(254,true) */
     val description: Column[String] = column[String]("DESCRIPTION", O.Length(254,varying=true))
-    /** Database column AMOUNT_IN DBType(DECIMAL) */
-    val amountIn: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_IN")
-    /** Database column AMOUNT_OUT DBType(DECIMAL) */
-    val amountOut: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_OUT")
+    /** Database column AMOUNT_IN DBType(DECIMAL), Default(0.0000) */
+    val amountIn: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_IN", O.Default("0.0000"))
+    /** Database column AMOUNT_OUT DBType(DECIMAL), Default(0.0000) */
+    val amountOut: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("AMOUNT_OUT", O.Default("0.0000"))
     /** Database column PRICE_DATE DBType(DATE) */
     val priceDate: Column[java.sql.Date] = column[java.sql.Date]("PRICE_DATE")
     /** Database column UNITS DBType(DECIMAL) */
     val units: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("UNITS")
 
-    /** Primary key of Prices (database name PRICES_PK) */
-    val pk = primaryKey("TRANSACTIONS_PK", (fundId, userId, transactionDate, description,
-      amountIn, amountOut, priceDate, units))
+    /** Primary key of Transactions (database name TRANSACTIONS_PK) */
+    val pk = primaryKey("TRANSACTIONS_PK", (fundId, userId, transactionDate, description, amountIn, amountOut, priceDate, units))
 
     /** Foreign key referencing Funds (database name TRANSACTIONS_FUNDS_FK) */
     lazy val fundsFk = foreignKey("TRANSACTIONS_FUNDS_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -169,17 +201,20 @@ trait Tables {
   /** Collection-like TableQuery object for table Transactions */
   lazy val Transactions = new TableQuery(tag => new Transactions(tag))
 
-  /** Row type of table Users */
-  type UsersRow = (Long, String)
-  /** Constructor for UsersRow providing default values if available in the database schema. */
-  def UsersRow(id: Long, name: String): UsersRow = {
-    (id, name)
+  /** Entity class storing rows of table Users
+   *  @param id Database column ID DBType(BIGINT), AutoInc, PrimaryKey
+   *  @param name Database column NAME DBType(VARCHAR), Length(254,true) */
+  case class UsersRow(id: Long, name: String)
+  /** GetResult implicit for fetching UsersRow objects using plain SQL queries */
+  implicit def GetResultUsersRow(implicit e0: GR[Long], e1: GR[String]): GR[UsersRow] = GR{
+    prs => import prs._
+    UsersRow.tupled((<<[Long], <<[String]))
   }
   /** Table description of table USERS. Objects of this class serve as prototypes for rows in queries. */
   class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
-    def * : ProvenShape[UsersRow] = (id, name)
+    def * = (id, name) <> (UsersRow.tupled, UsersRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, name.?).shaped.<>({r=>import r._; _1.map(_=> UsersRow(_1.get, _2.get))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, name.?).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column ID DBType(BIGINT), AutoInc, PrimaryKey */
     val id: Column[Long] = column[Long]("ID", O.AutoInc, O.PrimaryKey)

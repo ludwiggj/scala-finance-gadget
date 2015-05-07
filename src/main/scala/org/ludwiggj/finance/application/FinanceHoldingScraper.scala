@@ -1,19 +1,19 @@
-package org.ludwiggj.finance.examples
+package org.ludwiggj.finance.application
+
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import org.ludwiggj.finance.domain.Holding
-
 import scala.language.postfixOps
 import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
-import org.ludwiggj.finance.persistence.{DatabasePersister, Persister}
+import org.ludwiggj.finance.persistence.database.DatabasePersister
+import org.ludwiggj.finance.persistence.file.FilePersister
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import org.ludwiggj.finance._
 import java.util.concurrent.TimeoutException
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-import concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
 object FinanceHoldingScraper extends App {
@@ -30,7 +30,7 @@ object FinanceHoldingScraper extends App {
   def persistHoldings(accountName: String, holdings: List[Holding]): Unit = {
     val peristedHoldingsFileName = generatePeristedHoldingsFileName(accountName)
 
-    val persister = Persister(peristedHoldingsFileName)
+    val persister = FilePersister(peristedHoldingsFileName)
 
     persister.write(holdings)
 

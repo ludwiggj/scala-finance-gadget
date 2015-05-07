@@ -1,57 +1,56 @@
 Henderson Global Care Growth I Fund Acc|25/07/2014|Investment Regular|300.00||25/07/2014|1.9210|156.1687
 M&G Feeder of Property Portfolio I Fund Acc|25/07/2014|Investment Regular|200.00||25/07/2014|11.8538|16.8723
-F&C Responsible UK Income 1 Fund Inc|11/07/2014|Sale for Regular Payment||18.03|11/07/2014|1.2860|14.0137
+F&C Responsible UK Income 1 Fund Inc|11/07/2014|Sale for Regular Payment||16.10|11/07/2014|1.2860|12.5133
 Schroder Gbl Property Income Maximiser Z Fund Inc|04/07/2014|Dividend Reinvestment|46.39||04/07/2014|0.4785|96.9488
 Henderson Global Care Growth I Fund Acc|25/06/2014|Investment Regular|300.00||25/06/2014|1.9180|156.4130
 M&G Feeder of Property Portfolio I Fund Acc|25/06/2014|Investment Regular|200.00||25/06/2014|11.7001|17.0939
-F&C Responsible UK Income 1 Fund Inc|12/06/2014|Sale for Regular Payment||18.48|12/06/2014|1.3180|14.0182
+F&C Responsible UK Income 1 Fund Inc|12/06/2014|Sale for Regular Payment||16.45|12/06/2014|1.3180|12.4792
 Henderson Global Care UK Income I Fund Inc|30/05/2014|Dividend Reinvestment|37.55||30/05/2014|1.348|27.8561
 Henderson Global Care UK Income A Fund Inc|30/05/2014|Dividend Reinvestment|7.90||30/05/2014|1.193|6.6220
-Henderson Global Care UK Income A Fund Inc|30/05/2014|Dividend Reinvestment|22.24||30/05/2014|1.193|18.6421
 Henderson Global Care UK Income A Fund Inc|30/05/2014|Dividend Reinvestment|25.76||30/05/2014|1.193|21.5927
 Henderson Global Care Growth I Fund Acc|27/05/2014|Investment Regular|300.00||27/05/2014|1.9030|157.6459
 M&G Feeder of Property Portfolio I Fund Acc|27/05/2014|Investment Regular|200.00||27/05/2014|11.5718|17.2834
-F&C Responsible UK Income 1 Fund Inc|14/05/2014|Sale for Regular Payment||17.92|14/05/2014|1.3410|13.3559
-F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|3.71||02/05/2014|1.3250|2.8000
-F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|17.39||02/05/2014|1.3250|13.1246
+F&C Responsible UK Income 1 Fund Inc|14/05/2014|Sale for Regular Payment||15.92|14/05/2014|1.3410|11.8661
+F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|24.25||02/05/2014|1.3250|18.3019
 F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|1.37||02/05/2014|1.3250|1.0340
+F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|3.92||02/05/2014|1.3250|2.9585
+F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|17.39||02/05/2014|1.3250|13.1246
 F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|19.96||02/05/2014|1.3250|15.0642
-F&C Responsible UK Income 1 Fund Inc|02/05/2014|Dividend Reinvestment|48.05||02/05/2014|1.3250|36.2642
 Ecclesiastical Amity European B Fund Inc|02/05/2014|Dividend Reinvestment|22.01||02/05/2014|2.0500|10.7366
-Ecclesiastical Amity European A Fund Inc|02/05/2014|Dividend Reinvestment|16.76||02/05/2014|2.029|8.2603
 Ecclesiastical Amity European A Fund Inc|02/05/2014|Dividend Reinvestment|5.06||02/05/2014|2.029|2.4939
 Ecclesiastical Amity European A Fund Inc|02/05/2014|Dividend Reinvestment|18.29||02/05/2014|2.029|9.0143
+Ecclesiastical Amity European A Fund Inc|02/05/2014|Dividend Reinvestment|16.76||02/05/2014|2.029|8.2603
 Aberdeen Ethical World Equity A Fund Inc|02/05/2014|Dividend Reinvestment|0.27||02/05/2014|1.4123|0.1912
 Aberdeen Ethical World Equity A Fund Inc|02/05/2014|Dividend Reinvestment|0.08||02/05/2014|1.4123|0.0567
 Aberdeen Ethical World Equity A Fund Inc|02/05/2014|Dividend Reinvestment|1.05||02/05/2014|1.4123|0.7435
 Aberdeen Ethical World Equity A Fund Inc|02/05/2014|Dividend Reinvestment|1.23||02/05/2014|1.4123|0.8710
 Henderson Global Care Growth I Fund Acc|25/04/2014|Investment Regular|300.00||25/04/2014|1.8830|159.3203
 M&G Feeder of Property Portfolio I Fund Acc|25/04/2014|Investment Regular|200.00||25/04/2014|11.5308|17.3449
-F&C Responsible UK Income 1 Fund Inc|11/04/2014|Sale for Regular Payment||17.61|11/04/2014|1.3060|13.4812
+F&C Responsible UK Income 1 Fund Inc|11/04/2014|Sale for Regular Payment||15.56|11/04/2014|1.3060|11.9098
 Schroder Gbl Property Income Maximiser Z Fund Inc|31/03/2014|Dividend Reinvestment|30.50||31/03/2014|0.4773|63.9012
 CIS Sustainable Leaders C Trust Inc|25/03/2014|Investment Regular|325.62||25/03/2014|1.2880|252.8106
 Ecclesiastical Amity European B Fund Inc|25/03/2014|Investment Regular|325.62||25/03/2014|2.0390|159.6960
 Henderson Global Care UK Income I Fund Inc|25/03/2014|Investment Regular|325.62||25/03/2014|1.3260|245.5657
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/03/2014|Investment Regular|325.62||25/03/2014|0.4755|684.7950
-F&C Responsible UK Income 1 Fund Inc|13/03/2014|Sale for Regular Payment||14.37|13/03/2014|1.3250|10.8395
+F&C Responsible UK Income 1 Fund Inc|13/03/2014|Sale for Regular Payment||12.58|13/03/2014|1.3250|9.4874
 CIS Sustainable Leaders C Trust Inc|25/02/2014|Investment Regular|325.62||25/02/2014|1.3400|243.0000
 Ecclesiastical Amity European B Fund Inc|25/02/2014|Investment Regular|325.62||25/02/2014|2.0300|160.4040
 Henderson Global Care UK Income I Fund Inc|25/02/2014|Investment Regular|325.62||25/02/2014|1.3650|238.5495
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/02/2014|Investment Regular|325.62||25/02/2014|0.4736|687.5423
-F&C Responsible UK Income 1 Fund Inc|13/02/2014|Sale for Regular Payment||15.58|13/02/2014|1.3190|11.8092
-F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|47.69||31/01/2014|1.2960|36.7979
-F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|4.01||31/01/2014|1.2960|3.0942
-F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|19.81||31/01/2014|1.2960|15.2855
+F&C Responsible UK Income 1 Fund Inc|13/02/2014|Sale for Regular Payment||13.53|13/02/2014|1.3190|10.2519
 F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|1.35||31/01/2014|1.2960|1.0417
 F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|17.25||31/01/2014|1.2960|13.3102
-F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|7.59||31/01/2014|8.1730|0.9287
-F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|0.48||31/01/2014|8.1730|0.0588
-F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|1.60||31/01/2014|8.1730|0.1958
+F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|19.81||31/01/2014|1.2960|15.2855
+F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|4.17||31/01/2014|1.2960|3.2176
+F&C Responsible UK Income 1 Fund Inc|31/01/2014|Dividend Reinvestment|24.06||31/01/2014|1.2960|18.5649
 F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|6.27||31/01/2014|8.1730|0.7672
+F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|0.48||31/01/2014|8.1730|0.0588
+F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|7.59||31/01/2014|8.1730|0.9287
+F&C Responsible UK Equity Growth 1 Fund Inc|31/01/2014|Dividend Reinvestment|1.60||31/01/2014|8.1730|0.1958
 CIS Sustainable Leaders C Trust Inc|31/01/2014|Dividend Reinvestment|14.56||31/01/2014|1.2730|11.4376
 CIS Sustainable Leaders C Trust Inc|27/01/2014|Investment Regular|325.62||27/01/2014|1.2720|255.9906
 Ecclesiastical Amity European B Fund Inc|27/01/2014|Investment Regular|325.62||27/01/2014|1.9540|166.6428
 Henderson Global Care UK Income I Fund Inc|27/01/2014|Investment Regular|325.62||27/01/2014|1.2940|251.6384
 Schroder Gbl Property Income Maximiser Z Fund Inc|27/01/2014|Investment Regular|325.62||27/01/2014|0.4700|692.8086
-F&C Responsible UK Income 1 Fund Inc|14/01/2014|Sale for Regular Payment||14.62|14/01/2014|1.3410|10.9023
+F&C Responsible UK Income 1 Fund Inc|14/01/2014|Sale for Regular Payment||12.61|14/01/2014|1.3410|9.3985
 Schroder Gbl Property Income Maximiser Z Fund Inc|03/01/2014|Dividend Reinvestment|20.06||03/01/2014|0.4732|42.3923

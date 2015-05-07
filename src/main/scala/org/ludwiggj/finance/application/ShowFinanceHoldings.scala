@@ -1,7 +1,7 @@
-package org.ludwiggj.finance.database
+package org.ludwiggj.finance.application
 
 import java.sql.Date
-import org.ludwiggj.finance.database.Tables.{Funds, Holdings, Prices, Users}
+import org.ludwiggj.finance.persistence.database.Tables.{Funds, Holdings, Prices, Users}
 import scala.slick.driver.MySQLDriver.simple._
 import org.ludwiggj.finance.domain.FinanceDate
 import scala.slick.jdbc.meta.MTable

@@ -1,4 +1,4 @@
-package org.ludwiggj.finance.database.codegen
+package org.ludwiggj.finance.persistence.database.codegen
 
 import scala.slick.driver.MySQLDriver
 import scala.slick.driver.MySQLDriver.simple._
@@ -27,7 +27,7 @@ object SlickAutoGenWithTuples {
     }
 
     SourceGen(model).writeToFile(
-      "scala.slick.driver.MySQLDriver", "src/main/scala", "org.ludwiggj.finance.database", "Tables", "Tables.scala"
+      "scala.slick.driver.MySQLDriver", "src/main/scala", "org.ludwiggj.finance.persistence.database", "Tables", "Tables.scala"
     )
   }
 }

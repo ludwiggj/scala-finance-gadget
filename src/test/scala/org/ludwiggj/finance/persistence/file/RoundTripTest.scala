@@ -1,7 +1,7 @@
-package org.ludwiggj.finance.persistence
+package org.ludwiggj.finance.persistence.file
 
-import org.scalatest.{Matchers, FunSuite}
-import org.ludwiggj.finance._
+import org.ludwiggj.finance.{TestHoldings, TestTransactions}
+import org.scalatest.{FunSuite, Matchers}
 
 class RoundTripTest extends FunSuite with Matchers {
 
@@ -11,7 +11,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       println(s"About to persist transactions: $transactions")
 
-      Persister(txFile).write(transactions)
+      FilePersister(txFile).write(transactions)
 
       val reconstitutedTransactions = new FileTransactionFactory(txFile).getTransactions()
 
@@ -27,7 +27,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       println(s"About to persist transactions: $holdings")
 
-      Persister(holdingFile).write(holdings)
+      FilePersister(holdingFile).write(holdings)
 
       val reconstitutedHoldings = new FileHoldingFactory(holdingFile).getHoldings()
 

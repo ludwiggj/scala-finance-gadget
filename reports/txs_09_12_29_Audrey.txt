@@ -1,0 +1,59 @@
+Aberdeen Ethical World Equity A Fund Inc|29/12/2009|Investment Regular|75.00||29/12/2009|1.2031|61.5660
+AEGON Ethical Corporate Bond A Fund Inc|29/12/2009|Investment Regular|50.00||29/12/2009|0.9286|53.8445
+F&C Responsible UK Equity Growth 1 Fund Inc|29/12/2009|Investment Regular|50.00||29/12/2009|5.5580|8.9061
+F&C Responsible UK Income 1 Fund Inc|29/12/2009|Investment Regular|100.00||29/12/2009|0.9288|106.5892
+Aberdeen Ethical World Equity A Fund Inc|25/11/2009|Investment Regular|75.00||25/11/2009|1.1336|65.3406
+AEGON Ethical Corporate Bond A Fund Inc|25/11/2009|Investment Regular|50.00||25/11/2009|0.9398|53.2029
+F&C Responsible UK Equity Growth 1 Fund Inc|25/11/2009|Investment Regular|50.00||25/11/2009|5.5610|8.9013
+F&C Responsible UK Income 1 Fund Inc|25/11/2009|Investment Regular|100.00||25/11/2009|0.9381|105.5325
+F&C Responsible UK Income 1 Fund Inc|03/11/2009|Dividend Reinvestment|5.45||03/11/2009|0.8903|6.1216
+F&C Responsible UK Income 1 Fund Inc|03/11/2009|Dividend Reinvestment|2.45||03/11/2009|0.8903|2.7519
+Aberdeen Ethical World Equity A Fund Inc|03/11/2009|Dividend Reinvestment|4.79||03/11/2009|1.0841|4.4185
+Aberdeen Ethical World Equity A Fund Inc|03/11/2009|Dividend Reinvestment|2.76||03/11/2009|1.0841|2.5459
+Aberdeen Ethical World Equity A Fund Inc|26/10/2009|Investment Regular|75.00||26/10/2009|1.1451|64.6844
+AEGON Ethical Corporate Bond A Fund Inc|26/10/2009|Investment Regular|50.00||26/10/2009|0.9380|53.3050
+F&C Responsible UK Equity Growth 1 Fund Inc|26/10/2009|Investment Regular|50.00||26/10/2009|5.5520|8.9158
+F&C Responsible UK Income 1 Fund Inc|26/10/2009|Investment Regular|100.00||26/10/2009|0.9258|106.9346
+AEGON Ethical Corporate Bond A Fund Inc|05/10/2009|Tax Reclaim Reinvestment|0.28||05/10/2009|0.9247|0.3029
+AEGON Ethical Corporate Bond A Fund Inc|05/10/2009|Tax Reclaim Reinvestment|0.45||05/10/2009|0.9247|0.4867
+AEGON Ethical Corporate Bond A Fund Inc|05/10/2009|Dividend Reinvestment|2.25||05/10/2009|0.9247|2.4333
+AEGON Ethical Corporate Bond A Fund Inc|05/10/2009|Dividend Reinvestment|1.13||05/10/2009|0.9247|1.2221
+Aberdeen Ethical World Equity A Fund Inc|25/09/2009|Investment Regular|75.00||25/09/2009|1.1228|65.9691
+AEGON Ethical Corporate Bond A Fund Inc|25/09/2009|Investment Regular|50.00||25/09/2009|0.9120|54.8246
+F&C Responsible UK Equity Growth 1 Fund Inc|25/09/2009|Investment Regular|50.00||25/09/2009|5.4580|9.0693
+F&C Responsible UK Income 1 Fund Inc|25/09/2009|Investment Regular|100.00||25/09/2009|0.9157|108.1141
+Aberdeen Ethical World Equity A Fund Inc|25/08/2009|Investment Regular|75.00||25/08/2009|1.0517|70.4289
+AEGON Ethical Corporate Bond A Fund Inc|25/08/2009|Investment Regular|50.00||25/08/2009|0.8685|57.5706
+F&C Responsible UK Equity Growth 1 Fund Inc|25/08/2009|Investment Regular|50.00||25/08/2009|5.2690|9.3946
+F&C Responsible UK Income 1 Fund Inc|25/08/2009|Investment Regular|100.00||25/08/2009|0.8924|110.9368
+F&C Responsible UK Income 1 Fund Inc|04/08/2009|Dividend Reinvestment|4.29||04/08/2009|0.8358|5.1329
+F&C Responsible UK Income 1 Fund Inc|04/08/2009|Dividend Reinvestment|3.93||04/08/2009|0.8358|4.7021
+F&C Responsible UK Equity Growth 1 Fund Inc|04/08/2009|Dividend Reinvestment|1.14||04/08/2009|4.8820|0.2336
+F&C Responsible UK Equity Growth 1 Fund Inc|04/08/2009|Dividend Reinvestment|1.03||04/08/2009|4.8820|0.2110
+Aberdeen Ethical World Equity A Fund Inc|27/07/2009|Investment Regular|75.00||27/07/2009|1.0115|73.2279
+AEGON Ethical Corporate Bond A Fund Inc|27/07/2009|Investment Regular|50.00||27/07/2009|0.8243|60.6576
+F&C Responsible UK Equity Growth 1 Fund Inc|27/07/2009|Investment Regular|50.00||27/07/2009|4.8560|10.1936
+F&C Responsible UK Income 1 Fund Inc|27/07/2009|Investment Regular|100.00||27/07/2009|0.8275|119.6375
+AEGON Ethical Corporate Bond A Fund Inc|03/07/2009|Dividend Reinvestment|0.85||03/07/2009|0.7928|1.0722
+AEGON Ethical Corporate Bond A Fund Inc|03/07/2009|Dividend Reinvestment|1.65||03/07/2009|0.7928|2.0813
+Aberdeen Ethical World Equity A Fund Inc|25/06/2009|Investment Regular|75.00||25/06/2009|0.9260|79.9893
+AEGON Ethical Corporate Bond A Fund Inc|25/06/2009|Investment Regular|50.00||25/06/2009|0.7886|63.4035
+F&C Responsible UK Equity Growth 1 Fund Inc|25/06/2009|Investment Regular|50.00||25/06/2009|4.5820|10.8032
+F&C Responsible UK Income 1 Fund Inc|25/06/2009|Investment Regular|100.00||25/06/2009|0.7918|125.0316
+Aberdeen Ethical World Equity A Fund Inc|26/05/2009|Investment Regular|75.00||26/05/2009|0.9470|78.2155
+AEGON Ethical Corporate Bond A Fund Inc|26/05/2009|Investment Regular|50.00||26/05/2009|0.7645|65.4023
+F&C Responsible UK Equity Growth 1 Fund Inc|26/05/2009|Investment Regular|50.00||26/05/2009|4.6860|10.5634
+F&C Responsible UK Income 1 Fund Inc|26/05/2009|Investment Regular|100.00||26/05/2009|0.8197|120.7759
+F&C Responsible UK Income 1 Fund Inc|05/05/2009|Dividend Reinvestment|1.19||05/05/2009|0.8353|1.4247
+Aberdeen Ethical World Equity A Fund Inc|27/04/2009|Investment Regular|75.00||27/04/2009|0.9276|79.8513
+AEGON Ethical Corporate Bond A Fund Inc|27/04/2009|Investment Regular|50.00||27/04/2009|0.7778|64.2839
+F&C Responsible UK Equity Growth 1 Fund Inc|27/04/2009|Investment Regular|50.00||27/04/2009|4.5870|10.7914
+F&C Responsible UK Income 1 Fund Inc|27/04/2009|Investment Regular|100.00||27/04/2009|0.7956|124.4344
+Aberdeen Ethical World Equity A Fund Inc|25/03/2009|Investment Regular|75.00||25/03/2009|0.8571|86.4194
+AEGON Ethical Corporate Bond A Fund Inc|25/03/2009|Investment Regular|50.00||25/03/2009|0.7794|64.1520
+F&C Responsible UK Equity Growth 1 Fund Inc|25/03/2009|Investment Regular|50.00||25/03/2009|4.2130|11.7494
+F&C Responsible UK Income 1 Fund Inc|25/03/2009|Investment Regular|100.00||25/03/2009|0.7418|133.4592
+Aberdeen Ethical World Equity A Fund Inc|25/02/2009|Investment Regular|75.00||25/02/2009|0.7980|92.8196
+AEGON Ethical Corporate Bond A Fund Inc|25/02/2009|Investment Regular|50.00||25/02/2009|0.8194|61.0203
+F&C Responsible UK Equity Growth 1 Fund Inc|25/02/2009|Investment Regular|50.00||25/02/2009|4.1160|12.0263
+F&C Responsible UK Income 1 Fund Inc|25/02/2009|Investment Regular|100.00||25/02/2009|0.7464|132.6367

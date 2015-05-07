@@ -1,12 +1,10 @@
-package org.ludwiggj.finance.persistence
+package org.ludwiggj.finance.persistence.database
 
 import java.sql.Date
-
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import org.ludwiggj.finance.database.Tables
-import org.ludwiggj.finance.database.Tables.{Funds, Holdings, Users, Prices, Transactions}
-import org.ludwiggj.finance.domain.{Transaction, Holding}
 import scala.slick.driver.MySQLDriver.simple._
+import Tables.{FundsRow, HoldingsRow, PricesRow, UsersRow, Users, Funds, Prices, Holdings, Transactions}
+import org.ludwiggj.finance.domain.{Price, Holding, Transaction}
 
 class DatabasePersister {
 
@@ -20,10 +18,9 @@ class DatabasePersister {
           _.name === name
         }
         if (!filter.exists.run) {
-          import Tables.UsersRow
-          (users returning users.map(_.id)) += (0L, name)
+          (users returning users.map(_.id)) += UsersRow(0L, name)
         } else {
-          filter.first._1
+          filter.first.id
         }
     }
   }
@@ -36,9 +33,9 @@ class DatabasePersister {
           _.name === name
         }
         if (!filter.exists.run) {
-          ((funds returning funds.map(_.id)) +=(0L, name))
+          ((funds returning funds.map(_.id)) += FundsRow(0L, name))
         } else {
-          filter.first._1
+          filter.first.id
         }
     }
   }
@@ -48,7 +45,7 @@ class DatabasePersister {
     db.withSession {
       implicit session =>
         try {
-          prices +=(fundId, priceDate, priceInPounds)
+          prices += PricesRow(fundId, priceDate, priceInPounds)
         } catch {
           case ex: MySQLIntegrityConstraintViolationException =>
             println(s"Price: ${ex.getMessage}")
@@ -68,7 +65,7 @@ class DatabasePersister {
 
           def insertHolding(fundId: Long) {
             try {
-              holdings +=(fundId, userId, holding.units, holding.priceDateAsSqlDate)
+              holdings += HoldingsRow(fundId, userId, holding.units, holding.priceDateAsSqlDate)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Holding: ${ex.getMessage}")
@@ -127,6 +124,25 @@ class DatabasePersister {
 
         for (transactionToPersist <- transactionsToPersist) {
           persistTransaction(transactionToPersist)
+        }
+    }
+  }
+
+  // TODO - Add getPrice methods to Holding and Transaction and then use this code
+  //        to persist price as part of peristing holdings / transactions
+  def persistPrices(pricesToPersist: List[Price]) {
+    val prices: TableQuery[Prices] = TableQuery[Prices]
+
+    db.withSession {
+      implicit session =>
+
+        def persistPrice(price: Price) {
+          val fundId = getOrInsertFund(price.holdingName)
+          insertPrice(fundId, price.dateAsSqlDate, price.inPounds)
+        }
+
+        for (priceToPersist <- pricesToPersist) {
+          persistPrice(priceToPersist)
         }
     }
   }

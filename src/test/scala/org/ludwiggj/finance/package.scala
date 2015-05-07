@@ -1,9 +1,8 @@
 package org.ludwiggj
 
-import org.ludwiggj.finance.domain.{Holding, FinanceDate, Transaction}
+import org.ludwiggj.finance.domain.{Price, Holding, FinanceDate, Transaction}
 
 package object finance {
-  val reportHome = "reports"
 
   trait TestTransactions {
     val tx1 = Transaction(
@@ -42,11 +41,10 @@ package object finance {
     val holdings = List(holding1, holding2, holding3)
   }
 
-  def time[R](name: String, block: => R): R = {
-    val t0 = System.nanoTime()
-    val result = block // call-by-name
-    val t1 = System.nanoTime()
-    println(s"Elapsed time ($name): " + (t1 - t0) / Math.pow(10, 9) + "s")
-    result
+  trait TestPrices {
+    val price1 = Price("Henderson Global Care UK Income A Fund Inc", FinanceDate("25/04/2010"), BigDecimal(0.8199))
+    val price2 = Price("Schroder Gbl Property Income Maximiser Z Fund Inc", FinanceDate("25/12/2014"), BigDecimal(0.4799))
+
+    val prices = List(price1, price2)
   }
 }
