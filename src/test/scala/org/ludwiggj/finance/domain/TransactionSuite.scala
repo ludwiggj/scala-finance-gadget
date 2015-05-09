@@ -6,13 +6,13 @@ import org.ludwiggj.finance.TestTransactions
 class TransactionSuite extends FunSuite with Matchers {
 
   val tx5 = Transaction(
-    "M&G Feeder of Property Portfolio I Fund Acc", FinanceDate("25/04/2014"), "Investment Regular",
-    Some(BigDecimal(200.00)), None, FinanceDate("25/04/2014"), BigDecimal(11.5308), BigDecimal(17.3449)
+    FinanceDate("25/04/2014"), "Investment Regular", Some(BigDecimal(200.00)), None,
+    Price("M&G Feeder of Property Portfolio I Fund Acc", "25/04/2014", "11.5308"), BigDecimal(17.3449)
   )
 
   val tx6 = Transaction(
-    "BT", FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
-    FinanceDate("29/04/2014"), BigDecimal(1.2341), BigDecimal(23.8)
+    FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
+    Price("BT", "29/04/2014", "1.2341"), BigDecimal(23.8)
   )
 
   test("A transaction should equal itself") {

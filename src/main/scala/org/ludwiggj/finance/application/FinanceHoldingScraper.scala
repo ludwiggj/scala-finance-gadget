@@ -1,6 +1,5 @@
 package org.ludwiggj.finance.application
 
-
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import org.ludwiggj.finance.domain.Holding
 import scala.language.postfixOps

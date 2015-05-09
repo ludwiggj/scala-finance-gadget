@@ -6,18 +6,17 @@ import org.ludwiggj.finance.builders.LoginFormBuilder._
 import org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory}
 import org.ludwiggj.finance.persistence.database.DatabasePersister
 import org.ludwiggj.finance.persistence.file.FilePersister
-import com.github.nscala_time.time.Imports._
+import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
+import java.util.concurrent.TimeoutException
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 object FinanceTransactionScraper extends App {
-  val config = WebSiteConfig("cofunds.conf")
-  val loginFormBuilder = aLoginForm().basedOnConfig(config)
 
-  val accounts = config.getAccountList()
-
-  val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
-
-  for (account <- accounts) {
-    val accountName = account.name
+  def processTransactions(accountName: String) = Future {
     time(s"processTransactions($accountName)",
       try {
         val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
@@ -36,4 +35,42 @@ object FinanceTransactionScraper extends App {
           println(s"Cannot retrieve transactions for $accountName [NotAuthenticatedException]")
       })
   }
+
+  def composeWaitingFuture(fut: Future[Unit], atMost: FiniteDuration, accountName: String) =
+    (Future {
+      Await.result(fut, atMost)
+    }
+      recover {
+      case e: ElementNotFoundException =>
+        println(s"Problem retrieving details for $accountName, Error: ${e.toString}")
+    })
+
+  val config = WebSiteConfig("cofunds.conf")
+
+  val loginFormBuilder = aLoginForm().basedOnConfig(config)
+
+  val accounts = config.getAccountList()
+
+  val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
+
+  val listOfFutures = accounts map { account =>
+    composeWaitingFuture(
+      processTransactions(account.name), 30 seconds, account.name
+    )
+  }
+
+  val combinedFuture = Future.sequence(listOfFutures)
+
+  time("Whole thing",
+    try {
+      Await.ready(combinedFuture, 31 seconds).value.get match {
+        case Success(results) =>
+          println(s"Done...")
+        case Failure(ex) =>
+          println(s"Oh dear... ${ex.getMessage}")
+      }
+    } catch {
+      case ex: TimeoutException => println(ex.getMessage)
+    }
+  )
 }

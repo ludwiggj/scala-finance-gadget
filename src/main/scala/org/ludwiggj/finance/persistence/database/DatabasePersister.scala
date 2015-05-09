@@ -1,6 +1,5 @@
 package org.ludwiggj.finance.persistence.database
 
-import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import scala.slick.driver.MySQLDriver.simple._
 import Tables.{FundsRow, HoldingsRow, PricesRow, UsersRow, Users, Funds, Prices, Holdings, Transactions}
@@ -40,12 +39,12 @@ class DatabasePersister {
     }
   }
 
-  def insertPrice(fundId: Long, priceDate: Date, priceInPounds: BigDecimal) {
+  def insertPrice(fundId: Long, price: Price) {
     val prices: TableQuery[Prices] = TableQuery[Prices]
     db.withSession {
       implicit session =>
         try {
-          prices += PricesRow(fundId, priceDate, priceInPounds)
+          prices += PricesRow(fundId, price.dateAsSqlDate, price.inPounds)
         } catch {
           case ex: MySQLIntegrityConstraintViolationException =>
             println(s"Price: ${ex.getMessage}")
@@ -73,7 +72,7 @@ class DatabasePersister {
           }
 
           val fundId = getOrInsertFund(holding.name)
-          insertPrice(fundId, holding.priceDateAsSqlDate, holding.priceInPounds)
+          insertPrice(fundId, holding.price)
           insertHolding(fundId)
         }
 
@@ -118,7 +117,7 @@ class DatabasePersister {
           }
 
           val fundId = getOrInsertFund(transaction.holdingName)
-          insertPrice(fundId, transaction.priceDateAsSqlDate, transaction.priceInPounds)
+          insertPrice(fundId, transaction.price)
           insertTransaction(fundId)
         }
 
@@ -128,8 +127,6 @@ class DatabasePersister {
     }
   }
 
-  // TODO - Add getPrice methods to Holding and Transaction and then use this code
-  //        to persist price as part of peristing holdings / transactions
   def persistPrices(pricesToPersist: List[Price]) {
     val prices: TableQuery[Prices] = TableQuery[Prices]
 
@@ -138,7 +135,7 @@ class DatabasePersister {
 
         def persistPrice(price: Price) {
           val fundId = getOrInsertFund(price.holdingName)
-          insertPrice(fundId, price.dateAsSqlDate, price.inPounds)
+          insertPrice(fundId, price)
         }
 
         for (priceToPersist <- pricesToPersist) {

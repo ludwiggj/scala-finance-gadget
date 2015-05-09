@@ -7,7 +7,7 @@ import org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transact
 
 import scala.slick.driver.MySQLDriver.simple._
 
-object ShowVariousTransactionsGroupBy extends App {
+object ShowHoldingsFromTransactions extends App {
 
   def showHoldings() {
     val users: TableQuery[Users] = TableQuery[Users]

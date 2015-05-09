@@ -2,16 +2,23 @@ package org.ludwiggj.finance.domain
 
 import org.ludwiggj.finance.persistence.file.PersistableToFile
 
-case class Holding(val name: String, val units: BigDecimal,
-              val priceDate: FinanceDate, val priceInPounds: BigDecimal) extends PersistableToFile {
-  def value = (units * priceInPounds).setScale(2, BigDecimal.RoundingMode.HALF_UP)
+case class Holding(val price: Price, val units: BigDecimal) extends PersistableToFile {
+  def value = (units * price.inPounds).setScale(2, BigDecimal.RoundingMode.HALF_UP)
 
-  def priceDateAsSqlDate = priceDate.asSqlDate
+  def priceInPounds = price.inPounds
+
+  def priceDate = price.date
+
+  def priceDateAsSqlDate = price.dateAsSqlDate
+
+  def name = price.holdingName
 
   override def toString =
-    s"Financial Holding [name: $name, units: $units, date: $priceDate, price: £$priceInPounds, value: £$value]"
+    s"Financial Holding [name: ${price.holdingName}, units: $units, date: ${price.date}, price: £${price.inPounds}," +
+      s" value: £$value]"
 
-  def toFileFormat = s"$name$separator$units$separator$priceDate$separator$priceInPounds$separator$value"
+  def toFileFormat = s"${price.holdingName}$separator$units$separator${price.date}$separator${price.inPounds}" +
+    s"$separator$value"
 }
 
 object Holding {
@@ -28,10 +35,10 @@ object Holding {
 
     val holdingPattern(holdingName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
     val priceInPounds = parseNumber(priceInPence) / 100;
-    Holding(cleanHoldingName(holdingName), parseNumber(units), FinanceDate(date), priceInPounds)
+    Holding(Price(cleanHoldingName(holdingName), FinanceDate(date), priceInPounds), parseNumber(units))
   }
 
   def apply(row: Array[String]): Holding = {
-      Holding(row(0), parseNumber(row(1)), FinanceDate(row(2)), parseNumber(row(3)))
+    Holding(Price(row(0), row(2), row(3)), parseNumber(row(1)))
   }
 }

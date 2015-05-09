@@ -2,7 +2,7 @@ package org.ludwiggj.finance.application.scratch
 
 import java.sql.Date
 
-import org.ludwiggj.finance.domain.{FinanceDate, Transaction}
+import org.ludwiggj.finance.domain.{Price, Transaction}
 import org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
 import org.ludwiggj.finance.persistence.database.TransactionTuple
 
@@ -48,14 +48,15 @@ object ShowVariousTransactions extends App {
           } yield (fund)).sorted.list
         }
 
-        def lastFundPrice(fundName: String, date: Date) = {
-          (for {
+        def lastFundPrice(fundName: String, date: Date): Price = {
+          val (priceDate, price) = (for {
             p <- prices
             f <- p.fundsFk if ((f.name === fundName) && (p.priceDate <= date))
-          } yield (p.price, p.priceDate)).sortBy { case (_, date) => date }.list.last
+          } yield (p.priceDate, p.price)).sortBy { case (date, _) => date }.list.last
+          Price(fundName, priceDate, price)
         }
 
-        println("Holding, Cash in, Units added, Units subtracted, Units, Price, Price Date, Total")
+        println("Holding, Cash in, Units added, Units subtracted, Units, Price Date, Price, Total, Increase, Increase %")
 
         val dateOfInterest = Date.valueOf("2015-04-28")
 
@@ -83,16 +84,14 @@ object ShowVariousTransactions extends App {
             _.in.getOrElse(BigDecimal(0))
           }).sum
 
-          val priceInfo = lastFundPrice(fundName, dateOfInterest)
+          val price = lastFundPrice(fundName, dateOfInterest)
 
-          //TODO should fundPriceDate have type FinanceDate?
-          val (fundPrice, fundPriceDate) = priceInfo
           val totalUnits = unitsAdded - unitsSubtracted
-          val total = totalUnits * fundPrice
+          val total = totalUnits * price.inPounds
           val gain = total - ins
 
           println(f"$fundName%-50s £$ins%8.2f $unitsAdded%10.4f $unitsSubtracted%10.4f $totalUnits%10.4f "
-            + f"${FinanceDate(fundPriceDate)} £$fundPrice%8.4f £$total%8.2f £$gain%8.2f ${gain / ins * 100}%8.2f%%")
+            + f"${price.date} £${price.inPounds}%8.4f £$total%8.2f £$gain%8.2f ${gain / ins * 100}%8.2f%%")
         }
     }
   }
