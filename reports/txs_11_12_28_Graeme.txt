@@ -1,6 +1,6 @@
-Ecclesiastical Amity European A Fund Inc|28/12/2011|Investment Regular|137.50||28/12/2011|1.3990|94.3603
+EdenTree Amity European A Fund Inc|28/12/2011|Investment Regular|137.50||28/12/2011|1.3990|94.3603
 F&C Responsible UK Income 1 Fund Inc|28/12/2011|Investment Regular|137.50||28/12/2011|0.9860|136.6734
-Ecclesiastical Amity European A Fund Inc|25/11/2011|Investment Regular|137.50||25/11/2011|1.3120|100.6174
+EdenTree Amity European A Fund Inc|25/11/2011|Investment Regular|137.50||25/11/2011|1.3120|100.6174
 F&C Responsible UK Income 1 Fund Inc|25/11/2011|Investment Regular|137.50||25/11/2011|0.9485|142.0770
 Henderson Global Care UK Income A Fund Inc|12/12/2011|Dividend Reinvestment|26.00||12/12/2011|0.8287|31.3744
 F&C Responsible UK Income 1 Fund Inc|04/11/2011|Dividend Reinvestment|39.21||04/11/2011|1.0110|38.7834
@@ -11,12 +11,12 @@ Aberdeen Ethical World Equity A Fund Inc|04/11/2011|Dividend Reinvestment|0.90||
 Aberdeen Ethical World Equity A Fund Inc|04/11/2011|Dividend Reinvestment|2.95||04/11/2011|1.2105|2.4371
 Aberdeen Ethical World Equity A Fund Inc|04/11/2011|Dividend Reinvestment|13.44||04/11/2011|1.2105|11.1029
 Aberdeen Ethical World Equity A Fund Inc|04/11/2011|Dividend Reinvestment|11.48||04/11/2011|1.2105|9.4837
-Ecclesiastical Amity European A Fund Inc|25/10/2011|Investment Regular|137.50||25/10/2011|1.4970|88.1831
+EdenTree Amity European A Fund Inc|25/10/2011|Investment Regular|137.50||25/10/2011|1.4970|88.1831
 F&C Responsible UK Income 1 Fund Inc|25/10/2011|Investment Regular|137.50||25/10/2011|1.0070|133.8233
-Ecclesiastical Amity European A Fund Inc|26/09/2011|Investment Regular|137.50||26/09/2011|1.3640|96.7816
+EdenTree Amity European A Fund Inc|26/09/2011|Investment Regular|137.50||26/09/2011|1.3640|96.7816
 F&C Responsible UK Income 1 Fund Inc|26/09/2011|Investment Regular|137.50||26/09/2011|0.9671|139.3445
-Ecclesiastical Amity European A Fund Inc|02/09/2011|Dividend Reinvestment|1.59||02/09/2011|1.4780|1.0758
-Ecclesiastical Amity European A Fund Inc|25/08/2011|Investment Regular|137.50||25/08/2011|1.4730|89.6199
+EdenTree Amity European A Fund Inc|02/09/2011|Dividend Reinvestment|1.59||02/09/2011|1.4780|1.0758
+EdenTree Amity European A Fund Inc|25/08/2011|Investment Regular|137.50||25/08/2011|1.4730|89.6199
 F&C Responsible UK Income 1 Fund Inc|25/08/2011|Investment Regular|137.50||25/08/2011|0.9831|137.0766
 F&C Responsible UK Income 1 Fund Inc|29/07/2011|Dividend Reinvestment|57.77||29/07/2011|1.0630|54.3462
 F&C Responsible UK Income 1 Fund Inc|29/07/2011|Dividend Reinvestment|3.49||29/07/2011|1.0630|3.2832
@@ -26,12 +26,12 @@ F&C Responsible UK Equity Growth 1 Fund Inc|29/07/2011|Dividend Reinvestment|5.1
 F&C Responsible UK Equity Growth 1 Fund Inc|29/07/2011|Dividend Reinvestment|0.33||29/07/2011|6.4650|0.0511
 F&C Responsible UK Equity Growth 1 Fund Inc|29/07/2011|Dividend Reinvestment|4.29||29/07/2011|6.4650|0.6636
 F&C Responsible UK Equity Growth 1 Fund Inc|29/07/2011|Dividend Reinvestment|1.10||29/07/2011|6.4650|0.1702
-Ecclesiastical Amity European A Fund Inc|25/07/2011|Investment Regular|137.50||25/07/2011|1.7290|76.3505
+EdenTree Amity European A Fund Inc|25/07/2011|Investment Regular|137.50||25/07/2011|1.7290|76.3505
 F&C Responsible UK Income 1 Fund Inc|25/07/2011|Investment Regular|137.50||25/07/2011|1.0700|125.9440
-Ecclesiastical Amity European A Fund Inc|27/06/2011|Investment Regular|137.50||27/06/2011|1.7300|76.3064
+EdenTree Amity European A Fund Inc|27/06/2011|Investment Regular|137.50||27/06/2011|1.7300|76.3064
 F&C Responsible UK Income 1 Fund Inc|27/06/2011|Investment Regular|137.50||27/06/2011|1.0500|128.3429
 Henderson Global Care UK Income A Fund Inc|03/06/2011|Dividend Reinvestment|14.93||03/06/2011|0.9017|16.5577
-Ecclesiastical Amity European A Fund Inc|25/05/2011|Investment Regular|137.50||25/05/2011|1.7590|75.0484
+EdenTree Amity European A Fund Inc|25/05/2011|Investment Regular|137.50||25/05/2011|1.7590|75.0484
 F&C Responsible UK Income 1 Fund Inc|25/05/2011|Investment Regular|137.50||25/05/2011|1.0790|124.8935
 Aberdeen Ethical World Equity A Fund Inc|03/05/2011|Dividend Reinvestment|1.43||03/05/2011|1.3284|1.0765
 Aberdeen Ethical World Equity A Fund Inc|03/05/2011|Dividend Reinvestment|1.03||03/05/2011|1.3284|0.7754
