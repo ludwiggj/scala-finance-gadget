@@ -27,6 +27,8 @@ object ShowHoldingsFromTransactions extends App {
             unitsIn.getOrElse(BigDecimal(0)) - unitsOut.getOrElse(BigDecimal(0))
           }
 
+          val dateDifference = SimpleFunction.binary[Date, Date, Int] ("DATEDIFF")
+
           val transactionsOfInterest = transactions filter {
             _.transactionDate <= dateOfInterest
           }
@@ -56,10 +58,16 @@ object ShowHoldingsFromTransactions extends App {
           }
 
           val latestPriceDates = prices
-            .filter { p => p.priceDate <= dateOfInterest }
+            .filter { p => (dateDifference(p.priceDate, dateOfInterest)) <= 1 }
             .groupBy(p => p.fundId)
             .map { case (fundId, group) => {
             (fundId, group.map(_.priceDate).max)
+
+            // Should be able to use abs to get closest date either side of dateOfInterest, but hit various bugs...
+            // See https://groups.google.com/forum/#!topic/scalaquery/lrumVNo3JE4
+
+//            (fundId, group.map(prices => (dateDifference(prices.priceDate, dateOfInterest), prices.priceDate))
+//              .sorted(_._1).take(1).map(_._2).max)
           }
           }
 
@@ -182,6 +190,8 @@ object ShowHoldingsFromTransactions extends App {
         }
 
         // Start here (showHoldings)
+//        val today = new Date(115, 4, 31)
+//        showHoldingsForDate(today, getHoldingsQueryForDate(today).list)
 
         val regularInvestmentDates = transactions
           .filter { tx => tx.description === "Investment Regular" }
