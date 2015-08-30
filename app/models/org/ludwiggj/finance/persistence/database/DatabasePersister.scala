@@ -3,28 +3,15 @@ package models.org.ludwiggj.finance.persistence.database
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.{Transaction, Price, Holding}
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{FundsRow, HoldingsRow, PricesRow, Funds, Prices, Holdings, Transactions}
+import Tables.{HoldingsRow, PricesRow, Prices, Holdings, Transactions}
 import play.api.db.DB
 import play.api.Play.current
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
+import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
 
 class DatabasePersister {
 
   implicit lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-
-  def getOrInsertFund(name: String): Long = {
-    val funds: TableQuery[Funds] = TableQuery[Funds]
-    db.withSession {
-      implicit session =>
-        val filter = funds.filter {
-          _.name === name
-        }
-        if (!filter.exists.run) {
-          ((funds returning funds.map(_.id)) += FundsRow(0L, name))
-        } else {
-          filter.first.id
-        }
-    }
-  }
 
   def insertPrice(fundId: Long, price: Price) {
     val prices: TableQuery[Prices] = TableQuery[Prices]
@@ -45,7 +32,7 @@ class DatabasePersister {
     db.withSession {
       implicit session =>
 
-        val userId = UserDatabase().getOrInsert(accountName)
+        val userId = UsersDatabase().getOrInsert(accountName)
 
         def persistHolding(holding: Holding) {
 
@@ -58,7 +45,7 @@ class DatabasePersister {
             }
           }
 
-          val fundId = getOrInsertFund(holding.name)
+          val fundId = FundsDatabase().getOrInsert(holding.name)
           insertPrice(fundId, holding.price)
           insertHolding(fundId)
         }
@@ -75,7 +62,7 @@ class DatabasePersister {
     db.withSession {
       implicit session =>
 
-        val userId = UserDatabase().getOrInsert(accountName)
+        val userId = UsersDatabase().getOrInsert(accountName)
 
         def persistTransaction(transaction: Transaction) {
 
@@ -103,7 +90,7 @@ class DatabasePersister {
             }
           }
 
-          val fundId = getOrInsertFund(transaction.holdingName)
+          val fundId = FundsDatabase().getOrInsert(transaction.holdingName)
           insertPrice(fundId, transaction.price)
           insertTransaction(fundId)
         }
@@ -121,7 +108,7 @@ class DatabasePersister {
       implicit session =>
 
         def persistPrice(price: Price) {
-          val fundId = getOrInsertFund(price.holdingName)
+          val fundId = FundsDatabase().getOrInsert(price.holdingName)
           insertPrice(fundId, price)
         }
 

@@ -8,10 +8,9 @@ import Tables.{Users,UsersRow}
 
 /**
  * Data access facade.
- * Note: declaring a User companion object breaks the <> mapping.
  */
 
-class UserDatabase {
+class UsersDatabase {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
 
@@ -37,6 +36,9 @@ class UserDatabase {
   }
 }
 
-object UserDatabase {
-  def apply() = new UserDatabase()
+// Note: declaring a Users companion object would break the <> mapping.
+object UsersDatabase {
+  def apply() = new UsersDatabase()
+
+  implicit def usersRowWrapper(name: String) = UsersRow(0L, name)
 }

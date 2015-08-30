@@ -1,6 +1,6 @@
 <configuration>
 
-    <property name="application.home" value="/Users/ludwiggj/code/financeGadget" />
+    <property name="application.home" value="/Users/ludwiggj/code/financeGadget/test"/>
 
     <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
 
@@ -16,6 +16,10 @@
             <pattern>%coloredLevel %logger{15} - %message%n%xException{10}</pattern>
         </encoder>
     </appender>
+
+    <logger name="ch.qos.logback" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 
     <logger name="play" level="ERROR">
         <appender-ref ref="FILE"/>

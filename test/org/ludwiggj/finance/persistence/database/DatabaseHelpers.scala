@@ -1,6 +1,8 @@
 package org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.persistence.database.UserDatabase
+import models.org.ludwiggj.finance.persistence.database.{UsersDatabase, FundsDatabase}
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
+import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
 import org.specs2.execute.AsResult
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Around
@@ -18,6 +20,7 @@ trait DatabaseHelpers {
   this: SpecificationFeatures =>
 
   var fatherTedUserId = 0L
+  var capitalistsDreamFundId = 0L
 
   trait Schema extends Around {
 
@@ -79,7 +82,14 @@ trait DatabaseHelpers {
 
   object SingleUser extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      fatherTedUserId = UserDatabase().getOrInsert("father ted")
+      fatherTedUserId = UsersDatabase().getOrInsert("father ted")
+      test
+    }
+  }
+
+  object SingleFund extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      capitalistsDreamFundId = FundsDatabase().getOrInsert("Capitalists Dream")
       test
     }
   }
