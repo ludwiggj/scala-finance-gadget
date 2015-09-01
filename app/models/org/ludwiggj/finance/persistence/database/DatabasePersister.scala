@@ -3,28 +3,16 @@ package models.org.ludwiggj.finance.persistence.database
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.{Transaction, Price, Holding}
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{HoldingsRow, PricesRow, Prices, Holdings, Transactions}
+import Tables.{HoldingsRow, Prices, Holdings, Transactions}
 import play.api.db.DB
 import play.api.Play.current
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
+import models.org.ludwiggj.finance.persistence.database.PricesDatabase.pricesRowWrapper
 
 class DatabasePersister {
 
   implicit lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-
-  def insertPrice(fundId: Long, price: Price) {
-    val prices: TableQuery[Prices] = TableQuery[Prices]
-    db.withSession {
-      implicit session =>
-        try {
-          prices += PricesRow(fundId, price.dateAsSqlDate, price.inPounds)
-        } catch {
-          case ex: MySQLIntegrityConstraintViolationException =>
-            println(s"Price: ${ex.getMessage}")
-        }
-    }
-  }
 
   def persistHoldings(accountName: String, holdingsToPersist: List[Holding]) {
     val holdings: TableQuery[Holdings] = TableQuery[Holdings]
@@ -46,7 +34,7 @@ class DatabasePersister {
           }
 
           val fundId = FundsDatabase().getOrInsert(holding.name)
-          insertPrice(fundId, holding.price)
+          PricesDatabase().insert((fundId, holding.price))
           insertHolding(fundId)
         }
 
@@ -91,7 +79,7 @@ class DatabasePersister {
           }
 
           val fundId = FundsDatabase().getOrInsert(transaction.holdingName)
-          insertPrice(fundId, transaction.price)
+          PricesDatabase().insert((fundId, transaction.price))
           insertTransaction(fundId)
         }
 
@@ -109,7 +97,7 @@ class DatabasePersister {
 
         def persistPrice(price: Price) {
           val fundId = FundsDatabase().getOrInsert(price.holdingName)
-          insertPrice(fundId, price)
+          PricesDatabase().insert((fundId, price))
         }
 
         for (priceToPersist <- pricesToPersist) {

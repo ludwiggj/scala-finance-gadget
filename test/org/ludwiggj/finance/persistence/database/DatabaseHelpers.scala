@@ -1,8 +1,10 @@
 package org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.persistence.database.{UsersDatabase, FundsDatabase}
+import models.org.ludwiggj.finance.domain.{Price, FinanceDate}
+import models.org.ludwiggj.finance.persistence.database.{PricesDatabase, UsersDatabase, FundsDatabase}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
+import models.org.ludwiggj.finance.persistence.database.PricesDatabase.pricesRowWrapper
 import org.specs2.execute.AsResult
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Around
@@ -90,6 +92,18 @@ trait DatabaseHelpers {
   object SingleFund extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
       capitalistsDreamFundId = FundsDatabase().getOrInsert("Capitalists Dream")
+      test
+    }
+  }
+
+  object TwoPrices extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+
+      val holding1Id = FundsDatabase().getOrInsert("holding1")
+      val holding2Id = FundsDatabase().getOrInsert("holding2")
+
+      PricesDatabase().insert((holding1Id, Price("holding1", FinanceDate("20/05/2014"), 1.12)))
+      PricesDatabase().insert((holding2Id, Price("holding2", FinanceDate("20/05/2014"), 2.79)))
       test
     }
   }
