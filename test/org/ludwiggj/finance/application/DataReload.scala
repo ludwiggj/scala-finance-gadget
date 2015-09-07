@@ -9,7 +9,7 @@ import play.api.db.DB
 import play.api.test.FakeApplication
 import scala.util.matching.Regex
 import models.org.ludwiggj.finance.persistence.database.Tables.{Users, Funds, Prices, Holdings, Transactions}
-import models.org.ludwiggj.finance.persistence.database.DatabasePersister
+import models.org.ludwiggj.finance.persistence.database.{PricesDatabase, DatabasePersister}
 
 object DataReload extends App {
 
@@ -83,10 +83,8 @@ object DataReload extends App {
       aFile <- new File(reportHome).listFiles(isAFileWithoutUserNameMatching(pricePattern))
     ) {
       val fileName = aFile.getName
-      val prices = new FilePriceFactory(s"$reportHome/$fileName").getPrices()
-
       println(s"Persisting prices, file $fileName")
-      new DatabasePersister().persistPrices(prices)
+      PricesDatabase().insert(new FilePriceFactory(s"$reportHome/$fileName").getPrices())
     }
   }
 

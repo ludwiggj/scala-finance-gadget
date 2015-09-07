@@ -4,7 +4,7 @@ import play.api.db.DB
 import play.api.Play.current
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{Users,UsersRow}
+import Tables.{Users, UsersRow}
 
 /**
  * Data access facade.
@@ -12,25 +12,34 @@ import Tables.{Users,UsersRow}
 
 class UsersDatabase {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
+  val users: TableQuery[Users] = TableQuery[Users]
 
-
-  def getOrInsert(user: UsersRow): Long = {
-    val users: TableQuery[Users] = TableQuery[Users]
+  def get(userName: String): Option[UsersRow] = {
     db.withSession {
       implicit session =>
 
-        def insertUser() = {
-          (users returning users.map(_.id)) += user
-        }
+        def getUserByName() =
+          users.filter {
+            _.name === userName
+          }
 
-        val getUserByName = users.filter {
-          _.name === user.name
-        }
+        getUserByName().firstOption
+    }
+  }
 
-        if (getUserByName.exists.run) {
-          getUserByName.first.id
-        } else {
-          insertUser()
+  def insert(user: UsersRow) = {
+    db.withSession {
+      implicit session =>
+        (users returning users.map(_.id)) += user
+    }
+  }
+
+  def getOrInsert(user: UsersRow): Long = {
+    db.withSession {
+      implicit session =>
+        get(user.name) match {
+          case Some(aUser: UsersRow) => aUser.id
+          case _ => insert(user)
         }
     }
   }

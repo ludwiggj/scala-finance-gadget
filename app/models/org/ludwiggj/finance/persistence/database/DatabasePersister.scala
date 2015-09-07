@@ -1,14 +1,12 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.{Transaction, Price, Holding}
+import models.org.ludwiggj.finance.domain.{Transaction, Holding}
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{HoldingsRow, Prices, Holdings, Transactions}
+import Tables.{HoldingsRow, Holdings, Transactions}
 import play.api.db.DB
 import play.api.Play.current
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
-import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
-import models.org.ludwiggj.finance.persistence.database.PricesDatabase.pricesRowWrapper
 
 class DatabasePersister {
 
@@ -33,9 +31,8 @@ class DatabasePersister {
             }
           }
 
-          val fundId = FundsDatabase().getOrInsert(holding.name)
-          PricesDatabase().insert((fundId, holding.price))
-          insertHolding(fundId)
+          PricesDatabase().insert(holding.price)
+          insertHolding(FundsDatabase().get(holding.name).get.id)
         }
 
         for (holdingToPersist <- holdingsToPersist) {
@@ -78,30 +75,12 @@ class DatabasePersister {
             }
           }
 
-          val fundId = FundsDatabase().getOrInsert(transaction.holdingName)
-          PricesDatabase().insert((fundId, transaction.price))
-          insertTransaction(fundId)
+          PricesDatabase().insert((transaction.price))
+          insertTransaction(FundsDatabase().get(transaction.holdingName).get.id)
         }
 
         for (transactionToPersist <- transactionsToPersist) {
           persistTransaction(transactionToPersist)
-        }
-    }
-  }
-
-  def persistPrices(pricesToPersist: List[Price]) {
-    val prices: TableQuery[Prices] = TableQuery[Prices]
-
-    db.withSession {
-      implicit session =>
-
-        def persistPrice(price: Price) {
-          val fundId = FundsDatabase().getOrInsert(price.holdingName)
-          PricesDatabase().insert((fundId, price))
-        }
-
-        for (priceToPersist <- pricesToPersist) {
-          persistPrice(priceToPersist)
         }
     }
   }
