@@ -12,14 +12,13 @@ import Tables.{Users, UsersRow}
 
 class UsersDatabase {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-  val users: TableQuery[Users] = TableQuery[Users]
 
   def get(userName: String): Option[UsersRow] = {
     db.withSession {
       implicit session =>
 
         def getUserByName() =
-          users.filter {
+          Users.filter {
             _.name === userName
           }
 
@@ -30,7 +29,7 @@ class UsersDatabase {
   def insert(user: UsersRow) = {
     db.withSession {
       implicit session =>
-        (users returning users.map(_.id)) += user
+        (Users returning Users.map(_.id)) += user
     }
   }
 

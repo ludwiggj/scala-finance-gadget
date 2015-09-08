@@ -1,7 +1,8 @@
 package org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{FinanceDate, Price}
-import models.org.ludwiggj.finance.persistence.database.PricesDatabase
+import models.org.ludwiggj.finance.persistence.database.{FundsDatabase, PricesDatabase}
+import models.org.ludwiggj.finance.persistence.database.Tables.FundsRow
 import org.specs2.mutable.Specification
 
 class PricesSpec extends Specification with DatabaseHelpers {
@@ -46,6 +47,19 @@ class PricesSpec extends Specification with DatabaseHelpers {
           Price(holdingNikeName, holdingNikeDate, holdingNikePriceInPounds),
           Price("holding1", FinanceDate("21/05/2014"), 2.12)
         ))
+    }
+  }
+
+  "insert price" should {
+    "insert fund if it is not present" in EmptySchema {
+      val pricesDatabase = PricesDatabase()
+
+      FundsDatabase().get(capitalistsDreamFundName) must beNone
+
+      PricesDatabase().insert(Price(capitalistsDreamFundName, FinanceDate("20/05/2014"), 1.2))
+
+      FundsDatabase().get(capitalistsDreamFundName) must beSome.which(
+        _ match { case FundsRow(_, name) => name == capitalistsDreamFundName})
     }
   }
 }

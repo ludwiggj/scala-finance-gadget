@@ -6,7 +6,7 @@ import play.api.db.DB
 import play.api.Play.current
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
-import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow}
+import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow, FundsRow}
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
 
 /**
@@ -16,50 +16,31 @@ import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWr
 // Note: declaring a Prices companion object would break the <> mapping.
 object PricesDatabase {
   def apply() = new PricesDatabase()
+}
+
+class PricesDatabase {
 
   implicit def pricesRowWrapper(fundIdAndPrice: (Long, Price)) = {
     val (fundId, price) = fundIdAndPrice
     PricesRow(fundId, price.dateAsSqlDate, price.inPounds)
   }
-}
 
-class PricesDatabase {
+  implicit class PriceExtension(q: Query[Prices, PricesRow, Seq]) {
+    def withFunds = q.join(Funds).on(_.fundId === _.id)
 
-  import PricesDatabase.pricesRowWrapper
+    def withFundsNamed(fundName: String) = q.join(Funds).on((p, f) => p.fundId === f.id && f.name === fundName)
+  }
+
+  implicit def asListOfPrices(q: Query[(Prices, Funds), (PricesRow, FundsRow), Seq]): List[Price] = {
+    db.withSession {
+      implicit session =>
+        q.list map {
+          case ((PricesRow(_, priceDate, price), FundsRow(_, fundName))) => Price(fundName, priceDate, price)
+        }
+    }
+  }
 
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-  val prices: TableQuery[Prices] = TableQuery[Prices]
-  val funds: TableQuery[Funds] = TableQuery[Funds]
-
-  def get(fundName: String, priceDate: FinanceDate): Option[Price] = {
-    db.withSession {
-      implicit session =>
-
-        val fetchedPrice = for {
-          p <- prices if p.priceDate === priceDate.asSqlDate
-          f <- funds if p.fundId === f.id && f.name === fundName
-        } yield (fundName, priceDate.asSqlDate, p.price)
-
-        fetchedPrice.list.headOption map {
-          case (fundName, priceDate, price) => Price(fundName, priceDate, price)
-        }
-    }
-  }
-
-  def get(): List[Price] = {
-    db.withSession {
-      implicit session =>
-
-        val fetchedPrices = for {
-          p <- prices
-          f <- funds if p.fundId === f.id
-        } yield (f.name, p.priceDate, p.price)
-
-        fetchedPrices.list map {
-          case (fundName, priceDate, price) => Price(fundName, priceDate, price)
-        }
-    }
-  }
 
   def insert(price: Price): Unit = {
 
@@ -69,7 +50,7 @@ class PricesDatabase {
 
           def insert() = {
             try {
-              prices += priceRow
+              Prices += priceRow
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Price: ${ex.getMessage} New price [$price]")
@@ -91,5 +72,20 @@ class PricesDatabase {
     for (price <- prices) {
       insert(price)
     }
+  }
+
+  private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
+    db.withSession {
+      implicit session =>
+        Prices filter (_.priceDate === priceDate.asSqlDate)
+    }
+  }
+
+  def get(): List[Price] = {
+    Prices.withFunds
+  }
+
+  def get(fundName: String, priceDate: FinanceDate): Option[Price] = {
+    pricesOn(priceDate).withFundsNamed(fundName).headOption
   }
 }

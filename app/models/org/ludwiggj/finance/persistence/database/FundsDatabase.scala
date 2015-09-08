@@ -13,14 +13,13 @@ import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, Funds}
 
 class FundsDatabase {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-  val funds: TableQuery[Funds] = TableQuery[Funds]
 
   def get(fundName: String): Option[FundsRow] = {
     db.withSession {
       implicit session =>
 
         def getFundByName() =
-          funds.filter {
+          Funds.filter {
             _.name === fundName
           }
 
@@ -31,7 +30,7 @@ class FundsDatabase {
   def insert(fund: FundsRow) = {
     db.withSession {
       implicit session =>
-        (funds returning funds.map(_.id)) += fund
+        (Funds returning Funds.map(_.id)) += fund
     }
   }
 
