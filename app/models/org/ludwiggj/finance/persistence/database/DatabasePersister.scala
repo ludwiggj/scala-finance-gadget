@@ -1,9 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.{Transaction, Holding}
+import models.org.ludwiggj.finance.domain.Transaction
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{HoldingsRow, Holdings, Transactions}
+import Tables.Transactions
 import play.api.db.DB
 import play.api.Play.current
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
@@ -11,35 +11,6 @@ import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWr
 class DatabasePersister {
 
   implicit lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-
-  def persistHoldings(accountName: String, holdingsToPersist: List[Holding]) {
-    val holdings: TableQuery[Holdings] = TableQuery[Holdings]
-
-    db.withSession {
-      implicit session =>
-
-        val userId = UsersDatabase().getOrInsert(accountName)
-
-        def persistHolding(holding: Holding) {
-
-          def insertHolding(fundId: Long) {
-            try {
-              holdings += HoldingsRow(fundId, userId, holding.units, holding.priceDateAsSqlDate)
-            } catch {
-              case ex: MySQLIntegrityConstraintViolationException =>
-                println(s"Holding: ${ex.getMessage}")
-            }
-          }
-
-          PricesDatabase().insert(holding.price)
-          insertHolding(FundsDatabase().get(holding.name).get.id)
-        }
-
-        for (holdingToPersist <- holdingsToPersist) {
-          persistHolding(holdingToPersist)
-        }
-    }
-  }
 
   def persistTransactions(accountName: String, transactionsToPersist: List[Transaction]) {
     val transactions: TableQuery[Transactions] = TableQuery[Transactions]

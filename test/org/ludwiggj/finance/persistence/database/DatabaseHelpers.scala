@@ -1,7 +1,7 @@
 package org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Price, FinanceDate}
-import models.org.ludwiggj.finance.persistence.database.{PricesDatabase, UsersDatabase, FundsDatabase}
+import models.org.ludwiggj.finance.domain.{Holding, Price, FinanceDate}
+import models.org.ludwiggj.finance.persistence.database.{HoldingsDatabase, PricesDatabase, UsersDatabase, FundsDatabase}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
 import org.specs2.execute.AsResult
@@ -22,14 +22,23 @@ trait DatabaseHelpers {
 
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
+
   var capitalistsDreamFundId = 0L
   val capitalistsDreamFundName = "Capitalists Dream"
-  val holdingKappaName: String = "Kappa"
-  val holdingKappaDate: FinanceDate = FinanceDate("20/05/2014")
-  val holdingKappaPriceInPounds: Double = 1.12
-  val holdingNikeName: String = "Nike"
-  val holdingNikeDate: FinanceDate = FinanceDate("20/06/2014")
-  val holdingNikePriceInPounds: Double = 3.12
+
+  val kappaFundName: String = "Kappa"
+  val kappaFundPriceDate: FinanceDate = FinanceDate("20/05/2014")
+  val kappaFundPriceInPounds: Double = 1.12
+  val kappaFundPrice = Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds)
+
+  val nikeFundName: String = "Nike"
+  val nikeFundPriceDate: FinanceDate = FinanceDate("20/06/2014")
+  val nikeFundPriceInPounds: Double = 3.12
+  val nikeFundPrice = Price(nikeFundName, nikeFundPriceDate, nikeFundPriceInPounds)
+
+  val userName = "Graeme"
+  val kappaFundHolding = Holding(kappaFundPrice, 1.23)
+  val nikeFundHolding = Holding(nikeFundPrice, 1.89)
 
   trait Schema extends Around {
 
@@ -105,19 +114,21 @@ trait DatabaseHelpers {
 
   object SinglePrice extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      PricesDatabase().insert(Price(holdingKappaName, holdingKappaDate, holdingKappaPriceInPounds))
+      PricesDatabase().insert(kappaFundPrice)
       test
     }
   }
 
   object TwoPrices extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      PricesDatabase().insert(
-        List(
-          Price(holdingKappaName, holdingKappaDate, holdingKappaPriceInPounds),
-          Price(holdingNikeName, holdingNikeDate, holdingNikePriceInPounds)
-        )
-      )
+      PricesDatabase().insert(List(kappaFundPrice, nikeFundPrice))
+      test
+    }
+  }
+
+  object TwoHoldings extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      HoldingsDatabase().insert(userName, List(kappaFundHolding, nikeFundHolding))
       test
     }
   }

@@ -13,8 +13,8 @@ class FundsSpec extends Specification with DatabaseHelpers {
     }
 
     "return existing fund row if it is present" in SingleFund {
-      FundsDatabase().get(capitalistsDreamFundName) must beEqualTo(
-        Some(FundsRow(capitalistsDreamFundId, capitalistsDreamFundName))
+      FundsDatabase().get(capitalistsDreamFundName) must beSome(
+        FundsRow(capitalistsDreamFundId, capitalistsDreamFundName)
       )
     }
   }

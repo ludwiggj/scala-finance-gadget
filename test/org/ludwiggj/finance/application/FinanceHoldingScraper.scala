@@ -6,7 +6,7 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.Holding
-import models.org.ludwiggj.finance.persistence.database.DatabasePersister
+import models.org.ludwiggj.finance.persistence.database.HoldingsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
 
@@ -34,7 +34,7 @@ object FinanceHoldingScraper extends App {
 
     persister.write(holdings)
 
-    new DatabasePersister().persistHoldings(accountName, holdings)
+    HoldingsDatabase().insert(accountName, holdings)
   }
 
   def processHoldings(accountName: String) = Future {

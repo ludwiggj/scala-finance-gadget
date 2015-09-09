@@ -13,8 +13,8 @@ class UsersSpec extends Specification with DatabaseHelpers {
     }
 
     "return existing user row if it is present" in SingleUser {
-      UsersDatabase().get(fatherTedUserName) must beEqualTo(
-        Some(UsersRow(fatherTedUserId, fatherTedUserName))
+      UsersDatabase().get(fatherTedUserName) must beSome(
+        UsersRow(fatherTedUserId, fatherTedUserName)
       )
     }
   }
