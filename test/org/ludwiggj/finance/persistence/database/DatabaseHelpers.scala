@@ -1,7 +1,7 @@
 package org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Holding, Price, FinanceDate}
-import models.org.ludwiggj.finance.persistence.database.{HoldingsDatabase, PricesDatabase, UsersDatabase, FundsDatabase}
+import models.org.ludwiggj.finance.domain.{Transaction, Holding, Price, FinanceDate}
+import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
 import org.specs2.execute.AsResult
@@ -39,6 +39,8 @@ trait DatabaseHelpers {
   val userName = "Graeme"
   val kappaFundHolding = Holding(kappaFundPrice, 1.23)
   val nikeFundHolding = Holding(nikeFundPrice, 1.89)
+
+  val nikeFundTransaction = Transaction(nikeFundPriceDate, "A transaction", Some(2.0), None, nikeFundPrice, 1.234)
 
   trait Schema extends Around {
 
@@ -129,6 +131,13 @@ trait DatabaseHelpers {
   object TwoHoldings extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
       HoldingsDatabase().insert(userName, List(kappaFundHolding, nikeFundHolding))
+      test
+    }
+  }
+
+  object SingleTransaction extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      TransactionsDatabase().insert(userName, nikeFundTransaction)
       test
     }
   }

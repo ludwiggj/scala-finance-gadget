@@ -9,7 +9,7 @@ import play.api.db.DB
 import play.api.test.FakeApplication
 import scala.util.matching.Regex
 import models.org.ludwiggj.finance.persistence.database.Tables.{Users, Funds, Prices, Holdings, Transactions}
-import models.org.ludwiggj.finance.persistence.database.{HoldingsDatabase, PricesDatabase, DatabasePersister}
+import models.org.ludwiggj.finance.persistence.database.{HoldingsDatabase, PricesDatabase, TransactionsDatabase}
 
 object DataReload extends App {
 
@@ -73,7 +73,7 @@ object DataReload extends App {
       val transactions = new FileTransactionFactory(s"$reportHome/$fileName").getTransactions()
 
       println(s"Persisting transactions for user $userName, file $fileName")
-      new DatabasePersister().persistTransactions(userName, transactions)
+      TransactionsDatabase().insert(userName, transactions)
     }
   }
 

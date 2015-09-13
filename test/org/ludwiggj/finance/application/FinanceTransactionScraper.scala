@@ -4,9 +4,8 @@ import java.util.concurrent.TimeoutException
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import models.org.ludwiggj.finance.builders.LoginFormBuilder
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
-import models.org.ludwiggj.finance.persistence.database.DatabasePersister
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory}
 
@@ -29,7 +28,7 @@ object FinanceTransactionScraper extends App {
         val persister = FilePersister(s"$reportHome/txs_${date}_${accountName}.txt")
 
         persister.write(transactions)
-        new DatabasePersister().persistTransactions(accountName, transactions)
+        TransactionsDatabase().insert(accountName, transactions)
       } catch {
         case ex: ElementNotFoundException =>
           println(s"Cannot retrieve transactions for $accountName, ${ex.toString}")
