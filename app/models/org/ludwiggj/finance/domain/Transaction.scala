@@ -10,13 +10,9 @@ import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
 
-  def dateAsSqlDate = date.asSqlDate
-
   def holdingName = price.holdingName
 
   def priceDate = price.date
-
-  def priceDateAsSqlDate = price.dateAsSqlDate
 
   def priceInPounds = price.inPounds
 

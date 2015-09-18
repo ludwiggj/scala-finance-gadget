@@ -6,6 +6,7 @@ import play.api.db.DB
 import play.api.Play.current
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.Tables._
+import models.org.ludwiggj.finance.asSqlDate
 import scala.language.implicitConversions
 
 class TransactionsDatabase {
@@ -23,8 +24,8 @@ class TransactionsDatabase {
 
           def insert(fundId: Long) {
             Transactions += TransactionsRow(
-              fundId, userId, transaction.dateAsSqlDate, transaction.description, transaction.in, transaction.out,
-              transaction.priceDateAsSqlDate, transaction.units
+              fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
+              transaction.priceDate, transaction.units
             )
           }
 

@@ -8,6 +8,7 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow, FundsRow}
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
+import models.org.ludwiggj.finance.asSqlDate
 
 /**
  * Data access facade.
@@ -22,7 +23,7 @@ class PricesDatabase {
 
   implicit def pricesRowWrapper(fundIdAndPrice: (Long, Price)) = {
     val (fundId, price) = fundIdAndPrice
-    PricesRow(fundId, price.dateAsSqlDate, price.inPounds)
+    PricesRow(fundId, price.date, price.inPounds)
   }
 
   implicit class PriceExtension(q: Query[Prices, PricesRow, Seq]) {
@@ -77,7 +78,7 @@ class PricesDatabase {
   private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
     db.withSession {
       implicit session =>
-        Prices filter (_.priceDate === priceDate.asSqlDate)
+        Prices filter (_.priceDate === asSqlDate(priceDate.date))
     }
   }
 

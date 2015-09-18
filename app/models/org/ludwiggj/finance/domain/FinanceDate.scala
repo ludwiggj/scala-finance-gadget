@@ -7,7 +7,6 @@ import org.joda.time.format.DateTimeFormat
 
 class FinanceDate(val date: DateTime) {
   override def toString = date.toString(FinanceDate.formatter)
-  def asSqlDate = Date.valueOf(date.toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
 
   final override def equals(other: Any) = {
     val that = other.asInstanceOf[FinanceDate]

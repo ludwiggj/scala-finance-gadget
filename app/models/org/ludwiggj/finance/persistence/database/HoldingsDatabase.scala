@@ -3,6 +3,7 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.domain.{Price, Holding}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.Tables._
+import models.org.ludwiggj.finance.asSqlDate
 import play.api.Play.current
 import play.api.db.DB
 
@@ -25,7 +26,7 @@ class HoldingsDatabase {
           val userId = UsersDatabase().getOrInsert(holding.userName)
 
           def insert(fundId: Long) {
-            Holdings += HoldingsRow(fundId, userId, holding.units, holding.priceDateAsSqlDate)
+            Holdings += HoldingsRow(fundId, userId, holding.units, holding.priceDate)
           }
 
           PricesDatabase().insert(holding.price)

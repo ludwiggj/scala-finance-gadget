@@ -9,8 +9,6 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
 
   def priceDate = price.date
 
-  def priceDateAsSqlDate = price.dateAsSqlDate
-
   def name = price.holdingName
 
   override def toString =

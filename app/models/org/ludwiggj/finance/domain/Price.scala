@@ -4,8 +4,6 @@ import java.sql.Date
 
 case class Price(val holdingName: String, val date: FinanceDate, val inPounds: BigDecimal) {
 
-  def dateAsSqlDate = date.asSqlDate
-
   override def toString =
     s"Price [name: $holdingName, date: $date, price: £$inPounds]"
 }

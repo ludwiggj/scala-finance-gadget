@@ -20,12 +20,6 @@ class HoldingSuite extends FunSuite with Matchers {
     }
   }
 
-  test("Holding.priceDateAsSqlDate is correct") {
-    new TestHoldings {
-      holding1.priceDateAsSqlDate equals (Date.valueOf("2014-05-20"))
-    }
-  }
-
   test("Holding.priceInPounds is correct") {
     new TestHoldings {
       holding1.priceInPounds equals (1.4360)
