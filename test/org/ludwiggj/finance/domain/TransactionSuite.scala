@@ -6,12 +6,12 @@ import org.scalatest.{FunSuite, Matchers}
 
 class TransactionSuite extends FunSuite with Matchers {
 
-  val tx5 = Transaction(
+  val tx5 = Transaction("Graeme",
     FinanceDate("25/04/2014"), "Investment Regular", Some(BigDecimal(200.00)), None,
     Price("M&G Feeder of Property Portfolio I Fund Acc", "25/04/2014", "11.5308"), BigDecimal(17.3449)
   )
 
-  val tx6 = Transaction(
+  val tx6 = Transaction("Graeme",
     FinanceDate("29/04/2014"), "A transaction", None, Some(BigDecimal(222)),
     Price("BT", "29/04/2014", "1.2341"), BigDecimal(23.8)
   )
@@ -145,8 +145,9 @@ class TransactionSuite extends FunSuite with Matchers {
   test("Transaction.toString is correct") {
     new TestTransactions {
       tx1.toString should equal(
-        "Tx [holding: Aberdeen Ethical World Equity A Fund Inc, date: 02/05/2014, description: " +
-          "Dividend Reinvestment, in: Some(0.27), out: None, price date: 02/05/2014, price: 1.4123, units: 0.1912]"
+        s"Tx [userName: $userNameGraeme, holding: Aberdeen Ethical World Equity A Fund Inc, date: 02/05/2014, "
+          + "description: Dividend Reinvestment, in: Some(0.27), out: None, price date: 02/05/2014, price: 1.4123, "
+          + "units: 0.1912]"
       )
     }
   }

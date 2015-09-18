@@ -14,7 +14,8 @@ class RoundTripTest extends FunSuite with Matchers {
 
       FilePersister(txFile).write(transactions)
 
-      val reconstitutedTransactions = new FileTransactionFactory(txFile).getTransactions()
+      val reconstitutedTransactions =
+        FileTransactionFactory(userNameGraeme, txFile).getTransactions()
 
       println(s"reconstitutedTransactions: $reconstitutedTransactions")
 
@@ -30,7 +31,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       FilePersister(holdingFile).write(holdings)
 
-      val reconstitutedHoldings = new FileHoldingFactory(holdingFile).getHoldings()
+      val reconstitutedHoldings = FileHoldingFactory(userNameGraeme, holdingFile).getHoldings()
 
       println(s"reconstitutedHoldings: $reconstitutedHoldings")
 

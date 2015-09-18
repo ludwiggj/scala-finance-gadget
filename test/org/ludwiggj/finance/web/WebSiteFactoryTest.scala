@@ -12,7 +12,6 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
 
   test("Retrieve holdings from web page") {
     new TestHoldings {
-      val accountName = "testAccount"
       val loginFormBuilder = mock[LoginFormBuilder]
       val loginForm = mock[Login]
       val htmlPage = mock[HtmlEntity]
@@ -24,12 +23,12 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
       inSequence {
         (loginFormBuilder.loggingIntoPage _).expects("valuations").returning(loginFormBuilder)
         (loginFormBuilder.build _).expects().returning(loginForm)
-        (loginForm.loginAs _).expects(accountName).returning(htmlPage)
+        (loginForm.loginAs _).expects(userNameGraeme).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedHoldingsXml)
         (htmlPage.logOff _).expects()
       }
 
-      val actualHoldings = WebSiteHoldingFactory(loginFormBuilder, accountName).getHoldings()
+      val actualHoldings = WebSiteHoldingFactory(loginFormBuilder, userNameGraeme).getHoldings()
 
       println(actualHoldings)
 
@@ -39,7 +38,6 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
 
   test("Retrieve transactions from web page") {
     new TestTransactions {
-      val accountName = "testAccount"
       val loginFormBuilder = mock[LoginFormBuilder]
       val loginForm = mock[Login]
       val htmlPage = mock[HtmlEntity]
@@ -51,12 +49,12 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
       inSequence {
         (loginFormBuilder.loggingIntoPage _).expects("transactions").returning(loginFormBuilder)
         (loginFormBuilder.build _).expects().returning(loginForm)
-        (loginForm.loginAs _).expects(accountName).returning(htmlPage)
+        (loginForm.loginAs _).expects(userNameGraeme).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedTransactionXml)
         (htmlPage.logOff _).expects()
       }
 
-      val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, accountName).getTransactions()
+      val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, userNameGraeme).getTransactions()
 
       println(actualTransactions)
 

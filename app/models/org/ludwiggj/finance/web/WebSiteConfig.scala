@@ -17,8 +17,8 @@ class WebSiteConfig(private val config: Config) {
     config.getString("site.login.form.submit")
   }
 
-  def getAccountList() = {
-    (config.getConfigList("site.accounts") map (Account(_))).toList
+  def getUserList() = {
+    (config.getConfigList("site.userAccounts") map (User(_))).toList
   }
 
   def getLoginText() = {

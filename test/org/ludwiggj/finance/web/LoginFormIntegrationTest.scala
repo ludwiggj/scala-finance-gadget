@@ -12,10 +12,10 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
     val loginForm =
       aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
-    val loginAccount = config.getAccountList()(0).name
+    val userName = config.getUserList()(0).name
 
     // Log in, and verify that log off link is available
-    val loggedInPage = loginForm.loginAs(loginAccount)
+    val loggedInPage = loginForm.loginAs(userName)
     loggedInPage.isLoggedIn() should equal(true)
     println("Logged in")
 
@@ -31,13 +31,13 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
 
   test("NotAuthenticatedException thrown if cannot log into target page") {
     intercept[NotAuthenticatedException] {
-      val config = WebSiteConfig("cofundsWithAccountWithIncorrectPassword.conf")
+      val config = WebSiteConfig("cofundsWithUserWithIncorrectPassword.conf")
       val loginForm =
         aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
-      val loginAccount = config.getAccountList()(0).name
+      val userName = config.getUserList()(0).name
 
-      loginForm.loginAs(loginAccount)
+      loginForm.loginAs(userName)
     }
   }
 }

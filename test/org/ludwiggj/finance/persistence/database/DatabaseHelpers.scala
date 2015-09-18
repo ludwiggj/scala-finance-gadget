@@ -36,11 +36,15 @@ trait DatabaseHelpers {
   val nikeFundPriceInPounds: Double = 3.12
   val nikeFundPrice = Price(nikeFundName, nikeFundPriceDate, nikeFundPriceInPounds)
 
-  val userName = "Graeme"
-  val kappaFundHolding = Holding(kappaFundPrice, 1.23)
-  val nikeFundHolding = Holding(nikeFundPrice, 1.89)
+  val userNameGraeme = "Graeme"
+  val userNameAudrey = "Audrey"
 
-  val nikeFundTransaction = Transaction(nikeFundPriceDate, "A transaction", Some(2.0), None, nikeFundPrice, 1.234)
+  val kappaFundHolding = Holding(userNameGraeme, kappaFundPrice, 1.23)
+  val nikeFundHolding = Holding(userNameGraeme, nikeFundPrice, 1.89)
+
+
+  val nikeFundTransaction =
+    Transaction(userNameGraeme, nikeFundPriceDate, "A transaction", Some(2.0), None, nikeFundPrice, 1.234)
 
   trait Schema extends Around {
 
@@ -130,14 +134,14 @@ trait DatabaseHelpers {
 
   object TwoHoldings extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      HoldingsDatabase().insert(userName, List(kappaFundHolding, nikeFundHolding))
+      HoldingsDatabase().insert(List(kappaFundHolding, nikeFundHolding))
       test
     }
   }
 
   object SingleTransaction extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      TransactionsDatabase().insert(userName, nikeFundTransaction)
+      TransactionsDatabase().insert(nikeFundTransaction)
       test
     }
   }

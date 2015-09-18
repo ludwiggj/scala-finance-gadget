@@ -55,10 +55,10 @@ object DataReload extends App {
     ) {
       val fileName = aFile.getName
       val holdingPattern(userName) = fileName
-      val holdings = new FileHoldingFactory(s"$reportHome/$fileName").getHoldings()
+      val holdings = FileHoldingFactory(userName, s"$reportHome/$fileName").getHoldings()
 
       println(s"Persisting holdings for user $userName, file $fileName")
-      HoldingsDatabase().insert(userName, holdings)
+      HoldingsDatabase().insert(holdings)
     }
   }
 
@@ -70,10 +70,10 @@ object DataReload extends App {
     ) {
       val fileName = aFile.getName
       val transactionPattern(userName) = fileName
-      val transactions = new FileTransactionFactory(s"$reportHome/$fileName").getTransactions()
+      val transactions = FileTransactionFactory(userName, s"$reportHome/$fileName").getTransactions()
 
       println(s"Persisting transactions for user $userName, file $fileName")
-      TransactionsDatabase().insert(userName, transactions)
+      TransactionsDatabase().insert(transactions)
     }
   }
 

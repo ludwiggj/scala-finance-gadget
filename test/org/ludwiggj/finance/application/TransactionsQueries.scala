@@ -21,6 +21,8 @@ object TransactionsQueries extends App {
     lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
     db.withSession {
+      val userNameGraeme = "Graeme"
+
       implicit session =>
 
         def displayTransactions(txs: List[Transaction]) = {
@@ -34,10 +36,11 @@ object TransactionsQueries extends App {
 
         def getTransactions(): List[Transaction] = {
 
+
           def getTransactionTuples: List[TransactionTuple] = {
             (for {
               t <- transactions
-              u <- t.usersFk if (u.name === "Graeme")
+              u <- t.usersFk if (u.name === userNameGraeme)
               p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
               f <- t.fundsFk
             } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
@@ -49,7 +52,7 @@ object TransactionsQueries extends App {
           }
 
           getTransactionTuples map {
-            Transaction(_)
+            Transaction(userNameGraeme, _)
           }
         }
 
@@ -57,7 +60,7 @@ object TransactionsQueries extends App {
           (for {
             t <- transactions if ((t.description === "Investment Regular") ||
             (t.description === "Investment Lump Sum"))
-            u <- t.usersFk if (u.name === "Graeme")
+            u <- t.usersFk if (u.name === userNameGraeme)
             p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
             f <- t.fundsFk
           } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
@@ -65,14 +68,14 @@ object TransactionsQueries extends App {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)
           }).list map {
-            Transaction(_)
+            Transaction(userNameGraeme, _)
           }
         }
 
         def getTransactionsDividends() = {
           (for {
             t <- transactions if ((t.description === "Dividend Reinvestment"))
-            u <- t.usersFk if (u.name === "Graeme")
+            u <- t.usersFk if (u.name === userNameGraeme)
             p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
             f <- t.fundsFk
           } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
@@ -80,7 +83,7 @@ object TransactionsQueries extends App {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)
           }).list map {
-            Transaction(_)
+            Transaction(userNameGraeme, _)
           }
         }
 

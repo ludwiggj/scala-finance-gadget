@@ -18,66 +18,66 @@ import scala.util.{Failure, Success}
 
 object FinanceHoldingScraper extends App {
 
-  def getHoldings(accountName: String): List[Holding] = {
-    WebSiteHoldingFactory(loginFormBuilder, accountName).getHoldings()
+  def getHoldings(userName: String): List[Holding] = {
+    WebSiteHoldingFactory(loginFormBuilder, userName).getHoldings()
   }
 
-  def generatePeristedHoldingsFileName(accountName: String) = {
+  def generatePeristedHoldingsFileName(userName: String) = {
     val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
-    s"$reportHome/holdings_${date}_${accountName}.txt"
+    s"$reportHome/holdings_${date}_${userName}.txt"
   }
 
-  def persistHoldings(accountName: String, holdings: List[Holding]): Unit = {
-    val peristedHoldingsFileName = generatePeristedHoldingsFileName(accountName)
+  def persistHoldings(userName: String, holdings: List[Holding]): Unit = {
+    val peristedHoldingsFileName = generatePeristedHoldingsFileName(userName)
 
     val persister = FilePersister(peristedHoldingsFileName)
 
     persister.write(holdings)
 
-    HoldingsDatabase().insert(accountName, holdings)
+    HoldingsDatabase().insert(holdings)
   }
 
-  def processHoldings(accountName: String) = Future {
-    time(s"processHoldings($accountName)",
+  def processHoldings(userName: String) = Future {
+    time(s"processHoldings($userName)",
       try {
-        val holdings = getHoldings(accountName)
+        val holdings = getHoldings(userName)
 
         val holdingsTotal = holdings map (h => h.value) sum
 
-        println(s"Total holdings ($accountName): £$holdingsTotal")
+        println(s"Total holdings ($userName): £$holdingsTotal")
 
-        persistHoldings(accountName, holdings)
+        persistHoldings(userName, holdings)
 
-        (accountName, holdingsTotal)
+        (userName, holdingsTotal)
       } catch {
         case ex: NotAuthenticatedException =>
-          val errorMsg = s"Cannot retrieve holdings for $accountName [NotAuthenticatedException]"
+          val errorMsg = s"Cannot retrieve holdings for $userName [NotAuthenticatedException]"
           println(errorMsg)
-          (accountName, BigDecimal(0))
+          (userName, BigDecimal(0))
       }
     )
   }
 
-  def composeWaitingFuture(fut: Future[(String, BigDecimal)], atMost: FiniteDuration, accountName: String) =
+  def composeWaitingFuture(fut: Future[(String, BigDecimal)], atMost: FiniteDuration, userName: String) =
     (Future {
       Await.result(fut, atMost)
     }
       recover {
       case e: ElementNotFoundException =>
-        println(s"Problem retrieving details for $accountName, returning £0 for this account.\n"
+        println(s"Problem retrieving details for $userName, returning £0 for this user.\n"
           + s"Error: ${e.toString}")
-        (accountName, BigDecimal(0))
+        (userName, BigDecimal(0))
     })
 
   val config = WebSiteConfig("cofunds.conf")
 
   val loginFormBuilder = aLoginForm().basedOnConfig(config)
 
-  val accounts = config.getAccountList()
+  val users = config.getUserList()
 
-  val listOfFutures = accounts map { account =>
+  val listOfFutures = users map { user =>
     composeWaitingFuture(
-      processHoldings(account.name), 30 seconds, account.name
+      processHoldings(user.name), 30 seconds, user.name
     )
   }
 

@@ -17,46 +17,46 @@ import scala.util.{Failure, Success}
 
 object FinanceTransactionScraper extends App {
 
-  def processTransactions(accountName: String) = Future {
-    time(s"processTransactions($accountName)",
+  def processTransactions(userName: String) = Future {
+    time(s"processTransactions($userName)",
       try {
-        val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, accountName)
+        val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, userName)
         val transactions = transactionFactory.getTransactions()
 
-        println(s"Total transactions ($accountName): ${transactions size}")
+        println(s"Total transactions ($userName): ${transactions size}")
 
-        val persister = FilePersister(s"$reportHome/txs_${date}_${accountName}.txt")
+        val persister = FilePersister(s"$reportHome/txs_${date}_${userName}.txt")
 
         persister.write(transactions)
-        TransactionsDatabase().insert(accountName, transactions)
+        TransactionsDatabase().insert(transactions)
       } catch {
         case ex: ElementNotFoundException =>
-          println(s"Cannot retrieve transactions for $accountName, ${ex.toString}")
+          println(s"Cannot retrieve transactions for $userName, ${ex.toString}")
         case ex: NotAuthenticatedException =>
-          println(s"Cannot retrieve transactions for $accountName [NotAuthenticatedException]")
+          println(s"Cannot retrieve transactions for $userName [NotAuthenticatedException]")
       })
   }
 
-  def composeWaitingFuture(fut: Future[Unit], atMost: FiniteDuration, accountName: String) =
+  def composeWaitingFuture(fut: Future[Unit], atMost: FiniteDuration, userName: String) =
     (Future {
       Await.result(fut, atMost)
     }
       recover {
       case e: ElementNotFoundException =>
-        println(s"Problem retrieving details for $accountName, Error: ${e.toString}")
+        println(s"Problem retrieving details for $userName, Error: ${e.toString}")
     })
 
   val config = WebSiteConfig("cofunds.conf")
 
   val loginFormBuilder = aLoginForm().basedOnConfig(config)
 
-  val accounts = config.getAccountList()
+  val users = config.getUserList()
 
   val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
-  val listOfFutures = accounts map { account =>
+  val listOfFutures = users map { user =>
     composeWaitingFuture(
-      processTransactions(account.name), 30 seconds, account.name
+      processTransactions(user.name), 30 seconds, user.name
     )
   }
 

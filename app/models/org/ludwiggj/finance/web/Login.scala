@@ -1,5 +1,5 @@
 package models.org.ludwiggj.finance.web
 
 trait Login {
-  def loginAs(accountName: String): HtmlEntity
+  def loginAs(userName: String): HtmlEntity
 }

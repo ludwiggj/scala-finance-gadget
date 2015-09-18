@@ -20,7 +20,7 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
       fundsDatabase.get(kappaFundName) must beNone
       pricesDatabase.get(kappaFundName, kappaFundPriceDate) must beNone
 
-      holdingsDatabase.insert(userName, kappaFundHolding)
+      holdingsDatabase.insert(kappaFundHolding)
 
       usersDatabase.get(userName) must beSome.which(
         _ match { case UsersRow(_, name) => name == userName })
@@ -35,14 +35,30 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
   }
 
   "get a list of holdings" should {
-    "be unchanged if attempt to add holding for same fund and date" in TwoHoldings {
+    "be unchanged if attempt to add same holding for same user" in TwoHoldings {
       val holdingsDatabase = HoldingsDatabase()
 
-      val kappaDuplicateHolding = Holding(Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds + 1), 1.23)
+      val kappaDuplicateHolding = Holding(
+        userNameGraeme, Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds + 1), 1.23)
 
-      holdingsDatabase.insert(userName, kappaDuplicateHolding)
+      holdingsDatabase.insert(kappaDuplicateHolding)
 
       holdingsDatabase.get() must containTheSameElementsAs(List(kappaFundHolding, nikeFundHolding))
+    }
+  }
+
+  "get a list of holdings" should {
+    "increase by one if attempt to add same holding for different user" in TwoHoldings {
+      val holdingsDatabase = HoldingsDatabase()
+
+      holdingsDatabase.get().size must beEqualTo(2)
+
+      val kappaDuplicateHoldingForAnotherHolding = Holding(
+        userNameAudrey, Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds + 1), 1.23)
+
+      holdingsDatabase.insert(kappaDuplicateHoldingForAnotherHolding)
+
+      holdingsDatabase.get().size must beEqualTo(3)
     }
   }
 }

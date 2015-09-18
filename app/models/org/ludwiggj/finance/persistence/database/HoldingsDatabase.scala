@@ -1,6 +1,5 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.{Price, Holding}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
 import models.org.ludwiggj.finance.persistence.database.Tables._
@@ -17,49 +16,52 @@ import scala.slick.driver.MySQLDriver.simple._
 class HoldingsDatabase {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
-  def insert(userName: String, holding: Holding) = {
+  def insert(holding: Holding) = {
     db.withSession {
       implicit session =>
 
-        val userId = UsersDatabase().getOrInsert(userName)
+        if (!get().contains(holding)) {
 
-        def insert(fundId: Long) {
-          try {
+          val userId = UsersDatabase().getOrInsert(holding.userName)
+
+          def insert(fundId: Long) {
             Holdings += HoldingsRow(fundId, userId, holding.units, holding.priceDateAsSqlDate)
-          } catch {
-            case ex: MySQLIntegrityConstraintViolationException =>
-              println(s"Holding: ${ex.getMessage}")
           }
-        }
 
-        PricesDatabase().insert(holding.price)
+          PricesDatabase().insert(holding.price)
 
-        FundsDatabase().get(holding.name) match {
-          case Some(fundsRow) => insert(fundsRow.id)
-          case _ => println(s"Could not insert Holding: fund ${holding.name} not found")
+          FundsDatabase().get(holding.name) match {
+            case Some(fundsRow) => insert(fundsRow.id)
+            case _ => println(s"Could not insert Holding: fund ${holding.name} not found")
+          }
         }
     }
   }
 
-  def insert(userName: String, holdings: List[Holding]): Unit = {
+  def insert(holdings: List[Holding]): Unit = {
     for (holding <- holdings) {
-      insert(userName, holding)
+      insert(holding)
     }
   }
 
   implicit class HoldingExtension(q: Query[Holdings, HoldingsRow, Seq]) {
-    def withFundsAndPrices = {
+    def withFundsAndPricesAndUser = {
       q.join(Prices).on((h, p) => h.fundId === p.fundId && h.holdingDate === p.priceDate)
         .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
+        .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
     }
   }
 
-  implicit def asListOfHoldings(q: Query[((Holdings, Prices), Funds), ((HoldingsRow, PricesRow), FundsRow), Seq]): List[Holding] = {
+
+  implicit def asListOfHoldings(q: Query[(((Holdings, Prices), Funds), Users),
+    (((HoldingsRow, PricesRow), FundsRow), UsersRow), Seq]): List[Holding] = {
     db.withSession {
       implicit session =>
         q.list map {
-          case ((HoldingsRow(_, _, units, _), PricesRow(_, priceDate, price)), FundsRow(_, fundName)) =>
-            Holding(Price(fundName, priceDate, price), units)
+          case (((HoldingsRow(_, _, units, _), PricesRow(_, priceDate, price)),
+          FundsRow(_, fundName)), UsersRow(_, userName)) =>
+
+            Holding(userName, Price(fundName, priceDate, price), units)
         }
     }
   }
@@ -67,7 +69,7 @@ class HoldingsDatabase {
   def get(): List[Holding] = {
     db.withSession {
       implicit session =>
-        Holdings.withFundsAndPrices
+        Holdings.withFundsAndPricesAndUser
     }
   }
 }

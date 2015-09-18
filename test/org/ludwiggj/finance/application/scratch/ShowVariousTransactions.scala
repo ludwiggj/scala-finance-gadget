@@ -25,11 +25,13 @@ object ShowVariousTransactions extends App {
       implicit session =>
 
         def getTransactions(fundName: String, date: Date): List[Transaction] = {
+          val userNameGraeme = "Graeme"
 
           def getTransactionTuples: List[TransactionTuple] = {
             (for {
               t <- transactions
-              u <- t.usersFk if (u.name === "Graeme")
+              u <- t.usersFk
+              if (u.name === userNameGraeme)
               p <- t.pricesFk if ((t.priceDate <= date) && (t.priceDate === p.priceDate) && (t.fundId === p.fundId))
               f <- t.fundsFk if (f.name === fundName)
             } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
@@ -41,7 +43,7 @@ object ShowVariousTransactions extends App {
           }
 
           getTransactionTuples map {
-            Transaction(_)
+            Transaction(userNameGraeme, _)
           }
         }
 

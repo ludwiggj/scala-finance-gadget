@@ -15,14 +15,14 @@ class TransactionsSpec extends Specification with DatabaseHelpers {
       val transactionsDatabase = TransactionsDatabase()
 
       val userName = "Graeme"
-      val kappaFundTransaction = Transaction(
+      val kappaFundTransaction = Transaction(userNameGraeme,
         kappaFundPriceDate, "A transaction", Some(2.0), None, kappaFundPrice, 1.234)
 
       usersDatabase.get(userName) must beNone
       fundsDatabase.get(kappaFundName) must beNone
       pricesDatabase.get(kappaFundName, kappaFundPriceDate) must beNone
 
-      transactionsDatabase.insert(userName, kappaFundTransaction)
+      transactionsDatabase.insert(kappaFundTransaction)
 
       println(TransactionsDatabase().get())
 
@@ -44,9 +44,24 @@ class TransactionsSpec extends Specification with DatabaseHelpers {
 
       transactionsDatabase.get().size must beEqualTo(1)
 
-      transactionsDatabase.insert(userName, nikeFundTransaction)
+      transactionsDatabase.insert(nikeFundTransaction)
 
       transactionsDatabase.get().size must beEqualTo(1)
+    }
+  }
+
+  "get a list of transactions" should {
+    "increase by one if add same transaction for different user" in SingleTransaction {
+      val transactionsDatabase = TransactionsDatabase()
+
+      transactionsDatabase.get().size must beEqualTo(1)
+
+      val duplicateTransactionForAnotherUser =
+        Transaction(userNameAudrey, nikeFundPriceDate, "A transaction", Some(2.0), None, nikeFundPrice, 1.234)
+
+      transactionsDatabase.insert(duplicateTransactionForAnotherUser)
+
+      transactionsDatabase.get().size must beEqualTo(2)
     }
   }
 }
