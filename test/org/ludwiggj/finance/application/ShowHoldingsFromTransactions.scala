@@ -34,7 +34,7 @@ object ShowHoldingsFromTransactions extends App {
           val dateDifference = SimpleFunction.binary[Date, Date, Int] ("DATEDIFF")
 
           val transactionsOfInterest = transactions filter {
-            _.transactionDate <= dateOfInterest
+            _.date <= dateOfInterest
           }
 
           val inAmounts = transactionsOfInterest
@@ -62,10 +62,10 @@ object ShowHoldingsFromTransactions extends App {
           }
 
           val latestPriceDates = prices
-            .filter { p => (dateDifference(p.priceDate, dateOfInterest)) <= 1 }
+            .filter { p => (dateDifference(p.date, dateOfInterest)) <= 1 }
             .groupBy(p => p.fundId)
             .map { case (fundId, group) => {
-            (fundId, group.map(_.priceDate).max)
+            (fundId, group.map(_.date).max)
 
             // Should be able to use abs to get closest date either side of dateOfInterest, but hit various bugs...
             // See https://groups.google.com/forum/#!topic/scalaquery/lrumVNo3JE4
@@ -78,7 +78,7 @@ object ShowHoldingsFromTransactions extends App {
           val latestPrices =
             (for {
               (fundId, lastPriceDate) <- latestPriceDates
-              p <- prices if p.fundId === fundId && p.priceDate === lastPriceDate
+              p <- prices if p.fundId === fundId && p.date === lastPriceDate
             } yield (p.fundId, lastPriceDate, p.price))
 
           val joinedTable = ((unitsAdded leftJoin unitsSubtracted on ((added, subtracted) => {
@@ -200,7 +200,7 @@ object ShowHoldingsFromTransactions extends App {
         val regularInvestmentDates = transactions
           .filter { tx => tx.description === "Investment Regular" }
           .map {
-          _.transactionDate
+          _.date
         }.sorted.list.reverse.distinct
 
         for {

@@ -21,7 +21,7 @@ object ShowTransactionsCompiled extends App {
           (for {
             p <- prices
             f <- p.fundsFk if ((f.name === fundName))
-          } yield (p.price, p.priceDate)).sortBy { case (_, date) => date }
+          } yield (p.price, p.date)).sortBy { case (_, date) => date }
         }
 
         val fundPricesCompiled = Compiled(fundPrices _)

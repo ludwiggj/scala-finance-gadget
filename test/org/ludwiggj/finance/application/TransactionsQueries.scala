@@ -41,9 +41,9 @@ object TransactionsQueries extends App {
             (for {
               t <- transactions
               u <- t.usersFk if (u.name === userNameGraeme)
-              p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+              p <- t.pricesFk if ((t.priceDate === p.date) && (t.fundId === p.fundId))
               f <- t.fundsFk
-            } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+            } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
               )
               .sortBy { case (fundName, transactionDate, _, _, _, _, _, _) => {
               (transactionDate, fundName)
@@ -61,9 +61,9 @@ object TransactionsQueries extends App {
             t <- transactions if ((t.description === "Investment Regular") ||
             (t.description === "Investment Lump Sum"))
             u <- t.usersFk if (u.name === userNameGraeme)
-            p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+            p <- t.pricesFk if ((t.priceDate === p.date) && (t.fundId === p.fundId))
             f <- t.fundsFk
-          } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+          } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
             ).sortBy(row => {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)
@@ -76,9 +76,9 @@ object TransactionsQueries extends App {
           (for {
             t <- transactions if ((t.description === "Dividend Reinvestment"))
             u <- t.usersFk if (u.name === userNameGraeme)
-            p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+            p <- t.pricesFk if ((t.priceDate === p.date) && (t.fundId === p.fundId))
             f <- t.fundsFk
-          } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+          } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
             ).sortBy(row => {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)

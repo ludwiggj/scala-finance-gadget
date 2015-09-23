@@ -38,7 +38,7 @@ object ShowFinanceHoldings extends App {
         def getHoldingDates() = {
           (for {
             h <- holdings
-          } yield (h.holdingDate)
+          } yield (h.date)
             ).sortBy(date => date).list.distinct
         }
 
@@ -47,8 +47,8 @@ object ShowFinanceHoldings extends App {
             h <- holdings
             u <- h.usersFk if (u.name === userName)
             f <- h.fundsFk
-            p <- prices if (p.fundId === f.id && p.priceDate === h.holdingDate && p.priceDate === desiredDate)
-          } yield (f.name, h.holdingDate, h.units, p.price, h.units * p.price)
+            p <- prices if (p.fundId === f.id && p.date === h.date && p.date === desiredDate)
+          } yield (f.name, h.date, h.units, p.price, h.units * p.price)
             ).list
         }
 

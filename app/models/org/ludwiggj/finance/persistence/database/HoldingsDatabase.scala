@@ -47,7 +47,7 @@ class HoldingsDatabase {
 
   implicit class HoldingExtension(q: Query[Holdings, HoldingsRow, Seq]) {
     def withFundsAndPricesAndUser = {
-      q.join(Prices).on((h, p) => h.fundId === p.fundId && h.holdingDate === p.priceDate)
+      q.join(Prices).on((h, p) => h.fundId === p.fundId && h.date === p.date)
         .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
         .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
     }

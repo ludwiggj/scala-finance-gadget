@@ -32,9 +32,9 @@ object ShowVariousTransactions extends App {
               t <- transactions
               u <- t.usersFk
               if (u.name === userNameGraeme)
-              p <- t.pricesFk if ((t.priceDate <= date) && (t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+              p <- t.pricesFk if ((t.priceDate <= date) && (t.priceDate === p.date) && (t.fundId === p.fundId))
               f <- t.fundsFk if (f.name === fundName)
-            } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+            } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
               )
               .sortBy { case (fundName, transactionDate, _, _, _, _, _, _) => {
               (transactionDate, fundName)
@@ -56,8 +56,8 @@ object ShowVariousTransactions extends App {
         def lastFundPrice(fundName: String, date: Date): Price = {
           val (priceDate, price) = (for {
             p <- prices
-            f <- p.fundsFk if ((f.name === fundName) && (p.priceDate <= date))
-          } yield (p.priceDate, p.price)).sortBy { case (date, _) => date }.list.last
+            f <- p.fundsFk if ((f.name === fundName) && (p.date <= date))
+          } yield (p.date, p.price)).sortBy { case (date, _) => date }.list.last
           Price(fundName, priceDate, price)
         }
 

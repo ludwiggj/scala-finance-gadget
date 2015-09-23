@@ -51,7 +51,7 @@ class TransactionsDatabase {
     }
 
     def withFundsAndPricesAndUser = {
-      q.join(Prices).on((t, p) => t.fundId === p.fundId && t.priceDate === p.priceDate)
+      q.join(Prices).on((t, p) => t.fundId === p.fundId && t.priceDate === p.date)
         .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
         .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
     }
@@ -70,9 +70,9 @@ class TransactionsDatabase {
     db.withSession {
       implicit session =>
         q.list map {
-          case (((TransactionsRow(_, _, transactionDate, description, amountIn, amountOut, priceDate, units),
+          case (((TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
           PricesRow(_, _, price)), FundsRow(_, fundName)), UsersRow(_, userName)) =>
-            Transaction(userName, FinanceDate(transactionDate), description, amountIn, amountOut,
+            Transaction(userName, FinanceDate(date), description, amountIn, amountOut,
               Price(fundName, priceDate, price), units)
         }
     }

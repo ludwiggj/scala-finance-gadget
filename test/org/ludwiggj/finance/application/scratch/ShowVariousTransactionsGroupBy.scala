@@ -35,9 +35,9 @@ object ShowVariousTransactionsGroupBy extends App {
             (for {
               t <- transactions
               u <- t.usersFk if (u.name === userNameGraeme)
-              p <- t.pricesFk if ((t.priceDate <= date) && (t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+              p <- t.pricesFk if ((t.priceDate <= date) && (t.priceDate === p.date) && (t.fundId === p.fundId))
               f <- t.fundsFk if (f.name === fundName)
-            } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+            } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
               )
               .sortBy { case (fundName, transactionDate, _, _, _, _, _, _) => {
               (transactionDate, fundName)
@@ -60,8 +60,8 @@ object ShowVariousTransactionsGroupBy extends App {
           println(s"$fundName $date")
           (for {
             p <- prices
-            f <- p.fundsFk if ((f.name === fundName) && (p.priceDate <= date))
-          } yield (p.price, p.priceDate)).sortBy { case (_, date) => date }
+            f <- p.fundsFk if ((f.name === fundName) && (p.date <= date))
+          } yield (p.price, p.date)).sortBy { case (_, date) => date }
           //.list.last
         }
 
@@ -165,7 +165,7 @@ object ShowVariousTransactionsGroupBy extends App {
           (for {
             p <- prices
             f <- p.fundsFk if ((f.name === fundName))
-          } yield (p.price, p.priceDate)).sortBy { case (_, date) => date }
+          } yield (p.price, p.date)).sortBy { case (_, date) => date }
         }
 
         val fundPricesCompiled = Compiled(fundPrices _)
@@ -185,17 +185,17 @@ object ShowVariousTransactionsGroupBy extends App {
         println("Last prices ......")
         println("================")
         val latestPriceDates = prices
-          .filter { p => p.priceDate <= dateOfInterest }
+          .filter { p => p.date <= dateOfInterest }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
-          (fundId, group.map(_.priceDate).max)
+          (fundId, group.map(_.date).max)
         }
         }
 
         val latestPrices =
           (for {
             (fundId, lastPriceDate) <- latestPriceDates
-            p <- prices if p.fundId === fundId && p.priceDate === lastPriceDate
+            p <- prices if p.fundId === fundId && p.date === lastPriceDate
           } yield (p.fundId, lastPriceDate, p.price)).list.map(println)
     }
   }

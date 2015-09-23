@@ -8,8 +8,8 @@ object SlickAutoGenWithCaseClasses {
   def main(args: Array[String]) = {
     codegen.writeToFile(
       "scala.slick.driver.MySQLDriver",
-      "src/main/scala",
-      "org.ludwiggj.finance.persistence.database",
+      "app",
+      "models.org.ludwiggj.finance.persistence.database",
       "Tables",
       "Tables.scala"
     )
@@ -33,5 +33,21 @@ object SlickAutoGenWithCaseClasses {
       "import scala.language.implicitConversions",
       "implicit def string2BigDecimal(value: String) = new scala.math.BigDecimal(new java.math.BigDecimal(value))",
       super.code)
+
+    // override generator responsible for tables
+    override def Table = new Table(_) {
+      table =>
+
+      // override generator responsible for columns
+      override def Column = new Column(_) {
+        // customize Scala column names
+        override def rawName = (table.model.name.table, this.model.name) match {
+          case ("HOLDINGS", "HOLDING_DATE") => "date"
+          case ("PRICES", "PRICE_DATE") => "date"
+          case ("TRANSACTIONS", "TRANSACTION_DATE") => "date"
+          case _ => super.rawName
+        }
+      }
+    }
   }
 }

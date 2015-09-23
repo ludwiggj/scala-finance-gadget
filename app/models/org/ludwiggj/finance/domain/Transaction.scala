@@ -3,10 +3,6 @@ package models.org.ludwiggj.finance.domain
 import models.org.ludwiggj.finance.persistence.database.TransactionTuple
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 
-//1.Fix transactions (inc Transaction case class equals method)
-//2.implicit conversions for dates
-//3.make table columns and class field names consistent
-
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
 

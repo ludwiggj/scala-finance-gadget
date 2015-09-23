@@ -23,9 +23,9 @@ object ShowTransactions extends App {
           (for {
             t <- transactions
             u <- t.usersFk if (u.name === userName)
-            p <- t.pricesFk if ((t.priceDate === p.priceDate) && (t.fundId === p.fundId))
+            p <- t.pricesFk if ((t.priceDate === p.date) && (t.fundId === p.fundId))
             f <- t.fundsFk
-          } yield (f.name, t.transactionDate, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
+          } yield (f.name, t.date, t.description, t.amountIn, t.amountOut, t.priceDate, p.price, t.units)
             ).sortBy(row => {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)

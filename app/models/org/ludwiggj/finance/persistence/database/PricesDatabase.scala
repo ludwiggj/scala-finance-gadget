@@ -78,7 +78,7 @@ class PricesDatabase {
   private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
     db.withSession {
       implicit session =>
-        Prices filter (_.priceDate === asSqlDate(priceDate.date))
+        Prices filter (_.date === asSqlDate(priceDate.date))
     }
   }
 
