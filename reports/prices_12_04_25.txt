@@ -41,14 +41,14 @@ Aberdeen Ethical World Equity A Fund Inc|25/08/2014|1.4799
 Aberdeen Ethical World Equity A Fund Inc|25/09/2014|1.4480
 Aberdeen Ethical World Equity A Fund Inc|25/10/2014|1.3898
 Aberdeen Ethical World Equity A Fund Inc|25/01/2015|1.4753
-CIS Sustainable Leaders C Trust Inc|25/04/2014|1.2660
-CIS Sustainable Leaders C Trust Inc|25/05/2014|1.3070
-CIS Sustainable Leaders C Trust Inc|25/06/2014|1.2760
-CIS Sustainable Leaders C Trust Inc|25/07/2014|1.2910
-CIS Sustainable Leaders C Trust Inc|25/08/2014|1.3140
-CIS Sustainable Leaders C Trust Inc|25/09/2014|1.2990
-CIS Sustainable Leaders C Trust Inc|25/10/2014|1.2750
-CIS Sustainable Leaders C Trust Inc|25/01/2015|1.4050
+Royal London Sustainable Leaders C Trust Inc|25/04/2014|1.2660
+Royal London Sustainable Leaders C Trust Inc|25/05/2014|1.3070
+Royal London Sustainable Leaders C Trust Inc|25/06/2014|1.2760
+Royal London Sustainable Leaders C Trust Inc|25/07/2014|1.2910
+Royal London Sustainable Leaders C Trust Inc|25/08/2014|1.3140
+Royal London Sustainable Leaders C Trust Inc|25/09/2014|1.2990
+Royal London Sustainable Leaders C Trust Inc|25/10/2014|1.2750
+Royal London Sustainable Leaders C Trust Inc|25/01/2015|1.4050
 EdenTree Amity European A Fund Inc|25/08/2013|1.8450
 EdenTree Amity European A Fund Inc|25/09/2013|1.9010
 EdenTree Amity European A Fund Inc|25/10/2013|2.0020

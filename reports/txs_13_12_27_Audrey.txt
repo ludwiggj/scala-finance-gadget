@@ -1,4 +1,4 @@
-CIS Sustainable Leaders C Trust Inc|27/12/2013|Investment Regular|325.62||27/12/2013|1.2970|251.0563
+Royal London Sustainable Leaders C Trust Inc|27/12/2013|Investment Regular|325.62||27/12/2013|1.2970|251.0563
 EdenTree Amity European B Fund Inc|27/12/2013|Investment Regular|325.62||27/12/2013|2.0430|159.3833
 Henderson Global Care UK Income I Fund Inc|27/12/2013|Investment Regular|325.62||27/12/2013|1.3240|245.9366
 Schroder Gbl Property Income Maximiser Z Fund Inc|27/12/2013|Investment Regular|325.62||27/12/2013|0.4700|692.8086
@@ -6,7 +6,7 @@ F&C Responsible UK Income 1 Fund Inc|12/12/2013|Sale for Regular Payment||11.33|
 Henderson Global Care UK Income I Fund Inc|02/12/2013|Dividend Reinvestment|15.65||02/12/2013|1.2820|12.2075
 Henderson Global Care UK Income A Fund Inc|02/12/2013|Dividend Reinvestment|42.57||02/12/2013|1.1390|37.3749
 Henderson Global Care UK Income A Fund Inc|02/12/2013|Dividend Reinvestment|13.06||02/12/2013|1.1390|11.4662
-CIS Sustainable Leaders C Trust Inc|25/11/2013|Investment Regular|325.62||25/11/2013|1.2790|254.5896
+Royal London Sustainable Leaders C Trust Inc|25/11/2013|Investment Regular|325.62||25/11/2013|1.2790|254.5896
 EdenTree Amity European B Fund Inc|25/11/2013|Investment Regular|325.62||25/11/2013|2.0330|160.1673
 Henderson Global Care UK Income I Fund Inc|25/11/2013|Investment Regular|325.62||25/11/2013|1.2880|252.8106
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/11/2013|Investment Regular|325.62||25/11/2013|0.4830|674.1615
@@ -20,12 +20,12 @@ Aberdeen Ethical World Equity A Fund Inc|01/11/2013|Dividend Reinvestment|16.43|
 Aberdeen Ethical World Equity A Fund Inc|01/11/2013|Dividend Reinvestment|14.04||01/11/2013|1.4297|9.8203
 Aberdeen Ethical World Equity A Fund Inc|01/11/2013|Dividend Reinvestment|1.10||01/11/2013|1.4297|0.7694
 Aberdeen Ethical World Equity A Fund Inc|01/11/2013|Dividend Reinvestment|3.60||01/11/2013|1.4297|2.5181
-CIS Sustainable Leaders C Trust Inc|25/10/2013|Investment Regular|325.62||25/10/2013|1.2810|254.1921
+Royal London Sustainable Leaders C Trust Inc|25/10/2013|Investment Regular|325.62||25/10/2013|1.2810|254.1921
 EdenTree Amity European B Fund Inc|25/10/2013|Investment Regular|325.62||25/10/2013|2.0240|160.8795
 Henderson Global Care UK Income I Fund Inc|25/10/2013|Investment Regular|325.62||25/10/2013|1.2850|253.4008
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/10/2013|Investment Regular|325.62||25/10/2013|0.5060|643.5178
 F&C Responsible UK Income 1 Fund Inc|11/10/2013|Sale for Regular Payment||9.33|11/10/2013|1.2640|7.3798
-CIS Sustainable Leaders C Trust Inc|25/09/2013|Investment Regular|325.62||25/09/2013|1.2230|266.2470
+Royal London Sustainable Leaders C Trust Inc|25/09/2013|Investment Regular|325.62||25/09/2013|1.2230|266.2470
 EdenTree Amity European B Fund Inc|25/09/2013|Investment Regular|325.62||25/09/2013|1.9230|169.3292
 Henderson Global Care UK Income I Fund Inc|25/09/2013|Investment Regular|325.62||25/09/2013|1.2710|256.1920
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/09/2013|Investment Regular|325.62||25/09/2013|0.4962|656.2274
@@ -33,7 +33,7 @@ F&C Responsible UK Income 1 Fund Inc|12/09/2013|Sale for Regular Payment||8.61|1
 EdenTree Amity European A Fund Inc|30/08/2013|Dividend Reinvestment|2.85||30/08/2013|1.8100|1.5746
 EdenTree Amity European A Fund Inc|30/08/2013|Dividend Reinvestment|12.44||30/08/2013|1.8100|6.8730
 EdenTree Amity European A Fund Inc|30/08/2013|Dividend Reinvestment|13.57||30/08/2013|1.8100|7.4973
-CIS Sustainable Leaders C Trust Inc|27/08/2013|Investment Regular|325.62||27/08/2013|1.2020|270.8986
+Royal London Sustainable Leaders C Trust Inc|27/08/2013|Investment Regular|325.62||27/08/2013|1.2020|270.8986
 EdenTree Amity European B Fund Inc|27/08/2013|Investment Regular|325.62||27/08/2013|1.8640|174.6889
 Henderson Global Care UK Income I Fund Inc|27/08/2013|Investment Regular|325.62||27/08/2013|1.2480|260.9135
 Schroder Gbl Property Income Maximiser Z Fund Inc|27/08/2013|Investment Regular|325.62||27/08/2013|0.4931|660.3529
