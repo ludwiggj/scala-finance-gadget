@@ -6,21 +6,21 @@ import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
 
-  def holdingName = price.holdingName
+  def fundName = price.fundName
 
   def priceDate = price.date
 
   def priceInPounds = price.inPounds
 
   override def toString =
-    s"Tx [userName: ${userName}, holding: ${price.holdingName}, date: $date, description: $description, in: $in, out: $out, " +
+    s"Tx [userName: ${userName}, holding: ${price.fundName}, date: $date, description: $description, in: $in, out: $out, " +
       s"price date: ${price.date}, price: ${price.inPounds}, units: $units]"
 
-  def toFileFormat = s"${price.holdingName}$separator$date$separator$description" +
+  def toFileFormat = s"${price.fundName}$separator$date$separator$description" +
     s"$separator${in.getOrElse("")}$separator${out.getOrElse("")}" +
     s"$separator${price.date}$separator${price.inPounds}$separator$units"
 
-  def canEqual(t: Transaction) = (holdingName == t.holdingName) && (userName == t.userName) && (date == t.date) &&
+  def canEqual(t: Transaction) = (fundName == t.fundName) && (userName == t.userName) && (date == t.date) &&
     (description == t.description) && (in == t.in) && (out == t.out) && (priceDate == t.priceDate) &&
     (units == t.units)
 
@@ -46,10 +46,15 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 
 object Transaction {
 
+  private def parseNumberOption(candidateNumber: String) = {
+      val filteredNumber = stripNonFPDigits(candidateNumber)
+      if (filteredNumber.size == 0) None else Some(BigDecimal(filteredNumber))
+    }
+
   def apply(userName:String, tx: TransactionTuple) = {
-    val (holdingName, date, description, in, out, priceDate, priceInPounds, units) = tx
+    val (fundName, date, description, in, out, priceDate, priceInPounds, units) = tx
     new Transaction(userName, FinanceDate(date), description, Option(in), Option(out),
-      Price(holdingName, priceDate, priceInPounds), units)
+      Price(fundName, priceDate, priceInPounds), units)
   }
 
   def apply(userName: String, row: String): Transaction = {
@@ -66,13 +71,13 @@ object Transaction {
         """.*?"""
       ).r
 
-    val txPattern(holdingName, date, description, in, out, priceDate, priceInPence, units, _) =
+    val txPattern(fundName, date, description, in, out, priceDate, priceInPence, units, _) =
       stripAllWhitespaceExceptSpace(row)
 
     val priceInPounds = parseNumber(priceInPence) / 100;
 
     Transaction(userName, FinanceDate(date), description.trim, parseNumberOption(in), parseNumberOption(out),
-      Price(cleanHoldingName(holdingName), FinanceDate(priceDate), priceInPounds), parseNumber(units))
+      Price(fundName, FinanceDate(priceDate), priceInPounds), parseNumber(units))
   }
 
   def apply(userName: String, row: Array[String]): Transaction = {

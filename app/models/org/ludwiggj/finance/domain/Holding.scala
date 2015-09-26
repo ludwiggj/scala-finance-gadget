@@ -9,13 +9,13 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
 
   def priceDate = price.date
 
-  def name = price.holdingName
+  def name = price.fundName
 
   override def toString =
-    s"Financial Holding [userName: ${userName}, name: ${price.holdingName}, units: $units, date: ${price.date}, " +
+    s"Financial Holding [userName: ${userName}, name: ${price.fundName}, units: $units, date: ${price.date}, " +
       s"price: £${price.inPounds}, value: £$value]"
 
-  def toFileFormat = s"${price.holdingName}$separator$units$separator${price.date}$separator${price.inPounds}" +
+  def toFileFormat = s"${price.fundName}$separator$units$separator${price.date}$separator${price.inPounds}" +
     s"$separator$value"
 
   def canEqual(h: Holding) = userName == h.userName && name == h.name && priceDate == h.priceDate
@@ -49,9 +49,9 @@ object Holding {
         """.*?"""
       ).r
 
-    val holdingPattern(holdingName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
+    val holdingPattern(fundName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
     val priceInPounds = parseNumber(priceInPence) / 100;
-    Holding(userName, Price(cleanHoldingName(holdingName), FinanceDate(date), priceInPounds), parseNumber(units))
+    Holding(userName, Price(fundName, FinanceDate(date), priceInPounds), parseNumber(units))
   }
 
   def apply(userName: String, row: Array[String]): Holding = {

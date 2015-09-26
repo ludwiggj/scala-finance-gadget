@@ -31,9 +31,9 @@ class TransactionsDatabase {
 
           PricesDatabase().insert(transaction.price)
 
-          FundsDatabase().get(transaction.holdingName) match {
+          FundsDatabase().get(transaction.fundName) match {
             case Some(fundsRow) => insert(fundsRow.id)
-            case _ => println(s"Could not insert Transaction: fund ${transaction.holdingName} not found")
+            case _ => println(s"Could not insert Transaction: fund ${transaction.fundName} not found")
           }
         }
     }

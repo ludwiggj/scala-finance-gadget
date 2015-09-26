@@ -86,9 +86,9 @@ class TransactionSuite extends FunSuite with Matchers {
     }
   }
 
-  test("Transaction.holdingName is correct") {
+  test("Transaction.fundName is correct") {
     new TestTransactions {
-      tx1.holdingName should equal("Aberdeen Ethical World Equity A Fund Inc")
+      tx1.fundName should equal("Aberdeen Ethical World Equity A Fund Inc")
     }
   }
 

@@ -58,14 +58,14 @@ class PricesDatabase {
             }
           }
 
-          get(price.holdingName, price.date) match {
+          get(price.fundName, price.date) match {
             case Some(aPrice: Price) => ()
             case _ => insert()
           }
       }
     }
 
-    val fundId = FundsDatabase().getOrInsert(price.holdingName)
+    val fundId = FundsDatabase().getOrInsert(price.fundName)
     insert((fundId, price))
   }
 

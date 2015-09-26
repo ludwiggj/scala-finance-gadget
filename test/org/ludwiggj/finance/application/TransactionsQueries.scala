@@ -29,7 +29,7 @@ object TransactionsQueries extends App {
           println(s"Total no of txs = ${txs.size}")
           txs foreach {
             tx =>
-              println(f"${tx.date}  ${tx.holdingName}%-50s ${tx.description}%-25s £${tx.in.get}%7.2f  " +
+              println(f"${tx.date}  ${tx.fundName}%-50s ${tx.description}%-25s £${tx.in.get}%7.2f  " +
                 f"£${tx.out.get}%7.2f  ${tx.priceDate}  £${tx.priceInPounds}%8.4f ${tx.units}%10.4f")
           }
         }
