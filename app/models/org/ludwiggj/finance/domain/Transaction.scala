@@ -26,7 +26,7 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: Transaction => that.canEqual(this) && this.hashCode == that.hashCode
+      case that: Transaction => that.canEqual(this) && (this.hashCode == that.hashCode)
       case _ => false
     }
 
@@ -34,11 +34,12 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
     val prime = 31
     var result = 1
     result = prime * result + (if (userName == null) 0 else userName.hashCode)
+    result = prime * result + (if (fundName == null) 0 else fundName.hashCode)
     result = prime * result + (if (date == null) 0 else date.hashCode)
     result = prime * result + (if (description == null) 0 else description.hashCode)
     result = prime * result + (if (! in.isDefined) 0 else in.hashCode)
     result = prime * result + (if (! out.isDefined) 0 else out.hashCode)
-    result = prime * result + (if (price == null) 0 else price.hashCode)
+    result = prime * result + (if (priceDate == null) 0 else priceDate.hashCode)
     result = prime * result + units.intValue();
     return result
   }

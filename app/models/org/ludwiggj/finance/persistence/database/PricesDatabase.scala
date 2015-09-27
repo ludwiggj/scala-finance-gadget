@@ -1,27 +1,18 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.{FinanceDate, Price}
+import models.org.ludwiggj.finance.domain.{FundName, FinanceDate, Price}
 import play.api.db.DB
 import play.api.Play.current
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow, FundsRow}
-import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
+import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
 import models.org.ludwiggj.finance.asSqlDate
 
-/**
- * Data access facade.
- */
+class PricesDatabase private {
 
-// Note: declaring a Prices companion object would break the <> mapping.
-object PricesDatabase {
-  def apply() = new PricesDatabase()
-}
-
-class PricesDatabase {
-
-  implicit def pricesRowWrapper(fundIdAndPrice: (Long, Price)) = {
+  implicit def fundIdAndPriceToPricesRow(fundIdAndPrice: (Long, Price)) = {
     val (fundId, price) = fundIdAndPrice
     PricesRow(fundId, price.date, price.inPounds)
   }
@@ -29,7 +20,7 @@ class PricesDatabase {
   implicit class PriceExtension(q: Query[Prices, PricesRow, Seq]) {
     def withFunds = q.join(Funds).on(_.fundId === _.id)
 
-    def withFundsNamed(fundName: String) = q.join(Funds).on((p, f) => p.fundId === f.id && f.name === fundName)
+    def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName.name))
   }
 
   implicit def asListOfPrices(q: Query[(Prices, Funds), (PricesRow, FundsRow), Seq]): List[Price] = {
@@ -86,7 +77,12 @@ class PricesDatabase {
     Prices.withFunds
   }
 
-  def get(fundName: String, priceDate: FinanceDate): Option[Price] = {
+  def get(fundName: FundName, priceDate: FinanceDate): Option[Price] = {
     pricesOn(priceDate).withFundsNamed(fundName).headOption
   }
+}
+
+// Note: declaring a Prices companion object would break the <> mapping.
+object PricesDatabase {
+  def apply() = new PricesDatabase()
 }

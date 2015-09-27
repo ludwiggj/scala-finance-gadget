@@ -62,7 +62,7 @@ class PricesSpec extends Specification with DatabaseHelpers {
       PricesDatabase().insert(price)
 
       FundsDatabase().get(capitalistsDreamFundName) must beSome.which(
-        _ match { case FundsRow(_, name) => name == capitalistsDreamFundName })
+        _ match { case FundsRow(_, name) => (name == capitalistsDreamFundName.name) })
 
       PricesDatabase().get(capitalistsDreamFundName, capitalistsDreamFundPriceDate) must beSome(price)
     }

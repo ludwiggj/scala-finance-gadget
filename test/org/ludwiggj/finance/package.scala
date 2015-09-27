@@ -1,6 +1,6 @@
 package org.ludwiggj
 
-import models.org.ludwiggj.finance.domain.{Transaction, Price, Holding, FinanceDate}
+import models.org.ludwiggj.finance.domain._
 
 package object finance {
 
@@ -43,6 +43,9 @@ package object finance {
       BigDecimal(5498.5076))
 
     val holdings = List(holding1, holding2, holding3)
+
+    val holding4 = Holding(userNameGraeme, Price(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ", "20/05/2014", "0.4808"),
+          BigDecimal(5498.5076))
   }
 
   trait TestPrices {
@@ -50,5 +53,13 @@ package object finance {
     val price2 = Price("Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
 
     val prices = List(price1, price2)
+
+    val priceBeforeNameCorrection = Price("^Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
+    val priceAfterNameCorrection = Price("Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
+  }
+
+  trait TestFundNames {
+    val fundNameBeforeNameCorrection = FundName(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ")
+    val fundNameAfterNameCorrection = FundName("Schroder Gbl Property Income Maximiser Z Fund Inc")
   }
 }

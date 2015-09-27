@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.web
 
 import com.typesafe.config.Config
 
-class Attribute(val name: String, val value: String) {
+class Attribute private(val name: String, val value: String) {
   override def toString = s"Attribute (name: $name value: $value)"
   def unapply() = (name, value)
 }

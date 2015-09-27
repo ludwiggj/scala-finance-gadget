@@ -3,9 +3,9 @@ package models.org.ludwiggj.finance.web
 import models.org.ludwiggj.finance.builders.LoginFormBuilder
 import models.org.ludwiggj.finance.domain.Holding
 
-class WebSiteHoldingFactory(private val loginFormBuilder: LoginFormBuilder, private val userName: String)
+class WebSiteHoldingFactory private(private val loginFormBuilder: LoginFormBuilder, private val userName: String)
   extends {
-      val financeEntityTableSelector = s"table[id~=Holdings] tr"
+    val financeEntityTableSelector = s"table[id~=Holdings] tr"
   }
   with HtmlPageFinanceRowParser {
 

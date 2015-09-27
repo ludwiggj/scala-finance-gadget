@@ -5,13 +5,13 @@ import java.sql.Date
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
-class FinanceDate(val date: DateTime) {
+class FinanceDate private(val date: DateTime) {
   override def toString = date.toString(FinanceDate.formatter)
 
   final override def equals(other: Any) = {
     val that = other.asInstanceOf[FinanceDate]
     if (that == null) false
-    else date == that.date
+    else (date == that.date)
   }
 
   final override def hashCode = date.hashCode()

@@ -1,5 +1,7 @@
 package models.org.ludwiggj.finance
 
+import scala.language.implicitConversions
+
 package object domain {
   val separator = '|'
 

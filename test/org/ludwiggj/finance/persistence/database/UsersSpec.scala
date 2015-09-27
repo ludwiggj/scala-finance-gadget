@@ -1,7 +1,7 @@
 package org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
 import org.specs2.mutable.Specification
 

@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.file
 
 import models.org.ludwiggj.finance.domain.Price
 
-class FilePriceFactory(private val priceFileName: String) extends {
+class FilePriceFactory private(private val priceFileName: String) extends {
   val fileName = priceFileName
 } with FileFinanceRowParser {
 
@@ -12,7 +12,5 @@ class FilePriceFactory(private val priceFileName: String) extends {
 }
 
 object FilePriceFactory {
-  def apply(fileName: String) = {
-    new FilePriceFactory(fileName)
-  }
+  def apply(fileName: String) = new FilePriceFactory(fileName)
 }

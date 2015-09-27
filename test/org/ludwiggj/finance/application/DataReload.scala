@@ -84,7 +84,7 @@ object DataReload extends App {
     ) {
       val fileName = aFile.getName
       println(s"Persisting prices, file $fileName")
-      PricesDatabase().insert(new FilePriceFactory(s"$reportHome/$fileName").getPrices())
+      PricesDatabase().insert(FilePriceFactory(s"$reportHome/$fileName").getPrices())
     }
   }
 

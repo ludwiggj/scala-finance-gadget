@@ -1,9 +1,9 @@
 package org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Transaction, Holding, Price, FinanceDate}
+import models.org.ludwiggj.finance.domain._
 import models.org.ludwiggj.finance.persistence.database._
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
-import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundsRowWrapper
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
 import org.specs2.execute.AsResult
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Around
@@ -16,22 +16,23 @@ import play.api.test.Helpers._
 import scala.io.Source
 import scala.slick.driver.MySQLDriver.simple._
 
-
 trait DatabaseHelpers {
   this: SpecificationFeatures =>
 
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
 
-  var capitalistsDreamFundId = 0L
-  val capitalistsDreamFundName = "Capitalists Dream"
+  val solyentGreenFundName = FundName("Solyent Green")
 
-  val kappaFundName: String = "Kappa"
+  var capitalistsDreamFundId = 0L
+  val capitalistsDreamFundName = FundName("Capitalists Dream")
+
+  val kappaFundName = FundName("Kappa")
   val kappaFundPriceDate: FinanceDate = FinanceDate("20/05/2014")
   val kappaFundPriceInPounds: Double = 1.12
   val kappaFundPrice = Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds)
 
-  val nikeFundName: String = "Nike"
+  val nikeFundName = FundName("Nike")
   val nikeFundPriceDate: FinanceDate = FinanceDate("20/06/2014")
   val nikeFundPriceInPounds: Double = 3.12
   val nikeFundPrice = Price(nikeFundName, nikeFundPriceDate, nikeFundPriceInPounds)

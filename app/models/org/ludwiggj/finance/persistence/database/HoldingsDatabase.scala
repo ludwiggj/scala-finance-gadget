@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Price, Holding}
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.asSqlDate
 import play.api.Play.current
@@ -14,7 +14,7 @@ import scala.slick.driver.MySQLDriver.simple._
  * Data access facade.
  */
 
-class HoldingsDatabase {
+class HoldingsDatabase private {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
   def insert(holding: Holding) = {

@@ -2,13 +2,13 @@ package models.org.ludwiggj.finance.web
 
 import com.gargoylesoftware.htmlunit.html.{HtmlForm, HtmlInput, HtmlSubmitInput}
 
-class LoginForm(private val webClient: WebClient,
-                private val baseUrl: String,
-                private val fields: List[FormField],
-                private val submitButton: String,
-                private val users: List[User],
-                private val logoutText: String
-                 ) extends Login {
+class LoginForm private(private val webClient: WebClient,
+                        private val baseUrl: String,
+                        private val fields: List[FormField],
+                        private val submitButton: String,
+                        private val users: List[User],
+                        private val logoutText: String
+                         ) extends Login {
 
   private def userByName = Map((for (user <- users) yield (user.name, user)): _*)
 

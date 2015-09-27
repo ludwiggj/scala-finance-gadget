@@ -30,7 +30,7 @@ class TransactionsSpec extends Specification with DatabaseHelpers {
         _ match { case UsersRow(_, name) => name == userName })
 
       fundsDatabase.get(kappaFundName) must beSome.which(
-        _ match { case FundsRow(_, name) => name == kappaFundName })
+        _ match { case FundsRow(_, name) => name == kappaFundName.name })
 
       pricesDatabase.get(kappaFundName, kappaFundPriceDate) must beSome(kappaFundPrice)
 

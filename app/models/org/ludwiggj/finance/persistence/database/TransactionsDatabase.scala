@@ -4,12 +4,12 @@ import models.org.ludwiggj.finance.domain.{FinanceDate, Price, Transaction}
 import scala.slick.driver.MySQLDriver.simple._
 import play.api.db.DB
 import play.api.Play.current
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.usersRowWrapper
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.asSqlDate
 import scala.language.implicitConversions
 
-class TransactionsDatabase {
+class TransactionsDatabase private {
 
   implicit lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
@@ -88,7 +88,5 @@ class TransactionsDatabase {
 
 // Note: declaring a Transactions companion object would break the <> mapping.
 object TransactionsDatabase {
-  def apply() = {
-    new TransactionsDatabase()
-  }
+  def apply() = new TransactionsDatabase()
 }

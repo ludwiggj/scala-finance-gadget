@@ -4,7 +4,7 @@ import java.util.logging.Logger
 
 import com.gargoylesoftware.htmlunit.{BrowserVersion, WebClient => HtmlUnitWebClient}
 
-class WebClient(browserVersion: BrowserVersion) {
+class WebClient private(browserVersion: BrowserVersion) {
   private val webClient = new HtmlUnitWebClient(browserVersion)
 
   // Suppress logging of errors

@@ -8,7 +8,7 @@ import org.scalatest.{FunSuite, Matchers}
 class FinanceDateSuite extends FunSuite with Matchers {
 
   test("A finance date should display correct output") {
-    FinanceDate("29/04/2014").toString equals ("29/04/2014")
+    FinanceDate("29/04/2014").toString should equal ("29/04/2014")
   }
 
   test("Equality returns true for equal dates") {

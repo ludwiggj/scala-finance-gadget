@@ -56,7 +56,7 @@ class FileFactoryTest extends FunSuite with Matchers {
   test("Retrieve prices from file") {
     new TestPrices {
 
-      val actualPrices = new FilePriceFactory("/filePrices.txt").getPrices()
+      val actualPrices = FilePriceFactory("/filePrices.txt").getPrices()
 
       actualPrices should contain theSameElementsAs prices
     }
@@ -65,7 +65,7 @@ class FileFactoryTest extends FunSuite with Matchers {
   test("First price from file toString") {
       new TestPrices {
 
-        val actualPrices = new FilePriceFactory("/filePrices.txt").getPrices()
+        val actualPrices = FilePriceFactory("/filePrices.txt").getPrices()
 
         (actualPrices head).toString() should equal(
           "Price [name: Henderson Global Care UK Income A Fund Inc, date: 25/04/2010, price: £0.8199]"

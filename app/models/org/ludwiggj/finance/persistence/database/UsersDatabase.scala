@@ -10,7 +10,7 @@ import Tables.{Users, UsersRow}
  * Data access facade.
  */
 
-class UsersDatabase {
+class UsersDatabase private {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
   def get(userName: String): Option[UsersRow] = {
@@ -48,5 +48,5 @@ class UsersDatabase {
 object UsersDatabase {
   def apply() = new UsersDatabase()
 
-  implicit def usersRowWrapper(name: String) = UsersRow(0L, name)
+  implicit def stringToUsersRow(name: String) = UsersRow(0L, name)
 }

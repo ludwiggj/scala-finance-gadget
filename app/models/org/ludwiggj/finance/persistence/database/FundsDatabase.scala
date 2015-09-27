@@ -1,5 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
+import models.org.ludwiggj.finance.domain.FundName
+import models.org.ludwiggj.finance.domain.FundName.fundNameToString
 import play.api.Play.current
 import play.api.db.DB
 
@@ -7,20 +9,17 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, Funds}
 
-/**
- * Data access facade.
- */
 
-class FundsDatabase {
+class FundsDatabase private {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
-  def get(fundName: String): Option[FundsRow] = {
+  def get(fundName: FundName): Option[FundsRow] = {
     db.withSession {
       implicit session =>
 
         def getFundByName() =
           Funds.filter {
-            _.name === fundName
+            _.name === fundName.name
           }
 
         getFundByName().firstOption
@@ -49,5 +48,5 @@ class FundsDatabase {
 object FundsDatabase {
   def apply() = new FundsDatabase()
 
-  implicit def fundsRowWrapper(name: String) = FundsRow(0L, name)
+  implicit def fundNameToFundsRow(fundName: FundName) = FundsRow(0L, fundName)
 }

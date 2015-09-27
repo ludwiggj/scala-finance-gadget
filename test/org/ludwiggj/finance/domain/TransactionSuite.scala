@@ -1,6 +1,6 @@
 package org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.domain.{FinanceDate, Price, Transaction}
+import models.org.ludwiggj.finance.domain.{FundName, FinanceDate, Price, Transaction}
 import org.ludwiggj.finance.TestTransactions
 import org.scalatest.{FunSuite, Matchers}
 
@@ -88,7 +88,7 @@ class TransactionSuite extends FunSuite with Matchers {
 
   test("Transaction.fundName is correct") {
     new TestTransactions {
-      tx1.fundName should equal("Aberdeen Ethical World Equity A Fund Inc")
+      tx1.fundName should equal(FundName("Aberdeen Ethical World Equity A Fund Inc"))
     }
   }
 

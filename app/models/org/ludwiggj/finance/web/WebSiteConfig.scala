@@ -4,7 +4,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.collection.JavaConversions._
 
-class WebSiteConfig(private val config: Config) {
+class WebSiteConfig private(private val config: Config) {
   def getUrlForPage(targetPage: String) = {
     config.getString(s"site.baseUrl.$targetPage")
   }
@@ -31,7 +31,5 @@ class WebSiteConfig(private val config: Config) {
 }
 
 object WebSiteConfig {
-  def apply(configFileName: String) = {
-    new WebSiteConfig(ConfigFactory.load(configFileName))
-  }
+  def apply(configFileName: String) = new WebSiteConfig(ConfigFactory.load(configFileName))
 }

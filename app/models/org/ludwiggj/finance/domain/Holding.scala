@@ -18,11 +18,11 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
   def toFileFormat = s"${price.fundName}$separator$units$separator${price.date}$separator${price.inPounds}" +
     s"$separator$value"
 
-  def canEqual(h: Holding) = userName == h.userName && name == h.name && priceDate == h.priceDate
+  def canEqual(h: Holding) = (userName == h.userName) && (name == h.name) && (priceDate == h.priceDate)
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: Holding => that.canEqual(this) && this.hashCode == that.hashCode
+      case that: Holding => that.canEqual(this) && (this.hashCode == that.hashCode)
       case _ => false
     }
 

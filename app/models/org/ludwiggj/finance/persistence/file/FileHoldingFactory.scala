@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.file
 
 import models.org.ludwiggj.finance.domain.Holding
 
-class FileHoldingFactory(val userName: String, private val holdingFileName: String) extends {
+class FileHoldingFactory private(val userName: String, private val holdingFileName: String) extends {
   val fileName = holdingFileName
 } with FileFinanceRowParser {
 

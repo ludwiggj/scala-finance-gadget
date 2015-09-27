@@ -5,8 +5,8 @@ import com.gargoylesoftware.htmlunit.html.{DomNode, HtmlAnchor, HtmlForm}
 
 import scala.collection.JavaConverters._
 
-class HtmlPage(private val page: HtmlUnitHtmlPage,
-               private val logoutText: Option[String]) extends HtmlEntity {
+class HtmlPage private(private val page: HtmlUnitHtmlPage,
+                       private val logoutText: Option[String]) extends HtmlEntity {
 
   private val logoutLink: Option[HtmlAnchor] = {
     logoutText match {
