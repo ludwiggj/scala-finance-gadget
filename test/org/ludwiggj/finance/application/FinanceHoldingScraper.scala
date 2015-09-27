@@ -9,6 +9,8 @@ import models.org.ludwiggj.finance.domain.Holding
 import models.org.ludwiggj.finance.persistence.database.HoldingsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
+import play.api.Play
+import play.api.test.FakeApplication
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -75,16 +77,20 @@ object FinanceHoldingScraper extends App {
 
   val users = config.getUserList()
 
-  val listOfFutures = users map { user =>
-    composeWaitingFuture(
-      processHoldings(user.name), 30 seconds, user.name
-    )
-  }
+  private val application = FakeApplication()
 
-  val combinedFuture = Future.sequence(listOfFutures)
+  Play.start(application)
 
   time("Whole thing",
     try {
+      val listOfFutures = users map { user =>
+        composeWaitingFuture(
+          processHoldings(user.name), 30 seconds, user.name
+        )
+      }
+
+      val combinedFuture = Future.sequence(listOfFutures)
+
       Await.ready(combinedFuture, 31 seconds).value.get match {
         case Success(results) =>
           val totalHoldings = results.foldLeft(BigDecimal(0))((runningTotal, result) => runningTotal + result._2)
@@ -94,6 +100,8 @@ object FinanceHoldingScraper extends App {
       }
     } catch {
       case ex: TimeoutException => println(ex.getMessage)
+    } finally {
+      Play.stop(application)
     }
   )
 }

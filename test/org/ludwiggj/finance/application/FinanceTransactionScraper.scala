@@ -8,6 +8,8 @@ import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory}
+import play.api.Play
+import play.api.test.FakeApplication
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -54,16 +56,20 @@ object FinanceTransactionScraper extends App {
 
   val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
-  val listOfFutures = users map { user =>
-    composeWaitingFuture(
-      processTransactions(user.name), 30 seconds, user.name
-    )
-  }
+  private val application = FakeApplication()
 
-  val combinedFuture = Future.sequence(listOfFutures)
+  Play.start(application)
 
   time("Whole thing",
     try {
+      val listOfFutures = users map { user =>
+        composeWaitingFuture(
+          processTransactions(user.name), 30 seconds, user.name
+        )
+      }
+
+      val combinedFuture = Future.sequence(listOfFutures)
+
       Await.ready(combinedFuture, 31 seconds).value.get match {
         case Success(results) =>
           println(s"Done...")
@@ -72,6 +78,8 @@ object FinanceTransactionScraper extends App {
       }
     } catch {
       case ex: TimeoutException => println(ex.getMessage)
+    } finally {
+      Play.stop(application)
     }
   )
 }
