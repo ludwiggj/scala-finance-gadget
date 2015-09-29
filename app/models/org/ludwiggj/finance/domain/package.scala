@@ -5,7 +5,7 @@ import scala.language.implicitConversions
 package object domain {
   val separator = '|'
 
-  def parseNumber(candidateNumber: String) = {
+  implicit def stringToBigDecimal(candidateNumber: String): BigDecimal = {
     BigDecimal(stripNonFPDigits(candidateNumber))
   }
 

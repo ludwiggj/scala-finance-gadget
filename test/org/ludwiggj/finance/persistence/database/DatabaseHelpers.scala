@@ -22,18 +22,18 @@ trait DatabaseHelpers {
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
 
-  val solyentGreenFundName = FundName("Solyent Green")
+  val solyentGreenFundName: FundName = "Solyent Green"
 
   var capitalistsDreamFundId = 0L
-  val capitalistsDreamFundName = FundName("Capitalists Dream")
+  val capitalistsDreamFundName: FundName = "Capitalists Dream"
 
-  val kappaFundName = FundName("Kappa")
-  val kappaFundPriceDate: FinanceDate = FinanceDate("20/05/2014")
+  val kappaFundName: FundName = "Kappa"
+  val kappaFundPriceDate: FinanceDate = "20/05/2014"
   val kappaFundPriceInPounds: Double = 1.12
   val kappaFundPrice = Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds)
 
-  val nikeFundName = FundName("Nike")
-  val nikeFundPriceDate: FinanceDate = FinanceDate("20/06/2014")
+  val nikeFundName: FundName = "Nike"
+  val nikeFundPriceDate: FinanceDate = "20/06/2014"
   val nikeFundPriceInPounds: Double = 3.12
   val nikeFundPrice = Price(nikeFundName, nikeFundPriceDate, nikeFundPriceInPounds)
 

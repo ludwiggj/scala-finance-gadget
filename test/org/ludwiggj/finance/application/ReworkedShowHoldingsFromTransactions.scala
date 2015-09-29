@@ -25,7 +25,7 @@ object ReworkedShowHoldingsFromTransactions extends App {
           Transactions
             .filter { tx => tx.description === "Investment Regular" }
             .map {
-            _.date
+             _.date
           }.sorted.list.reverse.distinct
         }
 
@@ -119,7 +119,7 @@ object ReworkedShowHoldingsFromTransactions extends App {
           finalTable
         }
 
-        def showHoldingsForDate(dateOfInterest: Date, holdings: List[Holding]) {
+        def showHoldingsForDate(dateOfInterest: FinanceDate, holdings: List[Holding]) {
 
           def getPortfolios: List[Portfolio] = {
             val userNames = holdings.map {
@@ -132,14 +132,14 @@ object ReworkedShowHoldingsFromTransactions extends App {
               } map {
                 h => HoldingSummary(h._3.get, h._4.get, h._5, Price(h._2, h._7.get, h._8))
               }
-              Portfolio(userName, FinanceDate(dateOfInterest), usersHoldings)
+              Portfolio(userName, dateOfInterest, usersHoldings)
             }
             portfolios
           }
 
           def showPortfolio(portfolio: Portfolio): Unit = {
             def showPortfolioHeader() = {
-              println(s"${portfolio.userName}, Date ${FinanceDate(dateOfInterest)}")
+              println(s"${portfolio.userName}, Date $dateOfInterest")
               println
               println("Fund Name                                          Amount In    Units In  Units Out  Total Units"
                 + "  Price Date      Price       Total       Gain    Gain %")
@@ -150,7 +150,7 @@ object ReworkedShowHoldingsFromTransactions extends App {
             // showPortfolio: START
             showPortfolioHeader()
             println(portfolio)
-            showTotal(s"Totals (${portfolio.userName}, ${FinanceDate(dateOfInterest)})", portfolio.delta)
+            showTotal(s"Totals (${portfolio.userName}, $dateOfInterest)", portfolio.delta)
           }
 
           def showTotal(lineName: String, delta: CashDelta): Unit = {
@@ -172,7 +172,7 @@ object ReworkedShowHoldingsFromTransactions extends App {
             (portfolio: Portfolio, delta: CashDelta) => delta.add(portfolio.delta)
           )
 
-          showTotal(s"GRAND TOTAL (${FinanceDate(dateOfInterest)})", grandTotal)
+          showTotal(s"GRAND TOTAL ($dateOfInterest)", grandTotal)
         }
 
         // showHoldings: START

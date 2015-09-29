@@ -28,5 +28,6 @@ object FundName {
   }
 
   implicit def fundNameToString(fundName: FundName) = fundName.name
+
   implicit def stringToFundName(name: String) = FundName(name)
 }

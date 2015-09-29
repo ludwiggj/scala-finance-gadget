@@ -1,6 +1,6 @@
 package org.ludwiggj.finance.application
 
-import models.org.ludwiggj.finance.domain.FinanceDate
+import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -47,8 +47,8 @@ object ShowTransactions extends App {
           getTransactions(userName) map {
             tx =>
               val (fundName, transactionDate, description, amountIn, amountOut, priceDate, price, units) = tx
-              println(f"${FinanceDate(transactionDate)}  ${fundName}%-50s ${description}%-25s £${amountIn}%7.2f  " +
-                f"£${amountOut}%7.2f  ${FinanceDate(priceDate)}  £${price}%8.4f ${units}%10.4f")
+              println(f"${sqlDateToFinanceDate(transactionDate)}  $fundName%-50s $description%-25s £$amountIn%7.2f  " +
+                f"£$amountOut%7.2f  ${sqlDateToFinanceDate(priceDate)}  £$price%8.4f $units%10.4f")
           }
           println
         }

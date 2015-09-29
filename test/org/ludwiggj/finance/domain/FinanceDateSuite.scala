@@ -3,6 +3,7 @@ package org.ludwiggj.finance.domain
 import java.sql.Date
 
 import models.org.ludwiggj.finance.domain.FinanceDate
+import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
 import org.scalatest.{FunSuite, Matchers}
 
 class FinanceDateSuite extends FunSuite with Matchers {
@@ -29,7 +30,7 @@ class FinanceDateSuite extends FunSuite with Matchers {
 
   test("Can create finance date from sql date") {
     val sqlDate = Date.valueOf("2014-12-31")
-    FinanceDate(sqlDate).toString should equal ("31/12/2014")
+    sqlDateToFinanceDate(sqlDate).toString should equal ("31/12/2014")
   }
 
   test("Parse date throws IllegalArgumentException if date has incorrect format") {

@@ -3,7 +3,6 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.domain.{Price, Holding}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
-import models.org.ludwiggj.finance.asSqlDate
 import play.api.Play.current
 import play.api.db.DB
 
@@ -52,7 +51,6 @@ class HoldingsDatabase private {
         .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
     }
   }
-
 
   implicit def asListOfHoldings(q: Query[(((Holdings, Prices), Funds), Users),
     (((HoldingsRow, PricesRow), FundsRow), UsersRow), Seq]): List[Holding] = {

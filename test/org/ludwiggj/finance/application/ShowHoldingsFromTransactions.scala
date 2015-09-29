@@ -122,7 +122,7 @@ object ShowHoldingsFromTransactions extends App {
           finalTable
         }
 
-        def showHoldingsForDate(dateOfInterest: Date, holdings: List[Holding]) {
+        def showHoldingsForDate(dateOfInterest: FinanceDate, holdings: List[Holding]) {
 
           def gainOption(before: Option[BigDecimal], after: BigDecimal): (BigDecimal, BigDecimal) = {
             if (before.isDefined) gain(before.get, after) else (zero, zero)
@@ -150,7 +150,7 @@ object ShowHoldingsFromTransactions extends App {
 
           def showHoldingsForUserAndDate(userName: String, usersHoldings: List[Holding]): Unit = {
             def showHeader() = {
-              println(s"$userName, Date ${FinanceDate(dateOfInterest)}")
+              println(s"$userName, Date ${dateOfInterest}")
               println
               println("Fund Name                                          Amount In    Units In  Units Out  Total Units"
                 + "  Price Date      Price       Total       Gain    Gain %")
@@ -165,7 +165,7 @@ object ShowHoldingsFromTransactions extends App {
                   val gains = gainOption(amountIn, value)
 
                   println(f"${fundName}%-50s £${amountIn.getOrElse(zero)}%8.2f  ${addedUnits.getOrElse(zero)}%10.4f" +
-                    f" ${subtractedUnits.getOrElse(zero)}%10.4f   ${totalUnits}%10.4f  ${FinanceDate(lastPriceDate.get)}" +
+                    f" ${subtractedUnits.getOrElse(zero)}%10.4f   ${totalUnits}%10.4f  ${lastPriceDate.get}" +
                     f"  £${lastPrice}%8.4f  £${value}%9.2f  £${gains._1}%8.2f  ${gains._2}%6.2f %%")
               }
             }
@@ -173,7 +173,7 @@ object ShowHoldingsFromTransactions extends App {
             // Start here (showHoldingsForUserAndDate)
             showHeader()
             showBody()
-            showTotals(s"Totals ($userName, ${FinanceDate(dateOfInterest)})", usersHoldings)
+            showTotals(s"Totals ($userName, ${dateOfInterest})", usersHoldings)
           }
 
           // Start here (showHoldingsForDate)
@@ -189,7 +189,7 @@ object ShowHoldingsFromTransactions extends App {
             }
             showHoldingsForUserAndDate(userName, usersHoldings)
           }
-          showTotals(s"GRAND TOTAL (${FinanceDate(dateOfInterest)})", holdings)
+          showTotals(s"GRAND TOTAL (${dateOfInterest})", holdings)
 
         }
 

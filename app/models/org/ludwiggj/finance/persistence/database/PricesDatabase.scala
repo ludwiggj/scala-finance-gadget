@@ -8,7 +8,7 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow, FundsRow}
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
-import models.org.ludwiggj.finance.asSqlDate
+import models.org.ludwiggj.finance.dateTimeToSqlDate
 
 class PricesDatabase private {
 
@@ -69,7 +69,7 @@ class PricesDatabase private {
   private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
     db.withSession {
       implicit session =>
-        Prices filter (_.date === asSqlDate(priceDate.date))
+        Prices filter (_.date === dateTimeToSqlDate(priceDate.date))
     }
   }
 

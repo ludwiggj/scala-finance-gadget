@@ -39,6 +39,9 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
 
 object Holding {
 
+  import models.org.ludwiggj.finance.domain.stringToBigDecimal
+  import models.org.ludwiggj.finance.domain.FinanceDate.stringToFinanceDate
+
   def apply(userName: String, row: String): Holding = {
     val holdingPattern = (
       """.*?<span.*?>([^<]+)</span>""" +
@@ -50,11 +53,13 @@ object Holding {
       ).r
 
     val holdingPattern(fundName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
-    val priceInPounds = parseNumber(priceInPence) / 100;
-    Holding(userName, Price(fundName, FinanceDate(date), priceInPounds), parseNumber(units))
+    val priceInPounds: BigDecimal = priceInPence / 100;
+    Holding(userName, Price(fundName, date, priceInPounds), units)
   }
 
+  import FinanceDate.stringToFinanceDate
+
   def apply(userName: String, row: Array[String]): Holding = {
-    Holding(userName, Price(row(0), row(2), row(3)), parseNumber(row(1)))
+    Holding(userName, Price(row(0), row(2), row(3)), row(1))
   }
 }

@@ -2,15 +2,16 @@ package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.persistence.database.TransactionTuple
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
+import scala.language.implicitConversions
 
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
 
-  def fundName = price.fundName
+  val fundName = price.fundName
 
-  def priceDate = price.date
+  val priceDate = price.date
 
-  def priceInPounds = price.inPounds
+  val priceInPounds = price.inPounds
 
   override def toString =
     s"Tx [userName: ${userName}, holding: ${price.fundName}, date: $date, description: $description, in: $in, out: $out, " +
@@ -47,15 +48,14 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 
 object Transaction {
 
-  private def parseNumberOption(candidateNumber: String) = {
+  private implicit def parseNumberOption(candidateNumber: String): Option[BigDecimal] = {
       val filteredNumber = stripNonFPDigits(candidateNumber)
-      if (filteredNumber.size == 0) None else Some(BigDecimal(filteredNumber))
+      if (filteredNumber.size == 0) None else Some(filteredNumber)
     }
 
-  def apply(userName:String, tx: TransactionTuple) = {
+  def apply(userName:String, tx: TransactionTuple): Transaction = {
     val (fundName, date, description, in, out, priceDate, priceInPounds, units) = tx
-    new Transaction(userName, FinanceDate(date), description, Option(in), Option(out),
-      Price(fundName, priceDate, priceInPounds), units)
+    Transaction(userName, date, description, Option(in), Option(out), Price(fundName, priceDate, priceInPounds), units)
   }
 
   def apply(userName: String, row: String): Transaction = {
@@ -75,14 +75,12 @@ object Transaction {
     val txPattern(fundName, date, description, in, out, priceDate, priceInPence, units, _) =
       stripAllWhitespaceExceptSpace(row)
 
-    val priceInPounds = parseNumber(priceInPence) / 100;
+    val priceInPounds = priceInPence / 100;
 
-    Transaction(userName, FinanceDate(date), description.trim, parseNumberOption(in), parseNumberOption(out),
-      Price(fundName, FinanceDate(priceDate), priceInPounds), parseNumber(units))
+    Transaction(userName, date, description.trim, in, out, Price(fundName, priceDate, priceInPounds), units)
   }
 
   def apply(userName: String, row: Array[String]): Transaction = {
-    Transaction(userName, FinanceDate(row(1)), row(2), parseNumberOption(row(3)), parseNumberOption(row(4)),
-      Price(row(0), row(5), row(6)), parseNumber(row(7)))
+    Transaction(userName, row(1), row(2), row(3), row(4), Price(row(0), row(5), row(6)), row(7))
   }
 }

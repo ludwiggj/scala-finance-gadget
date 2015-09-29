@@ -6,7 +6,6 @@ import play.api.db.DB
 import play.api.Play.current
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
-import models.org.ludwiggj.finance.asSqlDate
 import scala.language.implicitConversions
 
 class TransactionsDatabase private {
@@ -72,8 +71,7 @@ class TransactionsDatabase private {
         q.list map {
           case (((TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
           PricesRow(_, _, price)), FundsRow(_, fundName)), UsersRow(_, userName)) =>
-            Transaction(userName, FinanceDate(date), description, amountIn, amountOut,
-              Price(fundName, priceDate, price), units)
+            Transaction(userName, date, description, amountIn, amountOut, Price(fundName, priceDate, price), units)
         }
     }
   }

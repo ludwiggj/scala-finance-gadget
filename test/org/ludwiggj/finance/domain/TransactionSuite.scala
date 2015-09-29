@@ -3,11 +3,12 @@ package org.ludwiggj.finance.domain
 import models.org.ludwiggj.finance.domain.{FundName, FinanceDate, Price, Transaction}
 import org.ludwiggj.finance.TestTransactions
 import org.scalatest.{FunSuite, Matchers}
+import models.org.ludwiggj.finance.domain.stringToBigDecimal
 
 class TransactionSuite extends FunSuite with Matchers {
 
   val tx5 = Transaction("Graeme",
-    FinanceDate("25/04/2014"), "Investment Regular", Some(BigDecimal(200.00)), None,
+    "25/04/2014", "Investment Regular", Some(BigDecimal(200.00)), None,
     Price("M&G Feeder of Property Portfolio I Fund Acc", "25/04/2014", "11.5308"), BigDecimal(17.3449)
   )
 

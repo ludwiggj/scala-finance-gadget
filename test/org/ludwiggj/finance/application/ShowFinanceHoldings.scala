@@ -53,7 +53,7 @@ object ShowFinanceHoldings extends App {
         }
 
         def evaluateHoldings(userName: String, desiredDate: Date) = {
-          println(s"Holdings for $userName on ${FinanceDate(desiredDate)}\n")
+          println(s"Holdings for $userName on ${desiredDate}\n")
 
           val myHoldings = getHoldings(userName, desiredDate)
 
@@ -62,7 +62,7 @@ object ShowFinanceHoldings extends App {
 
           for (myHolding <- myHoldings) {
             val (fundName, holdingDate, units, sharePrice, total) = myHolding
-            println(f"${fundName}%-50s ${FinanceDate(holdingDate)} ${units}%10.4f £${sharePrice}%8.4f £${(total)}%9.2f")
+            println(f"${fundName}%-50s ${holdingDate} ${units}%10.4f £${sharePrice}%8.4f £${(total)}%9.2f")
           }
 
           val totalHoldings = (myHoldings map { case (_, _, _, _, value) => value }).sum
