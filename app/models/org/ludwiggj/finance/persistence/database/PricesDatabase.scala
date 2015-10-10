@@ -1,5 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
+import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.{FundName, FinanceDate, Price}
 import play.api.db.DB
@@ -79,6 +80,40 @@ class PricesDatabase private {
 
   def get(fundName: FundName, priceDate: FinanceDate): Option[Price] = {
     pricesOn(priceDate).withFundsNamed(fundName).headOption
+  }
+
+  private val dateDifference = SimpleFunction.binary[Date, Date, Int]("DATEDIFF")
+
+  private def latestPriceDates(dateOfInterest: Date) = {
+    db.withSession {
+      implicit session =>
+        Prices
+          .filter { p => (dateDifference(p.date, dateOfInterest)) <= 1 }
+          .groupBy(p => p.fundId)
+          .map { case (fundId, group) => {
+          (fundId, group.map(_.date).max)
+        }
+        }
+    }
+  }
+
+  def latestPrices(dateOfInterest: Date): Map[Long, Price] = {
+    val pricesList = db.withSession {
+      implicit session =>
+        (for {
+          (fundId, lastPriceDate) <- latestPriceDates(dateOfInterest)
+          f <- Funds if f.id === fundId
+          p <- Prices if p.fundId === fundId && p.date === lastPriceDate
+        } yield (p.fundId, f.name, lastPriceDate, p.price)
+          ).list
+    }
+
+    pricesList.foldLeft(Map[Long, Price]()) {
+      (m, priceInfo) => {
+        val (fundId, fundName, lastPriceDate, price) = priceInfo
+        m + (fundId -> Price(fundName, lastPriceDate.get, price))
+      }
+    }
   }
 }
 

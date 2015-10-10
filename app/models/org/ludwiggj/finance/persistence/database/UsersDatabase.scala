@@ -6,10 +6,6 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import Tables.{Users, UsersRow}
 
-/**
- * Data access facade.
- */
-
 class UsersDatabase private {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 

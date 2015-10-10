@@ -1,8 +1,8 @@
-package org.ludwiggj.finance.application
+package org.ludwiggj.finance.application.scratch
 
 import java.sql.Date
 import models.org.ludwiggj.finance.domain.Transaction
-import models.org.ludwiggj.finance.persistence.database.TransactionTuple
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.InvestmentRegular
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -52,13 +52,13 @@ object TransactionsQueries extends App {
           }
 
           getTransactionTuples map {
-            Transaction(userNameGraeme, _)
+            transaction(userNameGraeme, _)
           }
         }
 
         def getTransactionsCashInvestments() = {
           (for {
-            t <- transactions if ((t.description === "Investment Regular") ||
+            t <- transactions if ((t.description === InvestmentRegular) ||
             (t.description === "Investment Lump Sum"))
             u <- t.usersFk if (u.name === userNameGraeme)
             p <- t.pricesFk if ((t.priceDate === p.date) && (t.fundId === p.fundId))
@@ -68,7 +68,7 @@ object TransactionsQueries extends App {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)
           }).list map {
-            Transaction(userNameGraeme, _)
+            transaction(userNameGraeme, _)
           }
         }
 
@@ -83,7 +83,7 @@ object TransactionsQueries extends App {
             val (fundName, transactionDate, _, _, _, _, _, _) = row
             (transactionDate, fundName)
           }).list map {
-            Transaction(userNameGraeme, _)
+            transaction(userNameGraeme, _)
           }
         }
 
@@ -124,10 +124,10 @@ object TransactionsQueries extends App {
         }.sum
 
         txs = getTransactionsCashInvestments()
-        println(s"Investment Regular txs")
+        println(s"$InvestmentRegular txs")
         displayTransactions(txs)
 
-        val ins = (txs filter { tx => (tx.description == "Investment Regular") || (tx.description == "Investment Lump Sum") } map {
+        val ins = (txs filter { tx => (tx.description == InvestmentRegular) || (tx.description == "Investment Lump Sum") } map {
           _.in.getOrElse(BigDecimal(0))
         }).sum
 

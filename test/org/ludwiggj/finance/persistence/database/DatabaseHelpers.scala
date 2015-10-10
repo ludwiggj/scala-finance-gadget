@@ -4,6 +4,7 @@ import models.org.ludwiggj.finance.domain._
 import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.InvestmentRegular
 import org.specs2.execute.AsResult
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Around
@@ -19,33 +20,68 @@ import scala.slick.driver.MySQLDriver.simple._
 trait DatabaseHelpers {
   this: SpecificationFeatures =>
 
+  // Users
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
-
-  val solyentGreenFundName: FundName = "Solyent Green"
-
-  var capitalistsDreamFundId = 0L
-  val capitalistsDreamFundName: FundName = "Capitalists Dream"
-
-  val kappaFundName: FundName = "Kappa"
-  val kappaFundPriceDate: FinanceDate = "20/05/2014"
-  val kappaFundPriceInPounds: Double = 1.12
-  val kappaFundPrice = Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds)
-
-  val nikeFundName: FundName = "Nike"
-  val nikeFundPriceDate: FinanceDate = "20/06/2014"
-  val nikeFundPriceInPounds: Double = 3.12
-  val nikeFundPrice = Price(nikeFundName, nikeFundPriceDate, nikeFundPriceInPounds)
-
   val userNameGraeme = "Graeme"
   val userNameAudrey = "Audrey"
 
-  val kappaFundHolding = Holding(userNameGraeme, kappaFundPrice, 1.23)
-  val nikeFundHolding = Holding(userNameGraeme, nikeFundPrice, 1.89)
+  // Funds
+  val solyentGreenFundName: FundName = "Solyent Green"
+  var capitalistsDreamFundId = 0L
+  val capitalistsDreamFundName: FundName = "Capitalists Dream"
+  val kappaFundName: FundName = "Kappa"
+  val nikeFundName: FundName = "Nike"
 
+  // Prices
+  val kappaPriceDate: FinanceDate = "20/05/2014"
+  val kappaPriceInPounds: Double = 1.12
+  val kappaPrice = Price(kappaFundName, kappaPriceDate, kappaPriceInPounds)
 
-  val nikeFundTransaction =
-    Transaction(userNameGraeme, nikeFundPriceDate, "A transaction", Some(2.0), None, nikeFundPrice, 1.234)
+  val kappaPriceLater = Price(kappaFundName, "23/05/2014", 1.65)
+
+  val nikePriceDateGraeme: FinanceDate = "20/06/2014"
+  val nikePriceInPoundsGraeme: Double = 3.12
+  val nikePriceGraeme = Price(nikeFundName, nikePriceDateGraeme, nikePriceInPoundsGraeme)
+
+  private val nikePriceDateGraemeLater: FinanceDate = "21/06/2014"
+  private val nikePriceInPoundsGraemeLater: Double = 3.08
+  val nikePriceGraemeLater = Price(nikeFundName, nikePriceDateGraemeLater, nikePriceInPoundsGraemeLater)
+
+  private val nikePriceDateGraemeLatest = "25/06/2014"
+  private val nikePriceInPoundsGraemeLatest = 3.24
+  val nikePriceGraemeLatest = Price(nikeFundName, nikePriceDateGraemeLatest, nikePriceInPoundsGraemeLatest)
+
+  private val nikePriceDateAudrey: FinanceDate = "22/06/2014"
+  private val nikePriceInPoundsAudrey: Double = 3.01
+  val nikePriceAudrey = Price(nikeFundName, nikePriceDateAudrey, nikePriceInPoundsAudrey)
+
+  private val nikePriceDateAudreyLater: FinanceDate = "27/06/2014"
+  private val nikePriceInPoundsAudreyLater: Double = 3.29
+  private val nikePriceAudreyLater = Price(nikeFundName, nikePriceDateAudreyLater, nikePriceInPoundsAudreyLater)
+
+  // Transactions
+  val kappaTransactionGraeme = Transaction(userNameGraeme, kappaPriceDate, "A transaction", Some(282.1), None,
+    kappaPrice, kappaPriceInPounds)
+
+  val nikeTransactionGraeme = Transaction(userNameGraeme, nikePriceDateGraeme, "A transaction", Some(2.0), None,
+    nikePriceGraeme, nikePriceInPoundsGraeme)
+
+  val nikeTransactionGraemeLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, "A transaction", None,
+    Some(3.5), nikePriceGraemeLater, nikePriceInPoundsGraemeLater)
+
+  private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, "A transaction",
+    Some(10.2), None, nikePriceGraemeLatest, nikePriceInPoundsGraemeLatest)
+
+  val nikeTransactionAudrey = Transaction(userNameAudrey, nikePriceDateAudrey, "A transaction", Some(9.12),
+    None, nikePriceAudrey, nikePriceInPoundsAudrey)
+
+  private val nikeTransactionAudreyLater = Transaction(userNameAudrey, nikePriceDateAudreyLater, "A transaction",
+    Some(10.2), None, nikePriceAudreyLater, nikePriceInPoundsAudreyLater)
+
+  // Holdings
+  val kappaFundHolding = Holding(userNameGraeme, kappaPrice, 1.23)
+  val nikeFundHolding = Holding(userNameGraeme, nikePriceGraeme, 1.89)
 
   trait Schema extends Around {
 
@@ -121,14 +157,24 @@ trait DatabaseHelpers {
 
   object SinglePrice extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      PricesDatabase().insert(kappaFundPrice)
+      PricesDatabase().insert(kappaPrice)
       test
     }
   }
 
   object TwoPrices extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      PricesDatabase().insert(List(kappaFundPrice, nikeFundPrice))
+      PricesDatabase().insert(List(kappaPrice, nikePriceGraeme))
+      test
+    }
+  }
+
+  object MultiplePricesForTwoFunds extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      PricesDatabase().insert(List(
+        kappaPrice, kappaPriceLater, nikePriceGraeme, nikePriceGraemeLater, nikePriceGraemeLatest)
+      )
+
       test
     }
   }
@@ -142,7 +188,44 @@ trait DatabaseHelpers {
 
   object SingleTransaction extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
-      TransactionsDatabase().insert(nikeFundTransaction)
+      TransactionsDatabase().insert(nikeTransactionGraeme)
+      test
+    }
+  }
+
+  object MultipleTransactionsForTwoUsersAndTwoFunds extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      TransactionsDatabase().insert(List(
+        kappaTransactionGraeme,
+        nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
+        nikeTransactionAudrey, nikeTransactionAudreyLater
+      )
+      )
+      test
+    }
+  }
+
+  object RegularInvestmentTransactions extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      val database = TransactionsDatabase()
+
+      val nikeFundTx140620 =
+        Transaction(userNameGraeme, "20/06/2014", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.234)
+
+      val nikeFundTx140520 =
+        Transaction(userNameGraeme, "20/05/2014", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.34)
+
+      val nikeFundTx150520 =
+        Transaction(userNameGraeme, "20/05/2015", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.64)
+
+      val secondNikeFundTx140520 =
+        Transaction(userNameGraeme, "20/05/2014", InvestmentRegular, Some(5.0), None, nikePriceGraeme, 1.34)
+
+      database.insert(nikeFundTx140620)
+      database.insert(nikeFundTx140520)
+      database.insert(nikeFundTx150520)
+      database.insert(secondNikeFundTx140520)
+
       test
     }
   }

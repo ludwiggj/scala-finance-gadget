@@ -23,11 +23,11 @@ object FinanceDate {
   private val formatter = DateTimeFormat.forPattern(dateFormat)
 
   def apply(stringyDate: String): FinanceDate = {
-    val dateRegex = s"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*".r
+    val DateRegex = s"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*".r
 
     stringyDate match {
-      case dateRegex(stringDate) => FinanceDate(DateTime.parse(stringDate, formatter))
-      case _ => throw new IllegalArgumentException(s"Date must be in format $dateFormat")
+      case DateRegex(stringDate) => FinanceDate(DateTime.parse(stringDate, formatter))
+      case _ => throw new IllegalArgumentException(s"Date $stringyDate must be in format $dateFormat")
     }
   }
 

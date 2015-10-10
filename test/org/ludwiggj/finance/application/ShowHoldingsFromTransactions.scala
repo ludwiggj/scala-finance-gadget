@@ -2,11 +2,12 @@ package org.ludwiggj.finance.application
 
 import java.sql.Date
 import models.org.ludwiggj.finance.domain.FinanceDate
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.InvestmentRegular
+import models.org.ludwiggj.finance.persistence.database.Tables.{Users, Transactions, Funds, Prices}
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
 import play.api.test.FakeApplication
-import models.org.ludwiggj.finance.persistence.database.Tables.{Users, Transactions, Funds, Prices}
 import scala.slick.driver.MySQLDriver.simple._
 
 object ShowHoldingsFromTransactions extends App {
@@ -38,7 +39,7 @@ object ShowHoldingsFromTransactions extends App {
           }
 
           val inAmounts = transactionsOfInterest
-            .filter { tx => (tx.description === "Investment Regular") || (tx.description === "Investment Lump Sum") }
+            .filter { tx => (tx.description === InvestmentRegular) || (tx.description === "Investment Lump Sum") }
             .groupBy(t => (t.fundId, t.userId))
             .map { case ((fundId, userId), group) => {
             (fundId, userId, group.map(_.amountIn).sum)
@@ -198,7 +199,7 @@ object ShowHoldingsFromTransactions extends App {
 //        showHoldingsForDate(today, getHoldingsQueryForDate(today).list)
 
         val regularInvestmentDates = transactions
-          .filter { tx => tx.description === "Investment Regular" }
+          .filter { tx => tx.description === InvestmentRegular }
           .map {
           _.date
         }.sorted.list.reverse.distinct

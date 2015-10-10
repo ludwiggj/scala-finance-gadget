@@ -3,7 +3,7 @@ package org.ludwiggj.finance.application.scratch
 import java.sql.Date
 import models.org.ludwiggj.finance.domain.Transaction
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
-import models.org.ludwiggj.finance.persistence.database.TransactionTuple
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.InvestmentRegular
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -46,7 +46,7 @@ object ShowVariousTransactionsGroupBy extends App {
           }
 
           getTransactionTuples map {
-            Transaction(userNameGraeme, _)
+            transaction(userNameGraeme, _)
           }
         }
 
@@ -72,7 +72,7 @@ object ShowVariousTransactionsGroupBy extends App {
         println("In amounts......")
         println("================")
         val ins = transactions
-          .filter { tx => (tx.description === "Investment Regular") || (tx.description === "Investment Lump Sum") }
+          .filter { tx => (tx.description === InvestmentRegular) || (tx.description === "Investment Lump Sum") }
           .groupBy(t => (t.fundId, t.userId))
           .map { case ((fundId, userId), group) => {
           (fundId, userId, group.map(_.amountIn).sum)

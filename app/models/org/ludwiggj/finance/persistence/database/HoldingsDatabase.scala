@@ -9,10 +9,6 @@ import play.api.db.DB
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
-/**
- * Data access facade.
- */
-
 class HoldingsDatabase private {
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 

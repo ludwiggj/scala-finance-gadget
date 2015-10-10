@@ -1,8 +1,10 @@
 package models.org.ludwiggj.finance.persistence
 
-import java.sql.Date
+import models.org.ludwiggj.finance.domain.{Transaction, Price}
 import scala.language.implicitConversions
 
 package object database {
-  type TransactionTuple = (String, Date, String, BigDecimal, BigDecimal, Date, BigDecimal, BigDecimal)
+  // TODO - Type of second String should be FundName
+  type TransactionMapKey = (String, String)
+  type TransactionMap = Map[TransactionMapKey, (Seq[Transaction], Price)]
 }

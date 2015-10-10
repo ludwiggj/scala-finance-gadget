@@ -1,6 +1,7 @@
 package org.ludwiggj
 
 import models.org.ludwiggj.finance.domain._
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase._
 
 package object finance {
 
@@ -23,7 +24,7 @@ package object finance {
     )
 
     val tx4 = Transaction(userNameGraeme,
-      FinanceDate("25/04/2014"), "Investment Regular", Some(BigDecimal(200.00)), None,
+      FinanceDate("25/04/2014"), InvestmentRegular, Some(BigDecimal(200.00)), None,
       Price("M&G Feeder of Property Portfolio I Fund Acc", "25/04/2014", "11.5308"), BigDecimal(17.3449)
     )
 
@@ -45,7 +46,7 @@ package object finance {
     val holdings = List(holding1, holding2, holding3)
 
     val holding4 = Holding(userNameGraeme, Price(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ", "20/05/2014", "0.4808"),
-          BigDecimal(5498.5076))
+      BigDecimal(5498.5076))
   }
 
   trait TestPrices {
@@ -61,5 +62,39 @@ package object finance {
   trait TestFundNames {
     val fundNameBeforeNameCorrection = FundName(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ")
     val fundNameAfterNameCorrection = FundName("Schroder Gbl Property Income Maximiser Z Fund Inc")
+  }
+
+  trait TestTransactionsAndPrice {
+    private val userNameGraeme = "Graeme"
+    private val aberdeenEthical = "Aberdeen Ethical World Equity A Fund Inc"
+
+    private val tx1 = Transaction(userNameGraeme,
+      FinanceDate("25/06/2014"), InvestmentRegular, Some(BigDecimal(200.00)), None,
+      Price(aberdeenEthical, "25/06/2014", "1.4123"), BigDecimal(141.6130)
+    )
+
+    private val tx2 = Transaction(userNameGraeme,
+      FinanceDate("25/05/2014"), InvestmentLumpSum, Some(BigDecimal(100.00)), None,
+      Price(aberdeenEthical, "25/05/2014", "2.0290"), BigDecimal(49.2854)
+    )
+
+    private val tx3 = Transaction(userNameGraeme,
+      FinanceDate("25/04/2014"), InvestmentRegular, Some(BigDecimal(150.50)), None,
+      Price(aberdeenEthical, "25/04/2014", "1.7209"), BigDecimal(87.4542)
+    )
+
+    private val tx4 = Transaction(userNameGraeme,
+      FinanceDate("02/03/2014"), DividendReinvestment, Some(BigDecimal(5.06)), None,
+      Price(aberdeenEthical, "02/03/2014", "1.8381"), BigDecimal(2.7528)
+    )
+
+    private val tx5 = Transaction(userNameGraeme,
+      FinanceDate("01/03/2014"), SaleForRegularPayment, None, Some(BigDecimal(13.75)),
+      Price(aberdeenEthical, "01/03/2014", "1.5641"), BigDecimal(8.7910)
+    )
+
+    val transactions = List(tx1, tx2, tx3, tx4, tx5)
+
+    val price = Price(aberdeenEthical, "05/07/2014", "1.8199")
   }
 }

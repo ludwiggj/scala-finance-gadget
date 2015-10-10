@@ -4,7 +4,7 @@ import java.sql.Date
 
 import models.org.ludwiggj.finance.domain.{Transaction, Price}
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
-import models.org.ludwiggj.finance.persistence.database.TransactionTuple
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.InvestmentRegular
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -43,7 +43,7 @@ object ShowVariousTransactions extends App {
           }
 
           getTransactionTuples map {
-            Transaction(userNameGraeme, _)
+            transaction(userNameGraeme, _)
           }
         }
 
@@ -85,7 +85,7 @@ object ShowVariousTransactions extends App {
             _.units
           }.sum
 
-          val ins = (txs filter { tx => (tx.description == "Investment Regular") || (tx.description == "Investment Lump Sum") } map {
+          val ins = (txs filter { tx => (tx.description == InvestmentRegular) || (tx.description == "Investment Lump Sum") } map {
             _.in.getOrElse(BigDecimal(0))
           }).sum
 

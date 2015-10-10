@@ -2,7 +2,7 @@ package org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Holding, Price}
 import models.org.ludwiggj.finance.persistence.database.Tables.{UsersRow, FundsRow}
-import models.org.ludwiggj.finance.persistence.database.{UsersDatabase, HoldingsDatabase, FundsDatabase, PricesDatabase}
+import models.org.ludwiggj.finance.persistence.database._
 import org.specs2.mutable.Specification
 
 class HoldingsSpec extends Specification with DatabaseHelpers {
@@ -18,7 +18,7 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
 
       usersDatabase.get(userName) must beNone
       fundsDatabase.get(kappaFundName) must beNone
-      pricesDatabase.get(kappaFundName, kappaFundPriceDate) must beNone
+      pricesDatabase.get(kappaFundName, kappaPriceDate) must beNone
 
       holdingsDatabase.insert(kappaFundHolding)
 
@@ -28,7 +28,7 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
       fundsDatabase.get(kappaFundName) must beSome.which(
         _ match { case FundsRow(_, name) => (name == kappaFundName.name) })
 
-      pricesDatabase.get(kappaFundName, kappaFundPriceDate) must beSome(kappaFundPrice)
+      pricesDatabase.get(kappaFundName, kappaPriceDate) must beSome(kappaPrice)
 
       holdingsDatabase.get() must containTheSameElementsAs(List(kappaFundHolding))
     }
@@ -39,7 +39,7 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
       val holdingsDatabase = HoldingsDatabase()
 
       val kappaDuplicateHolding = Holding(
-        userNameGraeme, Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds + 1), 1.23)
+        userNameGraeme, Price(kappaFundName, kappaPriceDate, kappaPriceInPounds + 1), 1.23)
 
       holdingsDatabase.insert(kappaDuplicateHolding)
 
@@ -54,7 +54,7 @@ class HoldingsSpec extends Specification with DatabaseHelpers {
       holdingsDatabase.get().size must beEqualTo(2)
 
       val kappaDuplicateHoldingForAnotherHolding = Holding(
-        userNameAudrey, Price(kappaFundName, kappaFundPriceDate, kappaFundPriceInPounds + 1), 1.23)
+        userNameAudrey, Price(kappaFundName, kappaPriceDate, kappaPriceInPounds + 1), 1.23)
 
       holdingsDatabase.insert(kappaDuplicateHoldingForAnotherHolding)
 
