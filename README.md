@@ -55,9 +55,9 @@ Java library for parsing HTML. This is used to parse the HTML scraped from the i
 
 Pre-requisites:
 
-** [Play 2.4](https://www.playframework.com/documentation/2.4.x/Installing)
+* [Play 2.4](https://www.playframework.com/documentation/2.4.x/Installing)
 
-** [MySql 5.6.x](https://dev.mysql.com/downloads/mysql/)
+* [MySql 5.6.x](https://dev.mysql.com/downloads/mysql/)
 
 The code for is available from the [financeGadget git repo](https://github.com/ludwiggj/financeGadget.git).
 
@@ -69,7 +69,7 @@ Once downloaded, you can run the tests from the command line via the command:
 
 ## WebSite Holding Scraper ##
 
-The **WebSiteHoldingScraper** executable logs first retrieves details of the web site user accounts from a configuration
+The **WebSiteHoldingScraper** executable first retrieves details of the web site user accounts from a configuration
 file, which uses the typesafe config format. (The config file is not stored in github for obvious reasons).
 
 The config file can contain details of multiple user accounts. The scraper logs in to the investment management web site
@@ -102,10 +102,7 @@ The format of the scraped transaction data is shown below:
 | Holding                                       | Date       | Description              | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
 | :-------------------------------------------- | ----------:| :------------------------| --------:| ---------:| ----------:| --------:| ------------:| ----------------:|
 | ^ M&G Feeder of Property Portfolio I Fund Acc | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
-| F&C Responsible UK Income 1 Fund Inc          | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |
-
-The transactions for a particular user on a particular date are stored as a single file in the reports directory, with
-the name **txs_YY_MM_DD_\<userName\>.txt**, where **userName** is a user-defined name to represent the user.		
+| F&C Responsible UK Income 1 Fund Inc          | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |	
 
 The transaction flat files are again stored in the **reports** directory. The format of a transactions flat file name is:
  
@@ -115,14 +112,14 @@ where **userName** is a user-defined name to represent the user. Thus the file r
 particular user up to and including the specified date. 
 
 Again, the config file can list details of multiple accounts; in this case the scraper will log in to the web site
-separately using each account, processing each one separately, and in parallel, via Futures.
+separately using each account. This is done in parallel via Futures.
 
 ## MySql ##
 
 MySql is used to store the data scraped by the previously described components. The [schema](financeERD.png) shows that
-the database has been normalised, with common occurring entities (users, prices and funds) being given their own tables. 
+the database has been normalised, with common occurring entities (users, prices and funds) stored in separate tables. 
 
-The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versions of
+The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versioning of
 database schema changes.
 
 ## Database Facade ##
@@ -131,16 +128,16 @@ This is implemented via slick, see the classes in the **models.org.ludwiggj.fina
 
 ## Reports ##
 
-This makes use of slick to retrieve data from the MySql database. The data is initially retrieved as row case classes, 
-which are generated automatically by slick. The data is then converted into "higher value" domain representations, such 
-as **HoldingSummary** (the current value of shares held in a single fund by a user, including gain/loss information) and 
-**Portfolio** (all of the fund holdings for a user on a particular date, including gain/loss information across the whole
-portfolio).
+The reports component retrieves investment data via the database facade. The data is initially returned as row case
+classes (which have been generated automatically by Slick). The data is then converted into "higher value" domain
+representations, such as **HoldingSummary** (the current value of shares held in a single fund by a user, including
+gain/loss information) and **Portfolio** (all of the funds held by a user on a particular date, including gain/loss
+information across the whole portfolio).
 
 There are a number of report executables which retrieve and display this information. For example,
 **ShowPortfoliosFromTransactions** displays the value of each user's portfolio on each **investment date** (the regular
-monthly date on which the investor's money is used to buy new shares in one or more funds). This shows how each user's
-portfolio has built up over time. 
+monthly date on which the investor's money is used to buy new shares in one or more funds). This report shows how each
+user's portfolio has built up over time. 
 
 ## Scala tests ##
 
@@ -149,11 +146,11 @@ the MySql database, though in a separate database instance called **test**.
 
 ## Database Reloader ##
 
-The **Database Reloader** executable cleans out the MySql database, parses the report files and saves the resulting data 
-into the Mysql database via the database facade.
+The **Database Reloader** executable cleans out the MySql database, parses the flat files in the reports directory, and
+saves the resulting data into the Mysql database via the database facade.
 
-This component is not needed so much now that the integration tests are run against a separate database instance, though
-it's still nice to know that the data can be reloaded into the database at any time.
+This component is not as important as it once was, now that the integration tests are run against a separate database
+instance, though it's still nice to know that the data can be reloaded into the database at any time.
 
 ## Future Directions ##
 
