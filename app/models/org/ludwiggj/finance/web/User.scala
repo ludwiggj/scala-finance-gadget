@@ -4,8 +4,9 @@ import com.typesafe.config.Config
 
 import scala.collection.JavaConversions._
 
-class User private(val name: String, private val attributes: List[Attribute]) {
-  override def toString = s"User (name: $name attributes:\n  ${attributes.mkString("\n  ")}\n)"
+class User private(val name: String, val reportName: String, private val attributes: List[Attribute]) {
+  override def toString =
+    s"User (name: $name, reportName: $reportName, attributes:\n  ${attributes.mkString("\n  ")}\n)"
 
   private val attributeValueMap = Map(
     attributes map { attr => attr.unapply }: _*
@@ -17,6 +18,7 @@ class User private(val name: String, private val attributes: List[Attribute]) {
 object User {
   def apply(config: Config) = new User(
     config.getString("name"),
+    config.getString("reportName"),
     (config.getConfigList("attributes") map (Attribute(_))).toList
   )
 }

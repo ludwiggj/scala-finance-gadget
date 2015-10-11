@@ -11,7 +11,7 @@ import play.api.test.FakeApplication
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.matching.Regex
 
-object DataReload extends App {
+object DatabaseReload extends App {
 
   def isAFileWithUserNameMatching(pattern: Regex) = new FilenameFilter {
     override def accept(dir: File, name: String) = {

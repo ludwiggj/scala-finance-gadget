@@ -9,7 +9,7 @@ import play.api.test.FakeApplication
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-object ShowFinanceHoldings extends App {
+object ShowHoldings extends App {
   def drop(tables: TableQuery[_ <: Table[_]]*)(implicit session: Session) {
     tables foreach {
       table =>

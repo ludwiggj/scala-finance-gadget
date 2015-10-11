@@ -8,7 +8,7 @@ import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.Holding
 import models.org.ludwiggj.finance.persistence.database.HoldingsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
+import models.org.ludwiggj.finance.web.{User, NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
 import play.api.Play
 import play.api.test.FakeApplication
 
@@ -18,19 +18,21 @@ import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
-object FinanceHoldingScraper extends App {
+object WebSiteHoldingScraper extends App {
 
-  def getHoldings(userName: String): List[Holding] = {
-    WebSiteHoldingFactory(loginFormBuilder, userName).getHoldings()
+  def getHoldings(user: User): List[Holding] = {
+    WebSiteHoldingFactory(loginFormBuilder, user.name).getHoldings() map {
+      holding => holding.copy(userName = user.reportName)
+    }
   }
 
-  def generatePeristedHoldingsFileName(userName: String) = {
+  def generatePeristedHoldingsFileName(userReportName: String) = {
     val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
-    s"$reportHome/holdings_${date}_${userName}.txt"
+    s"$reportHome/holdings_${date}_${userReportName}.txt"
   }
 
-  def persistHoldings(userName: String, holdings: List[Holding]): Unit = {
-    val peristedHoldingsFileName = generatePeristedHoldingsFileName(userName)
+  def persistHoldings(userReportName: String, holdings: List[Holding]): Unit = {
+    val peristedHoldingsFileName = generatePeristedHoldingsFileName(userReportName)
 
     val persister = FilePersister(peristedHoldingsFileName)
 
@@ -39,16 +41,18 @@ object FinanceHoldingScraper extends App {
     HoldingsDatabase().insert(holdings)
   }
 
-  def processHoldings(userName: String) = Future {
+  def processHoldings(user: User) = Future {
+    val userName = user.name
+
     time(s"processHoldings($userName)",
       try {
-        val holdings = getHoldings(userName)
+        val holdings = getHoldings(user)
 
         val holdingsTotal = holdings map (h => h.value) sum
 
         println(s"Total holdings ($userName): £$holdingsTotal")
 
-        persistHoldings(userName, holdings)
+        persistHoldings(user.reportName, holdings)
 
         (userName, holdingsTotal)
       } catch {
@@ -85,7 +89,7 @@ object FinanceHoldingScraper extends App {
     try {
       val listOfFutures = users map { user =>
         composeWaitingFuture(
-          processHoldings(user.name), 30 seconds, user.name
+          processHoldings(user), 30 seconds, user.name
         )
       }
 

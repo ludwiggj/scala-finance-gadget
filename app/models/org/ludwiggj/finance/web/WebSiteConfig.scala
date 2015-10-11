@@ -19,6 +19,7 @@ class WebSiteConfig private(private val config: Config) {
 
   def getUserList() = {
     (config.getConfigList("site.userAccounts") map (User(_))).toList
+    (config.getConfigList("site.userAccounts") map (User(_))).toList
   }
 
   def getLoginText() = {

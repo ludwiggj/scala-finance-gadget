@@ -16,6 +16,7 @@ class UserTest extends FunSuite with MockFactory with Matchers {
 
     inAnyOrder {
       (config.getString _).expects("name").returning("userName")
+      (config.getString _).expects("reportName").returning("reportName")
       (config.getConfigList _).expects("attributes").returning(attributes)
       (attribute1.getString _).expects("name").returning("attr1")
       (attribute1.getString _).expects("value").returning("value1")
@@ -26,6 +27,7 @@ class UserTest extends FunSuite with MockFactory with Matchers {
     val user = User(config)
 
     user.name should equal ("userName")
+    user.reportName should equal ("reportName")
     user.attributeValue("attr1") should equal ("value1")
     user.attributeValue("attr2") should equal ("value2")
   }

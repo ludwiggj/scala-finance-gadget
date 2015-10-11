@@ -7,7 +7,7 @@ import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory}
+import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory, User}
 import play.api.Play
 import play.api.test.FakeApplication
 
@@ -17,17 +17,22 @@ import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
-object FinanceTransactionScraper extends App {
+object WebSiteTransactionScraper extends App {
 
-  def processTransactions(userName: String) = Future {
+  def processTransactions(user: User) = Future {
+    val userName = user.name
+
     time(s"processTransactions($userName)",
       try {
         val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, userName)
-        val transactions = transactionFactory.getTransactions()
+
+        val transactions = transactionFactory.getTransactions() map {
+          tx => tx.copy(userName = user.reportName)
+        }
 
         println(s"Total transactions ($userName): ${transactions size}")
 
-        val persister = FilePersister(s"$reportHome/txs_${date}_${userName}.txt")
+        val persister = FilePersister(s"$reportHome/txs_${date}_${user.reportName}.txt")
 
         persister.write(transactions)
         TransactionsDatabase().insert(transactions)
@@ -64,7 +69,7 @@ object FinanceTransactionScraper extends App {
     try {
       val listOfFutures = users map { user =>
         composeWaitingFuture(
-          processTransactions(user.name), 30 seconds, user.name
+          processTransactions(user), 30 seconds, user.name
         )
       }
 
