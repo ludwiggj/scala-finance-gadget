@@ -1,11 +1,12 @@
 package models.org.ludwiggj.finance.web
 
 import models.org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
+import org.junit.Ignore
 import org.scalatest.{FunSuite, Matchers}
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 
-  test("login form works with third party library") {
+  ignore("login form works with third party library") {
     val config = WebSiteConfig("cofunds.conf")
     val loginForm =
       aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
