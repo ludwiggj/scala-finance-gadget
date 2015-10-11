@@ -22,15 +22,15 @@ same time.
 
 The system consists of several components:
 
-* *Web site scrapers* to log in to the investment management platform, retrieve (scrape) the investment data from the 
+* **Web site scrapers** to log in to the investment management platform, retrieve (scrape) the investment data from the 
 web site and persist it into local file storage (flat files) and a MySql database.
 
-* A *database facade*.
+* A **database facade**.
  
-* A *reports component*, which runs queries against the MySql database and displays the results as a number of different
+* A **reports component**, which runs queries against the MySql database and displays the results as a number of different
  reports.
  
-* A *database reloader*, which parses scraped investment data from flat files and reloads it into the Mysql database.
+* A **database reloader**, which parses scraped investment data from flat files and reloads it into the Mysql database.
 
 The components are described in more detail below.
 
@@ -55,9 +55,9 @@ Java library for parsing HTML. This is used to parse the HTML scraped from the i
 
 Pre-requisites:
 
-* [Play 2.4](https://www.playframework.com/documentation/2.4.x/Installing)
+** [Play 2.4](https://www.playframework.com/documentation/2.4.x/Installing)
 
-* [MySql 5.6.x](https://dev.mysql.com/downloads/mysql/)
+** [MySql 5.6.x](https://dev.mysql.com/downloads/mysql/)
 
 The code for is available from the [financeGadget git repo](https://github.com/ludwiggj/financeGadget.git).
 
@@ -69,7 +69,7 @@ Once downloaded, you can run the tests from the command line via the command:
 
 ## WebSite Holding Scraper ##
 
-The *WebSiteHoldingScraper* executable logs first retrieves details of the web site user accounts from a configuration
+The **WebSiteHoldingScraper** executable logs first retrieves details of the web site user accounts from a configuration
 file, which uses the typesafe config format. (The config file is not stored in github for obvious reasons).
 
 The config file can contain details of multiple user accounts. The scraper logs in to the investment management web site
@@ -81,7 +81,7 @@ as each user, and retrieves the current holdings of the user. The format of the 
 | EdenTree Amity European A Fund Inc       | 2,468.3505   | 09/10/2015 | 199.5000 | 4,924.36  |
 
 The scraper obtains the above data from the web site, parses it and then persists it to the local flat files (in the 
-*reports* directory), as well as the MySql database.
+**reports** directory), as well as the MySql database.
 
 The format of a holdings flat file name is:
  
@@ -94,7 +94,7 @@ If the config file lists multiple accounts then each one is processed in paralle
 
 ## WebSite Transaction Scraper ##
 
-The *WebSiteTransactionScraper* executable is similar to the *WebSiteHoldingScraper*, except that it scrapes and
+The **WebSiteTransactionScraper** executable is similar to the **WebSiteHoldingScraper**, except that it scrapes and
 persists the latest transactions for each user.
 
 The format of the scraped transaction data is shown below:
@@ -107,7 +107,7 @@ The format of the scraped transaction data is shown below:
 The transactions for a particular user on a particular date are stored as a single file in the reports directory, with
 the name **txs_YY_MM_DD_\<userName\>.txt**, where **userName** is a user-defined name to represent the user.		
 
-The transaction flat files are again stored in the *reports* directory. The format of a transactions flat file name is:
+The transaction flat files are again stored in the **reports** directory. The format of a transactions flat file name is:
  
 **txs_YY_MM_DD_\<userName\>.txt**
 
@@ -122,19 +122,19 @@ separately using each account, processing each one separately, and in parallel, 
 MySql is used to store the data scraped by the previously described components. The [schema](financeERD.png) shows that
 the database has been normalised, with common occurring entities (users, prices and funds) being given their own tables. 
 
-The *play_evolutions* table is used by the play evolutions component, which manages the deployment and versions of
+The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versions of
 database schema changes.
 
 ## Database Facade ##
 
-This is implemented via slick, see the classes in the *models.org.ludwiggj.finance.persistence.database* package.
+This is implemented via slick, see the classes in the **models.org.ludwiggj.finance.persistence.database** package.
 
 ## Reports ##
 
 This makes use of slick to retrieve data from the MySql database. The data is initially retrieved as row case classes, 
 which are generated automatically by slick. The data is then converted into "higher value" domain representations, such 
-as *HoldingSummary* (the current value of shares held in a single fund by a user, including gain/loss information) and 
-*Portfolio* (all of the fund holdings for a user on a particular date, including gain/loss information across the whole
+as **HoldingSummary** (the current value of shares held in a single fund by a user, including gain/loss information) and 
+**Portfolio** (all of the fund holdings for a user on a particular date, including gain/loss information across the whole
 portfolio).
 
 There are a number of report executables which retrieve and display this information. For example,
