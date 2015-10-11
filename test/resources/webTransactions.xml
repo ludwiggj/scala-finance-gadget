@@ -255,10 +255,10 @@ return true;
                     Manor IFA Ltd - Portfolio Access
                   </span>
                   <span class="idrContentItem">
-                    Graeme Ludwig
+                    John Doe
                   </span>
                   <span class="idrContentItem">
-                    A/C No. 614428
+                    A/C No. 999999
                   </span>
                   <span class="idrContentItem">
                     17/05/2014
@@ -1126,7 +1126,7 @@ return true;
                                                                                   <tr>
                                                                                     <td>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblPortfolioName" class="SubHeadingAppsSubTotals">
-                                                                                        A614428A1F / Cofunds Investment ISA
+                                                                                        A999999A1F / Cofunds Investment ISA
                                                                                       </span>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblValuationDate" class="ContentMedium">
                                                                                         <!-- start resource '5591cf8c-47c0-0f9a-6ec7-55f93f0bd6ff' -->                                                                                        (as at 16/05/2014)
@@ -1344,7 +1344,7 @@ return true;
                                                                                   <tr>
                                                                                     <td>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblPortfolioName" class="SubHeadingAppsSubTotals">
-                                                                                        A614428A1F / Cofunds Cash Account
+                                                                                        A999999A1F / Cofunds Cash Account
                                                                                       </span>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblValuationDate" class="ContentMedium">
                                                                                         <!-- start resource '5591cf8c-47c0-0f9a-6ec7-55f93f0bd6ff' -->                                                                                        (as at 16/05/2014)
@@ -1849,7 +1849,7 @@ return true;
 //]]>
 
         </script>
-        <!--KGJ614428PVT-->        <div class="standard_2">
+        <!--KGJ999999PVT-->        <div class="standard_2">
           <div id="idrFooter">
             <div class="idrPageRow">
               <!-- start resource 'ef26ba13-1a1c-4941-b041-60692d18cc54' -->              <a href="/web/disclaimer.aspx?http://www.LRQA.com" title="Opens LRQA website in a new window." target="_blank" class="idrLink04" id="idrLRQA">

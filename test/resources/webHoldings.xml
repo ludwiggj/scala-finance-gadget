@@ -237,10 +237,10 @@ return true;
                     Manor IFA Ltd - Portfolio Access
                   </span>
                   <span class="idrContentItem">
-                    Graeme Ludwig
+                    John Doe
                   </span>
                   <span class="idrContentItem">
-                    A/C No. 614428
+                    A/C No. 999999
                   </span>
                   <span class="idrContentItem">
                     21/05/2014
@@ -914,13 +914,13 @@ return true;
                                                                             <tr>
                                                                               <td align="left">
                                                                                 <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblPortfolioName" class="SubHeadingAppsSubTotals" style="font-weight:bold;">
-                                                                                  A614428A1F / Cofunds Investment ISA
+                                                                                  A999999A1F / Cofunds Investment ISA
                                                                                 </span>
                                                                                 <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblValuationDate" class="ContentMedium" style="font-weight:normal;">
                                                                                   <!-- start resource 'd27fcf8e-002e-0ed0-138d-c8e5d9732d0e' -->                                                                                  as at 20/05/2014
                                                                                   <!-- end resource 'd27fcf8e-002e-0ed0-138d-c8e5d9732d0e' -->                                                                                </span>
                                                                                 <a id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_hypTransHistory" class="InvisibleOnBranded" title="Transaction history" href="/ClientServicing/Transactions/TransactionHistory.aspx?LA=09435166">
-                                                                                  <img src="/Assets/IconOpen.gif" alt="Transaction History for A614428A1F / Cofunds Investment ISA"/>
+                                                                                  <img src="/Assets/IconOpen.gif" alt="Transaction History for A999999A1F / Cofunds Investment ISA"/>
                                                                                 </a>
                                                                               </td>
                                                                               <td align="right">
@@ -1104,13 +1104,13 @@ return true;
                                                                             <tr>
                                                                               <td align="left">
                                                                                 <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblPortfolioName" class="SubHeadingAppsSubTotals" style="font-weight:bold;">
-                                                                                  A614428A1F / Cofunds Cash Account
+                                                                                  A999999A1F / Cofunds Cash Account
                                                                                 </span>
                                                                                 <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblValuationDate" class="ContentMedium" style="font-weight:normal;">
                                                                                   <!-- start resource 'd27fcf8e-002e-0ed0-138d-c8e5d9732d0e' -->                                                                                  as at 20/05/2014
                                                                                   <!-- end resource 'd27fcf8e-002e-0ed0-138d-c8e5d9732d0e' -->                                                                                </span>
                                                                                 <a id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_hypTransHistory" class="InvisibleOnBranded" title="Transaction history" href="/ClientServicing/Transactions/TransactionHistory.aspx?LA=13106825">
-                                                                                  <img src="/Assets/IconOpen.gif" alt="Transaction History for A614428A1F / Cofunds Cash Account"/>
+                                                                                  <img src="/Assets/IconOpen.gif" alt="Transaction History for A999999A1F / Cofunds Cash Account"/>
                                                                                 </a>
                                                                               </td>
                                                                               <td align="right">
@@ -1441,7 +1441,7 @@ return true;
 //]]>
 
         </script>
-        <!--KGJ614428PVT-->        <div class="standard_2">
+        <!--KGJ999999PVT-->        <div class="standard_2">
           <div id="idrFooter">
             <div class="idrPageRow">
               <!-- start resource 'ef26ba13-1a1c-4941-b041-60692d18cc54' -->              <a href="/web/disclaimer.aspx?http://www.LRQA.com" title="Opens LRQA website in a new window." target="_blank" class="idrLink04" id="idrLRQA">
