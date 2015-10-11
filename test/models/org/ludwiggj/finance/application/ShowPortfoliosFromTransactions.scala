@@ -5,7 +5,7 @@ import models.org.ludwiggj.finance.persistence.database.{Portfolios, Transaction
 import play.api.Play
 import play.api.test.FakeApplication
 
-object ShowHoldingsFromTransactions extends App {
+object ShowPortfoliosFromTransactions extends App {
 
   def showPortfolios() {
     def showPortfolios(portfolios: List[Portfolio], dateOfInterest: FinanceDate) {
