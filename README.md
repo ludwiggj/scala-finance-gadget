@@ -18,6 +18,9 @@ Previously I have achieved this by copying data from the investment management w
 manipulating the data. This project is intended to automate that process, and help me to develop my Scala skills at the
 same time.
 
+This [portfolio report](exampleHoldingsFromTransactionsReport.txt) is an example of a report I am now generating to
+provide additional analysis of my portfolio.
+
 # Architecture #
 
 The system consists of several components:
@@ -135,9 +138,10 @@ gain/loss information) and **Portfolio** (all of the funds held by a user on a p
 information across the whole portfolio).
 
 There are a number of report executables which retrieve and display this information. For example,
-**ShowPortfoliosFromTransactions** displays the value of each user's portfolio on each **investment date** (the regular
-monthly date on which the investor's money is used to buy new shares in one or more funds). This report shows how each
-user's portfolio has built up over time. 
+**ShowPortfoliosFromTransactions** generates a [ portfolio report](exampleHoldingsFromTransactionsReport.txt), which
+ shows the value of each user's portfolio on each **investment date** (the regular monthly date on which the investor's
+  money is used to buy new shares in one or more funds). Thus the report shows how each user's portfolio has built up
+  over time. 
 
 ## Scala tests ##
 
