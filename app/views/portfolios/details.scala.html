@@ -1,0 +1,87 @@
+@import models.org.ludwiggj.finance.Portfolio
+@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate}
+
+@(portfolios: scala.collection.immutable.List[Portfolio], dateOfInterest: FinanceDate, grandTotal: CashDelta)
+<html>
+<head>
+    <style type="text/css" media="screen">
+        table{
+        border-collapse:collapse;
+        border:1px solid #FF0000;
+        }
+
+        table th{
+        border:1px solid #FF0000;
+        text-decoration: underline;
+        }
+
+        table td{
+        border:1px solid #FF0000;
+        }
+
+        table th,td{
+        padding: 5px;
+        }
+
+        .blank_row
+        {
+        height: 20px !important; /* Overwrite any previous rules */
+        background-color: #FFFFFF;
+        }
+    </style>
+</head>
+<table>
+    @for(portfolio <- portfolios) {
+    <tr>
+        <th>Fund Name</th>
+        <th>Amount In</th>
+        <th>Units In</th>
+        <th>Units Out</th>
+        <th>Total Units</th>
+        <th>Price Date</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Gain</th>
+        <th>Gain %</th>
+    </tr>
+    <tr>
+        <td><strong>@portfolio.userName, @dateOfInterest</strong></td>
+        <td colspan="9"/>
+    </tr>
+
+    @for(holdingSummary <- portfolio.holdings) {
+    <tr>
+        <td>@holdingSummary.price.fundName</td>
+        <td style="text-align:right">@("£%8.2f".format(holdingSummary.amountIn))</td>
+        <td style="text-align:right">@("%10.4f".format(holdingSummary.unitsIn))</td>
+        <td style="text-align:right">@("%10.4f".format(holdingSummary.unitsOut))</td>
+        <td style="text-align:right">@("%10.4f".format(holdingSummary.totalUnits))</td>
+        <td style="text-align:right">@holdingSummary.price.date</td>
+        <td style="text-align:right">@("£%8.4f".format(holdingSummary.price.inPounds))</td>
+        <td style="text-align:right">@("£%9.2f".format(holdingSummary.total))</td>
+        <td style="text-align:right">@("£%8.2f".format(holdingSummary.delta.gain))</td>
+        <td style="text-align:right">@("%6.2f".format(holdingSummary.delta.gainPct))</td>
+    </tr>
+    }
+    <tr>
+        <td><strong>TOTAL (@portfolio.userName, @dateOfInterest)</strong></td>
+        <td style="text-align:right">@("£%9.2f".format(portfolio.delta.amountIn))</td>
+        <td colspan="5"/>
+        <td style="text-align:right"><strong>@("£%9.2f".format(portfolio.delta.total))</strong></td>
+        <td style="text-align:right">@("£%9.2f".format(portfolio.delta.gain))</td>
+        <td style="text-align:right">@("%6.2f".format(portfolio.delta.gainPct))</td>
+    </tr>
+    <tr class="blank_row">
+        <td colspan="10"/>
+    </tr>
+    }
+    <tr>
+        <td><strong>GRAND TOTAL (@dateOfInterest)</strong></td>
+        <td style="text-align:right">@("£%9.2f".format(grandTotal.amountIn))</td>
+        <td colspan="5"/>
+        <td style="text-align:right"><strong>@("£%9.2f".format(grandTotal.total))</strong></td>
+        <td style="text-align:right">@("£%9.2f".format(grandTotal.gain))</td>
+        <td style="text-align:right">@("%6.2f".format(grandTotal.gainPct))</td>
+    </tr>
+</table>
+</html>

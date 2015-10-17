@@ -1,5 +1,3 @@
-GET /   controllers.Application.index()
-
-GET /hello   controllers.Application.hello(n: String)
-
-GET /helloPage   controllers.Application2.hello(n: String)
+GET /                       controllers.Application.index
+GET /portfolios/:date       controllers.Portfolios.show(date: java.sql.Date)
+GET /investmentDates        controllers.InvestmentDates.list

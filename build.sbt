@@ -42,6 +42,8 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 routesGenerator := InjectedRoutesGenerator
 
+routesImport += "utils.Binders._"
+
 lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
 fork in run := false

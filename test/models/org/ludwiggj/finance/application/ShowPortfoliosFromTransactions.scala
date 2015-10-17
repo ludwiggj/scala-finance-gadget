@@ -1,7 +1,8 @@
 package models.org.ludwiggj.finance.application
 
-import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio}
-import models.org.ludwiggj.finance.persistence.database.{Portfolios, TransactionsDatabase}
+import models.org.ludwiggj.finance.Portfolio
+import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate}
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import play.api.Play
 import play.api.test.FakeApplication
 
@@ -50,7 +51,7 @@ object ShowPortfoliosFromTransactions extends App {
     for {
       dateOfInterest <- TransactionsDatabase().getRegularInvestmentDates()
     } {
-      val portfolios = Portfolios().get(dateOfInterest)
+      val portfolios = Portfolio.get(dateOfInterest)
       showPortfolios(portfolios, dateOfInterest)
     }
   }

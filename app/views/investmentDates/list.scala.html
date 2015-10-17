@@ -1,0 +1,18 @@
+@import models.org.ludwiggj.finance.domain.FinanceDate
+
+@(investmentDates: scala.collection.immutable.List[FinanceDate])
+<html>
+<head/>
+<table>
+    <tr>
+        <th>Investment Date</th>
+    </tr>
+    @for(investmentDate <- investmentDates) {
+    <tr>
+        <td>
+            <a href="@controllers.routes.Portfolios.show(investmentDate)">@investmentDate</a>
+        </td>
+    </tr>
+    }
+</table>
+</html>
