@@ -2,6 +2,7 @@ package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import scala.language.implicitConversions
+import scala.util.{Success, Try, Failure}
 
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
@@ -69,7 +70,11 @@ object Transaction {
     val txPattern(fundName, date, description, in, out, priceDate, priceInPence, units, _) =
       stripAllWhitespaceExceptSpace(row)
 
-    val priceInPounds = priceInPence / 100;
+    val priceInPounds = Try (priceInPence / 100) match {
+      case Success(price) => price
+      case Failure(ex: NumberFormatException) => BigDecimal(0)
+      case Failure(ex) => throw ex
+    }
 
     Transaction(userName, date, description.trim, in, out, Price(fundName, priceDate, priceInPounds), units)
   }

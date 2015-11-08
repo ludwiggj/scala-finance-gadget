@@ -26,11 +26,11 @@ object HoldingSummary {
       .flatMap(_.in).sum
 
     val unitsIn = transactions
-      .filter { tx => tx.in.isDefined }
+      .filter { tx => tx.in.isDefined || (tx.description == UnitShareConversionIn) }
       .map(_.units).sum
 
     val unitsOut = transactions
-      .filter { tx => tx.out.isDefined }
+      .filter { tx => tx.out.isDefined || (tx.description == UnitShareConversionOut) }
       .map(_.units).sum
 
     HoldingSummary(amountIn, unitsIn, Some(unitsOut), price)

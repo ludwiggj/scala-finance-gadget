@@ -134,6 +134,8 @@ object TransactionsDatabase {
   val InvestmentLumpSum = "Investment Lump Sum"
   val DividendReinvestment = "Dividend Reinvestment"
   val SaleForRegularPayment = "Sale for Regular Payment"
+  val UnitShareConversionIn = "Unit/Share Conversion +"
+  val UnitShareConversionOut = "Unit/Share Conversion -"
 
   def apply() = new TransactionsDatabase()
 }

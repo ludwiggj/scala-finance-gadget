@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import java.sql.Date
-import models.org.ludwiggj.finance.domain.Transaction
+import models.org.ludwiggj.finance.domain.{Price, Transaction}
 import models.org.ludwiggj.finance.stringToSqlDate
 import Tables.{FundsRow, UsersRow}
 import org.specs2.matcher.MapMatchers
@@ -90,9 +90,9 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       val transactionMap: TransactionMap = TransactionsDatabase().getTransactionsUpToAndIncluding("22/6/2014")
 
       transactionMap must havePairs(
-        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice),
-        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey),
-        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
+        (userNameGraeme, kappaFundName: String) ->(Seq(kappaTransactionGraeme), kappaPrice),
+        (userNameAudrey, nikeFundName: String) ->(Seq(nikeTransactionAudrey), nikePriceAudrey),
+        (userNameGraeme, nikeFundName: String) ->(Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
       )
 
       transactionMap.size must beEqualTo(3)
@@ -105,11 +105,22 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       val transactionMap: TransactionMap = TransactionsDatabase().getTransactionsUpToAndIncluding("20/6/2014")
 
       transactionMap must havePairs(
-        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice),
-        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme), nikePriceGraemeLater)
+        (userNameGraeme, kappaFundName: String) ->(Seq(kappaTransactionGraeme), kappaPrice),
+        (userNameGraeme, nikeFundName: String) ->(Seq(nikeTransactionGraeme), nikePriceGraemeLater)
       )
 
       transactionMap.size must beEqualTo(2)
+    }
+  }
+
+  "unit/share conversion tx should" should {
+    "work" in EmptySchema {
+
+      val price = Price("EdenTree Amity European A Fund Inc", "19/10/2015", 0.0)
+
+      val tx = Transaction("Graeme", "21/10/2015", "Unit/Share Conversion -", None, None, price, 2468.3505)
+
+      tx must beEqualTo(tx)
     }
   }
 }

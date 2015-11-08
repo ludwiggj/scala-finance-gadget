@@ -7,7 +7,7 @@ case class CashDelta(val amountIn: BigDecimal, val total: BigDecimal) {
 
   val gain = if (total != 0) (total - amountIn) else zero
 
-  val gainPct = if (gain != zero) {
+  val gainPct = if ((gain != zero) && (amountIn != 0)) {
     100 * gain / amountIn
   } else zero
 
