@@ -9,16 +9,16 @@ class RoundTripTest extends FunSuite with Matchers {
     new TestTransactions {
       val txFile = "tx_round_trip_test.txt"
 
-      println(s"About to persist transactions: $transactions")
+      println(s"About to persist transactions: $transactionsMultipleFunds")
 
-      FilePersister(txFile).write(transactions)
+      FilePersister(txFile).write(transactionsMultipleFunds)
 
       val reconstitutedTransactions =
         FileTransactionFactory(userNameGraeme, txFile).getTransactions()
 
       println(s"reconstitutedTransactions: $reconstitutedTransactions")
 
-      reconstitutedTransactions should contain theSameElementsAs transactions
+      reconstitutedTransactions should contain theSameElementsAs transactionsMultipleFunds
     }
   }
 
@@ -26,15 +26,15 @@ class RoundTripTest extends FunSuite with Matchers {
     new TestHoldings {
       val holdingFile = "holdings_round_trip_test.txt"
 
-      println(s"About to persist transactions: $holdings")
+      println(s"About to persist transactions: $holdingsMultipleFunds")
 
-      FilePersister(holdingFile).write(holdings)
+      FilePersister(holdingFile).write(holdingsMultipleFunds)
 
       val reconstitutedHoldings = FileHoldingFactory(userNameGraeme, holdingFile).getHoldings()
 
       println(s"reconstitutedHoldings: $reconstitutedHoldings")
 
-      reconstitutedHoldings should contain theSameElementsAs holdings
+      reconstitutedHoldings should contain theSameElementsAs holdingsMultipleFunds
     }
   }
 }

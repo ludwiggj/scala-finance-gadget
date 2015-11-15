@@ -1,4 +1,11 @@
-M&G Feeder of Property Portfolio I Fund Acc|26/10/2015|Investment Regular|200.00||26/10/2015|13.5547|14.7551
+F&C Responsible UK Income 2 Fund Inc|12/11/2015|Sale for Regular Payment||25.67|12/11/2015|1.755|14.6263
+Aberdeen Ethical World Equity A Fund Inc|06/11/2015|Unit/Share Conversion -|||04/11/2015|0|22.7723
+Aberdeen Ethical World Equity I Fund Inc|06/11/2015|Unit/Share Conversion +|||04/11/2015|0|20.9414
+F&C Responsible UK Income 1 Fund Inc|06/11/2015|Unit/Share Conversion -|||04/11/2015|0|49.5653
+F&C Responsible UK Income 2 Fund Inc|06/11/2015|Unit/Share Conversion +|||04/11/2015|0|38.8502
+Aberdeen Ethical World Equity A Fund Inc|02/11/2015|Dividend Reinvestment|29.26||02/11/2015|1.2849|22.7723
+F&C Responsible UK Income 1 Fund Inc|02/11/2015|Dividend Reinvestment|68.40||02/11/2015|1.38|49.5653
+M&G Feeder of Property Portfolio I Fund Acc|27/10/2015|Investment Regular|200.00||26/10/2015|13.5547|14.7551
 Henderson Global Care Growth I Fund Acc|26/10/2015|Investment Regular|300.00||26/10/2015|2.126|141.1101
 EdenTree Amity European A Fund Inc|21/10/2015|Unit/Share Conversion -|||19/10/2015|0|2468.3505
 EdenTree Amity European B Fund Inc|21/10/2015|Unit/Share Conversion +|||19/10/2015|0|2438.6419
@@ -21,16 +28,3 @@ EdenTree Amity European A Fund Inc|04/09/2015|Dividend Reinvestment|20.42||04/09
 EdenTree Amity European B Fund Inc|04/09/2015|Dividend Reinvestment|32.32||04/09/2015|1.977|16.3481
 Henderson Global Care Growth I Fund Acc|25/08/2015|Investment Regular|300.00||25/08/2015|1.978|151.6684
 M&G Feeder of Property Portfolio I Fund Acc|25/08/2015|Investment Regular|200.00||25/08/2015|13.3266|15.0076
-F&C Responsible UK Income 1 Fund Inc|13/08/2015|Sale for Regular Payment||22.22|13/08/2015|1.419|15.6561
-F&C Responsible UK Equity Growth 1 Fund Inc|31/07/2015|Dividend Reinvestment|0.42||31/07/2015|9.302|0.0452
-F&C Responsible UK Equity Growth 1 Fund Inc|31/07/2015|Dividend Reinvestment|5.60||31/07/2015|9.302|0.6021
-F&C Responsible UK Equity Growth 1 Fund Inc|31/07/2015|Dividend Reinvestment|6.77||31/07/2015|9.302|0.7279
-F&C Responsible UK Equity Growth 1 Fund Inc|31/07/2015|Dividend Reinvestment|1.43||31/07/2015|9.302|0.1538
-F&C Responsible UK Income 1 Fund Inc|31/07/2015|Dividend Reinvestment|2.95||31/07/2015|1.402|2.1042
-F&C Responsible UK Income 1 Fund Inc|31/07/2015|Dividend Reinvestment|37.57||31/07/2015|1.402|26.7975
-F&C Responsible UK Income 1 Fund Inc|31/07/2015|Dividend Reinvestment|43.14||31/07/2015|1.402|30.7704
-F&C Responsible UK Income 1 Fund Inc|31/07/2015|Dividend Reinvestment|51.70||31/07/2015|1.402|36.8759
-F&C Responsible UK Income 1 Fund Inc|31/07/2015|Dividend Reinvestment|4.95||31/07/2015|1.402|3.5307
-Royal London Sustainable Leaders C Trust Inc|31/07/2015|Dividend Reinvestment|25.77||31/07/2015|1.437|17.9332
-Henderson Global Care Growth I Fund Acc|27/07/2015|Investment Regular|300.00||27/07/2015|2.188|137.1116
-M&G Feeder of Property Portfolio I Fund Acc|27/07/2015|Investment Regular|200.00||27/07/2015|13.2293|15.1180

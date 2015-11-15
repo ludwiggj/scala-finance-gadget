@@ -13,7 +13,7 @@ class FileFactoryTest extends FunSuite with Matchers {
       val actualTransactions =
         FileTransactionFactory(userNameGraeme, "/fileTransactions.txt").getTransactions()
 
-      actualTransactions should contain theSameElementsAs transactions
+      actualTransactions should contain theSameElementsAs transactionsMultipleFunds
     }
   }
 
@@ -36,7 +36,7 @@ class FileFactoryTest extends FunSuite with Matchers {
 
       val actualHoldings = FileHoldingFactory(userNameGraeme, "/fileHoldings.txt").getHoldings()
 
-      actualHoldings should contain theSameElementsAs holdings
+      actualHoldings should contain theSameElementsAs holdingsMultipleFunds
     }
   }
 
@@ -57,7 +57,7 @@ class FileFactoryTest extends FunSuite with Matchers {
 
       val actualPrices = FilePriceFactory("/filePrices.txt").getPrices()
 
-      actualPrices should contain theSameElementsAs prices
+      actualPrices should contain theSameElementsAs pricesMultipleFunds
     }
   }
 

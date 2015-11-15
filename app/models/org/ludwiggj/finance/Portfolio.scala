@@ -5,35 +5,25 @@ import java.sql.Date
 import models.org.ludwiggj.finance.domain._
 import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 
-case class Portfolio(val userName: String, val date: FinanceDate, val holdings: List[HoldingSummary]) {
-  val delta = CashDelta(holdings.map(_.amountIn).sum, holdings.map(_.total).sum)
+case class Portfolio(val userName: String, val date: FinanceDate, private val holdings: HoldingSummaries) {
+  val delta = CashDelta(holdings.amountIn, holdings.total)
 
-  override def toString = holdings.foldLeft("")(
-    (str: String, holdingSummary: HoldingSummary) => str + holdingSummary + "\n"
-  )
+  def holdingsIterator = holdings.iterator
+
+  override def toString = holdings.toString
 }
 
 object Portfolio {
-
-  //TODO - need to write a test for this method
   def get(dateOfInterest: Date): List[Portfolio] = {
 
     val transactions = TransactionsDatabase().getTransactionsUpToAndIncluding(dateOfInterest)
 
     val userNames = transactions.keys.map {
       _._1
-    }.toList.distinct
+    }.toList.distinct.sorted
 
-    val portfolios = userNames map { userName =>
-      val usersHoldings: List[HoldingSummary] =
-        transactions.filterKeys(_._1 == userName).values.toList.map(
-          {
-            case (txs: Seq[Transaction], price: Price) => HoldingSummary(txs.toList, price)
-          }
-        )
-
-      Portfolio(userName, dateOfInterest, usersHoldings)
+    userNames map { userName =>
+      Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest, "fundChanges.conf"))
     }
-    portfolios
   }
 }

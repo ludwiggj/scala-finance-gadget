@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.domain
 
 import scala.language.implicitConversions
 
-class FundName private(val name: String) {
+class FundName private(val name: String) extends Ordered[FundName] {
   def canEqual(f: FundName) = (name == f.name)
 
   override def equals(that: Any): Boolean = {
@@ -20,6 +20,10 @@ class FundName private(val name: String) {
   }
 
   override def toString = name
+
+  override def compare(that: FundName): Int = {
+    this.name.compareTo(that.name)
+  }
 }
 
 object FundName {

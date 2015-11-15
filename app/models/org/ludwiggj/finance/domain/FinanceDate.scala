@@ -1,12 +1,12 @@
 package models.org.ludwiggj.finance.domain
 
 import java.sql.Date
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeComparator, DateTime}
 import org.joda.time.format.DateTimeFormat
 import models.org.ludwiggj.finance.sqlDateToDateTime
 import scala.language.implicitConversions
 
-case class FinanceDate(val date: DateTime) {
+case class FinanceDate(val date: DateTime) extends Ordered[FinanceDate] {
   override def toString = date.toString(FinanceDate.formatter)
 
   final override def equals(other: Any) = {
@@ -16,6 +16,10 @@ case class FinanceDate(val date: DateTime) {
   }
 
   final override def hashCode = date.hashCode()
+
+  def compare(that: FinanceDate) = {
+    DateTimeComparator.getInstance().compare(this.date, that.date)
+  }
 }
 
 object FinanceDate {

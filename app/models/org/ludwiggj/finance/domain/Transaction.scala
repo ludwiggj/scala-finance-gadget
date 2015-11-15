@@ -42,7 +42,7 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
     result = prime * result + (if (!out.isDefined) 0 else out.hashCode)
     result = prime * result + (if (priceDate == null) 0 else priceDate.hashCode)
     result = prime * result + units.intValue();
-    return result
+    result
   }
 }
 

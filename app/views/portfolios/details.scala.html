@@ -49,7 +49,7 @@
         <td colspan="9"/>
     </tr>
 
-    @for(holdingSummary <- portfolio.holdings) {
+    @for(holdingSummary <- portfolio.holdingsIterator) {
     <tr>
         <td>@holdingSummary.price.fundName</td>
         <td style="text-align:right">@("£%8.2f".format(holdingSummary.amountIn))</td>

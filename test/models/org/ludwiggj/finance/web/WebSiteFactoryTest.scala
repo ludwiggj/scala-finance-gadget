@@ -31,7 +31,7 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
 
       println(actualHoldings)
 
-      actualHoldings should contain theSameElementsAs holdings
+      actualHoldings should contain theSameElementsAs holdingsMultipleFunds
     }
   }
 
@@ -57,7 +57,7 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
 
       println(actualTransactions)
 
-      actualTransactions should contain theSameElementsAs transactions
+      actualTransactions should contain theSameElementsAs transactionsMultipleFunds
     }
   }
 }

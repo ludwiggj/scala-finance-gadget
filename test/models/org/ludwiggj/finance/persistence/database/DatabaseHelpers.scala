@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain._
 import FundsDatabase.fundNameToFundsRow
-import TransactionsDatabase.InvestmentRegular
+import TransactionsDatabase.{InvestmentRegular, SaleForRegularPayment}
 import UsersDatabase.stringToUsersRow
 import org.specs2.execute.AsResult
 import org.specs2.matcher.MatchResult
@@ -60,23 +60,23 @@ trait DatabaseHelpers {
   private val nikePriceAudreyLater = Price(nikeFundName, nikePriceDateAudreyLater, nikePriceInPoundsAudreyLater)
 
   // Transactions
-  val kappaTransactionGraeme = Transaction(userNameGraeme, kappaPriceDate, "A transaction", Some(282.1), None,
-    kappaPrice, kappaPriceInPounds)
+  val kappaTransactionGraeme = Transaction(userNameGraeme, kappaPriceDate, InvestmentRegular, Some(282.1), None,
+    kappaPrice, 251.875)
 
-  val nikeTransactionGraeme = Transaction(userNameGraeme, nikePriceDateGraeme, "A transaction", Some(2.0), None,
-    nikePriceGraeme, nikePriceInPoundsGraeme)
+  val nikeTransactionGraeme = Transaction(userNameGraeme, nikePriceDateGraeme, InvestmentRegular, Some(3.5), None,
+    nikePriceGraeme, 1.122)
 
-  val nikeTransactionGraemeLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, "A transaction", None,
-    Some(3.5), nikePriceGraemeLater, nikePriceInPoundsGraemeLater)
+  val nikeTransactionGraemeLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, SaleForRegularPayment, None,
+    Some(2.0), nikePriceGraemeLater, 0.649)
 
-  private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, "A transaction",
-    Some(10.2), None, nikePriceGraemeLatest, nikePriceInPoundsGraemeLatest)
+  private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, InvestmentRegular,
+    Some(10.2), None, nikePriceGraemeLatest, 3.322)
 
-  val nikeTransactionAudrey = Transaction(userNameAudrey, nikePriceDateAudrey, "A transaction", Some(9.12),
-    None, nikePriceAudrey, nikePriceInPoundsAudrey)
+  val nikeTransactionAudrey = Transaction(userNameAudrey, nikePriceDateAudrey, InvestmentRegular, Some(9.12),
+    None, nikePriceAudrey, 3.03)
 
-  private val nikeTransactionAudreyLater = Transaction(userNameAudrey, nikePriceDateAudreyLater, "A transaction",
-    Some(10.2), None, nikePriceAudreyLater, nikePriceInPoundsAudreyLater)
+  private val nikeTransactionAudreyLater = Transaction(userNameAudrey, nikePriceDateAudreyLater, InvestmentRegular,
+    Some(10.2), None, nikePriceAudreyLater, 3.1)
 
   // Holdings
   val kappaFundHolding = Holding(userNameGraeme, kappaPrice, 1.23)

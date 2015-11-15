@@ -80,6 +80,7 @@ object WebSiteTransactionScraper extends App {
           println(s"Done...")
         case Failure(ex) =>
           println(s"Oh dear... ${ex.getMessage}")
+          ex.printStackTrace()
       }
     } catch {
       case ex: TimeoutException => println(ex.getMessage)

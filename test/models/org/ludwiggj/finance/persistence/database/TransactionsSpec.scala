@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import java.sql.Date
-import models.org.ludwiggj.finance.domain.{Price, Transaction}
+import models.org.ludwiggj.finance.domain.Transaction
 import models.org.ludwiggj.finance.stringToSqlDate
+import TransactionsDatabase.InvestmentRegular
 import Tables.{FundsRow, UsersRow}
 import org.specs2.matcher.MapMatchers
 import org.specs2.mutable.Specification
@@ -18,7 +19,7 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
 
       val userName = "Graeme"
       val kappaFundTransaction = Transaction(userNameGraeme,
-        kappaPriceDate, "A transaction", Some(2.0), None, kappaPrice, 1.234)
+        kappaPriceDate, InvestmentRegular, Some(2.0), None, kappaPrice, 1.234)
 
       usersDatabase.get(userName) must beNone
       fundsDatabase.get(kappaFundName) must beNone
@@ -59,7 +60,7 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       transactionsDatabase.get().size must beEqualTo(1)
 
       val duplicateTransactionForAnotherUser =
-        Transaction(userNameAudrey, nikePriceDateGraeme, "A transaction", Some(2.0), None, nikePriceGraeme, 1.234)
+        Transaction(userNameAudrey, nikePriceDateGraeme, InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.234)
 
       transactionsDatabase.insert(duplicateTransactionForAnotherUser)
 
@@ -90,9 +91,9 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       val transactionMap: TransactionMap = TransactionsDatabase().getTransactionsUpToAndIncluding("22/6/2014")
 
       transactionMap must havePairs(
-        (userNameGraeme, kappaFundName: String) ->(Seq(kappaTransactionGraeme), kappaPrice),
-        (userNameAudrey, nikeFundName: String) ->(Seq(nikeTransactionAudrey), nikePriceAudrey),
-        (userNameGraeme, nikeFundName: String) ->(Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
+        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice),
+        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey),
+        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
       )
 
       transactionMap.size must beEqualTo(3)
@@ -110,17 +111,6 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       )
 
       transactionMap.size must beEqualTo(2)
-    }
-  }
-
-  "unit/share conversion tx should" should {
-    "work" in EmptySchema {
-
-      val price = Price("EdenTree Amity European A Fund Inc", "19/10/2015", 0.0)
-
-      val tx = Transaction("Graeme", "21/10/2015", "Unit/Share Conversion -", None, None, price, 2468.3505)
-
-      tx must beEqualTo(tx)
     }
   }
 }
