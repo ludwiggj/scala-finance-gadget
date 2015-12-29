@@ -77,6 +77,14 @@ class PricesSpec extends Specification with DatabaseHelpers {
   }
 
   "latestPrices" should {
+    "omit a price if it is zero" in MultiplePricesForSingleFund {
+      PricesDatabase().latestPrices("16/5/2014") should beEqualTo(
+        Map(1L -> kappaPriceEarliest)
+      )
+    }
+  }
+
+  "latestPrices" should {
     "omit a price if it is a two or more days too late" in MultiplePricesForTwoFunds {
       PricesDatabase().latestPrices("19/6/2014") should beEqualTo(
         Map(1L -> kappaPriceLater, 2L -> nikePriceGraeme)

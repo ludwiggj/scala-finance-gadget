@@ -78,10 +78,20 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
         Date.valueOf("2014-05-20")
       )
 
-      // test
-      TransactionsDatabase().getTransactionsUpToAndIncluding("21/6/2014")
-
       transactionsDatabase.getRegularInvestmentDates() must containTheSameElementsAs(expectedDates)
+    }
+  }
+
+  "get investment dates since date" should {
+    "return all transaction dates since specified date in order with most recent date first" in MultipleTransactionsForSingleUser {
+      val transactionsDatabase = TransactionsDatabase()
+
+      val expectedDates: List[Date] = List(
+        Date.valueOf("2014-06-25"),
+        Date.valueOf("2014-06-21")
+      )
+
+      transactionsDatabase.getTransactionsDatesSince("20/6/2014") must containTheSameElementsAs(expectedDates)
     }
   }
 
@@ -91,9 +101,9 @@ class TransactionsSpec extends Specification with DatabaseHelpers with MapMatche
       val transactionMap: TransactionMap = TransactionsDatabase().getTransactionsUpToAndIncluding("22/6/2014")
 
       transactionMap must havePairs(
-        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice),
-        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey),
-        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
+        (userNameGraeme, kappaFundName: String) ->(Seq(kappaTransactionGraeme), kappaPrice),
+        (userNameAudrey, nikeFundName: String) ->(Seq(nikeTransactionAudrey), nikePriceAudrey),
+        (userNameGraeme, nikeFundName: String) ->(Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
       )
 
       transactionMap.size must beEqualTo(3)

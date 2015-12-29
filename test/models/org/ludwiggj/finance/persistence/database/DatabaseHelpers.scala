@@ -33,6 +33,14 @@ trait DatabaseHelpers {
   val nikeFundName: FundName = "Nike"
 
   // Prices
+  val kappaPriceEarliestDate: FinanceDate = "12/05/2014"
+  val kappaPriceEarliestInPounds: Double = 2.50
+  val kappaPriceEarliest = Price(kappaFundName, kappaPriceEarliestDate, kappaPriceEarliestInPounds)
+
+  val kappaPriceEarlyButZeroDate: FinanceDate = "16/05/2014"
+  val kappaPriceEarlyButZeroInPounds: Double = 0.0
+  val kappaPriceEarlyButZero = Price(kappaFundName, kappaPriceEarlyButZeroDate, kappaPriceEarlyButZeroInPounds)
+
   val kappaPriceDate: FinanceDate = "20/05/2014"
   val kappaPriceInPounds: Double = 1.12
   val kappaPrice = Price(kappaFundName, kappaPriceDate, kappaPriceInPounds)
@@ -68,6 +76,9 @@ trait DatabaseHelpers {
 
   val nikeTransactionGraemeLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, SaleForRegularPayment, None,
     Some(2.0), nikePriceGraemeLater, 0.649)
+
+  private val nikeTransactionGraemeSameDateAsLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, InvestmentRegular,
+      Some(10.2), None, nikePriceGraemeLatest, 3.322)
 
   private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, InvestmentRegular,
     Some(10.2), None, nikePriceGraemeLatest, 3.322)
@@ -168,6 +179,13 @@ trait DatabaseHelpers {
     }
   }
 
+  object MultiplePricesForSingleFund extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      PricesDatabase().insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
+      test
+    }
+  }
+
   object MultiplePricesForTwoFunds extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
       PricesDatabase().insert(List(
@@ -198,6 +216,16 @@ trait DatabaseHelpers {
         kappaTransactionGraeme,
         nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
         nikeTransactionAudrey, nikeTransactionAudreyLater
+      )
+      )
+      test
+    }
+  }
+
+  object MultipleTransactionsForSingleUser extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      TransactionsDatabase().insert(List(
+        nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeSameDateAsLater, nikeTransactionGraemeLatest
       )
       )
       test

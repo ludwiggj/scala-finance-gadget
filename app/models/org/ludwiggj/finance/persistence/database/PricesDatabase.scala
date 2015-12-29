@@ -88,12 +88,12 @@ class PricesDatabase private {
     db.withSession {
       implicit session =>
         Prices
-          .filter { p => (dateDifference(p.date, dateOfInterest)) <= 1 }
+          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
-          (fundId, group.map(_.date).max)
-        }
-        }
+            (fundId, group.map(_.date).max)
+          }
+          }
     }
   }
 

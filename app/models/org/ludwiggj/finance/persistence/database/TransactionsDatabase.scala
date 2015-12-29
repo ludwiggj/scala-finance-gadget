@@ -92,10 +92,20 @@ class TransactionsDatabase private {
         Transactions
           .filter { tx => tx.description === InvestmentRegular }
           .map {
-          _.date
-        }.sorted.list.reverse.distinct
+            _.date
+          }.sorted.list.distinct.reverse
     }
   }
+
+  def getTransactionsDatesSince(dateOfInterest: Date): List[Date] = {
+      db.withSession {
+        implicit session =>
+          Transactions
+            .map { _.date }
+            .filter { _ > dateOfInterest }
+            .sorted.list.distinct.reverse
+      }
+    }
 
   def getTransactionsUpToAndIncluding(dateOfInterest: Date): TransactionMap = {
     db.withSession {
@@ -120,7 +130,7 @@ class TransactionsDatabase private {
           val txs = for {
             (userName, fundName, fundId, priceRow, tx) <- rows
           } yield Transaction(userName, tx.date, tx.description, amountOption(tx.amountIn),
-              amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units)
+            amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units)
           (txs, latestPrice)
         }
         )
