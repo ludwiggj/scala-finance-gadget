@@ -53,7 +53,7 @@ object WebSiteTransactionScraper extends App {
         println(s"Problem retrieving details for $userName, Error: ${e.toString}")
     })
 
-  val config = WebSiteConfig("cofunds.conf")
+  val config = WebSiteConfig("cofunds")
 
   val loginFormBuilder = aLoginForm().basedOnConfig(config)
 

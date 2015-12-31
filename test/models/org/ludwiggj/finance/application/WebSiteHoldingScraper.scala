@@ -75,7 +75,7 @@ object WebSiteHoldingScraper extends App {
         (userName, BigDecimal(0))
     })
 
-  val config = WebSiteConfig("cofunds.conf")
+  val config = WebSiteConfig("cofunds")
 
   val loginFormBuilder = aLoginForm().basedOnConfig(config)
 

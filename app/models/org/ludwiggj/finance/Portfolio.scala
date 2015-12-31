@@ -23,7 +23,7 @@ object Portfolio {
     }.toList.distinct.sorted
 
     userNames map { userName =>
-      Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest, "fundChanges.conf"))
+      Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest, "fundChanges"))
     }
   }
 }

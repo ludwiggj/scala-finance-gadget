@@ -7,7 +7,7 @@ import org.scalatest.{FunSuite, Matchers}
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 
   ignore("login form works with third party library") {
-    val config = WebSiteConfig("cofunds.conf")
+    val config = WebSiteConfig("cofunds")
     val loginForm =
       aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
@@ -30,7 +30,7 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
 
   test("NotAuthenticatedException thrown if cannot log into target page") {
     intercept[NotAuthenticatedException] {
-      val config = WebSiteConfig("cofundsWithUserWithIncorrectPassword.conf")
+      val config = WebSiteConfig("cofundsWithUserWithIncorrectPassword")
       val loginForm =
         aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
 
