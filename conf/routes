@@ -1,3 +1,3 @@
-GET /                       controllers.Application.index
-GET /portfolios             controllers.Portfolios.all
-GET /portfolios/:date       controllers.Portfolios.onDate(date: java.sql.Date)
+GET /                             controllers.Application.index
+GET /portfolios                   controllers.Portfolios.all(yearsAgo: Option[Int] ?= None)
+GET /portfolioDetails/:date       controllers.Portfolios.onDate(date: java.sql.Date)

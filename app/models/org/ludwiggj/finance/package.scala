@@ -11,6 +11,8 @@ package object finance {
 
   implicit def sqlDateToDateTime(sqlDate: Date) = new DateTime(sqlDate)
 
+  implicit def dateTimeToDate(datetime: DateTime) = datetime.toDate
+
   implicit def stringToSqlDate(stringyDate: String): Date = {
     val DateRegex = """(\d{1,2})/(\d{1,2})/(\d{4})""".r
 

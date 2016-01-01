@@ -1,7 +1,8 @@
 @import models.org.ludwiggj.finance.domain.{FinanceDate, CashDelta}
 @import models.org.ludwiggj.finance.Portfolio
 
-@(investmentDates: scala.collection.immutable.Map[FinanceDate, (scala.collection.immutable.List[Portfolio], CashDelta)])
+@(investmentDates: scala.collection.immutable.Map[FinanceDate, (scala.collection.immutable.List[Portfolio], CashDelta)],
+  previousYear: Option[Int], nextYear: Option[Int])
 <html>
 <head>
     <style type="text/css" media="screen">
@@ -30,6 +31,14 @@
         }
     </style>
 </head>
+<body>
+@if(previousYear.isDefined) {
+  <a href="@controllers.routes.Portfolios.all(previousYear)"><- Previous</a>&nbsp&nbsp&nbsp
+}
+
+@if(nextYear.isDefined) {
+  <a href="@controllers.routes.Portfolios.all(nextYear)">Next -></a>
+}
 <table>
     @investmentDates.head match { case (_, (portfolios, _)) =>
     <tr>
@@ -72,4 +81,5 @@
     </tr>
     }
 </table>
+</body>
 </html>
