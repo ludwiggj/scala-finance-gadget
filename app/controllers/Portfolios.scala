@@ -9,75 +9,96 @@ import models.org.ludwiggj.finance.domain.{FinanceDate, CashDelta}
 import models.org.ludwiggj.finance.Portfolio
 import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
 import models.org.ludwiggj.finance.dateTimeToDate
+import play.api.cache._
+import javax.inject.Inject
+import play.api.Play.current
 
 import scala.collection.immutable.SortedMap
 
-class Portfolios extends Controller {
+class Portfolios @Inject()(cache: CacheApi) extends Controller {
 
-  def onDate(date: Date) = Action {
-    implicit request =>
-      val portfolios = Portfolio.get(date)
-
-      val grandTotal = portfolios.foldRight(CashDelta(0, 0))(
-        (portfolio, delta) => delta.add(portfolio.delta)
-      )
-
-      Ok(views.html.portfolios.details(portfolios, date, grandTotal))
+  private def getPortfolioDataOnDate(date: Date): List[Portfolio] = {
+    cache.getOrElse[List[Portfolio]](s"portfolios-$date") {
+      Portfolio.get(date)
+    }
   }
 
-  def all(numberOfYearsAgoOption: Option[Int]) = Action {
-    implicit request =>
-      val transactionsDatabase = TransactionsDatabase()
-      val investmentDates = transactionsDatabase.getRegularInvestmentDates().map(sqlDateToFinanceDate)
+  def onDate(date: Date) = Cached(s"portfolioDataOnDate-$date") {
+    Action {
+      implicit request =>
+        val portfolios = getPortfolioDataOnDate(date)
 
-      def investmentDatesAFromPreviousYear(numberOfYearsAgoOfInterest: Int) = {
-        val now = new DateTime()
-        val beforeDate: util.Date = now.minusYears(numberOfYearsAgoOfInterest)
-        val afterDate: util.Date = now.minusYears(numberOfYearsAgoOfInterest + 1)
+        val grandTotal = portfolios.foldRight(CashDelta(0, 0))(
+          (portfolio, delta) => delta.add(portfolio.delta)
+        )
 
-        investmentDates.filter { d =>
-          d.after(afterDate) && d.before(beforeDate)
+        Ok(views.html.portfolios.details(portfolios, date, grandTotal))
+    }
+  }
+
+  private def yearsAgoCacheKey(prefix: String) = { (header: RequestHeader) =>
+    prefix + header.getQueryString("yearsAgo").getOrElse("0")
+  }
+
+  def all(numberOfYearsAgoOption: Option[Int]) = Cached(yearsAgoCacheKey("portfolioDataAll-yearsAgo-")) {
+    Action {
+      implicit request =>
+        val transactionsDatabase = TransactionsDatabase()
+
+        val investmentDates = cache.getOrElse[List[FinanceDate]]("investmentDates") {
+          transactionsDatabase.getRegularInvestmentDates().map(sqlDateToFinanceDate)
         }
-      }
 
-      def earlierDataIsAvailable(numberOfYearsAgoOfInterest: Int) = {
-        !investmentDatesAFromPreviousYear(numberOfYearsAgoOfInterest).isEmpty
-      }
+        def investmentDatesFromAPreviousYear(numberOfYearsAgoOfInterest: Int) = {
+          val now = new DateTime()
+          val beforeDate: util.Date = now.minusYears(numberOfYearsAgoOfInterest)
+          val afterDate: util.Date = now.minusYears(numberOfYearsAgoOfInterest + 1)
 
-      def getPortfolios(investmentDatesOfInterest: List[FinanceDate]): Map[FinanceDate, (List[Portfolio], CashDelta)] = {
-        def getInvestmentDates(): List[FinanceDate] = {
-          val latestDates = transactionsDatabase.getTransactionsDatesSince(investmentDates.head).map(sqlDateToFinanceDate)
-          latestDates ++ investmentDatesOfInterest
+          investmentDates.filter { d =>
+            d.after(afterDate) && d.before(beforeDate)
+          }
         }
 
-        val portfolios = (getInvestmentDates() map (date => {
-          val thePortfolios = Portfolio.get(date)
-          val grandTotal = thePortfolios.foldRight(CashDelta(0, 0))(
-            (portfolio, delta) => delta.add(portfolio.delta)
-          )
+        def earlierDataIsAvailable(numberOfYearsAgoOfInterest: Int) = {
+          !investmentDatesFromAPreviousYear(numberOfYearsAgoOfInterest).isEmpty
+        }
 
-          (date, (thePortfolios, grandTotal))
-        }))
+        def getPortfolios(investmentDatesOfInterest: List[FinanceDate]): Map[FinanceDate, (List[Portfolio], CashDelta)] = {
+          def getInvestmentDates(): List[FinanceDate] = {
+            val latestDates = transactionsDatabase.getTransactionsDatesSince(investmentDates.head).map(sqlDateToFinanceDate)
+            latestDates ++ investmentDatesOfInterest
+          }
 
-        implicit val Ord = implicitly[Ordering[FinanceDate]]
-        SortedMap(portfolios: _*)(Ord.reverse)
-      }
+          val portfolios = (getInvestmentDates() map (date => {
+            val thePortfolios = getPortfolioDataOnDate(date)
 
-      val numberOfYearsAgo = numberOfYearsAgoOption.getOrElse(0)
-      val investmentDatesOfInterest = investmentDatesAFromPreviousYear(numberOfYearsAgo)
+            val grandTotal = thePortfolios.foldRight(CashDelta(0, 0))(
+              (portfolio, delta) => delta.add(portfolio.delta)
+            )
 
-      if (investmentDatesOfInterest.isEmpty) {
-        BadRequest(s"This was a bad request: yearsAgo=$numberOfYearsAgo")
-      } else {
-        val oneYearEarlier = numberOfYearsAgo + 1
-        val previousYear = if (earlierDataIsAvailable(oneYearEarlier)) Some(oneYearEarlier) else None
+            (date, (thePortfolios, grandTotal))
+          }))
 
-        val oneYearLater = numberOfYearsAgo - 1
-        val nextYear = if (oneYearLater >= 0) Some(oneYearLater) else None
+          implicit val Ord = implicitly[Ordering[FinanceDate]]
+          SortedMap(portfolios: _*)(Ord.reverse)
+        }
 
-        val portfolios = getPortfolios(investmentDatesOfInterest)
+        val numberOfYearsAgo = numberOfYearsAgoOption.getOrElse(0)
+        val investmentDatesOfInterest = investmentDatesFromAPreviousYear(numberOfYearsAgo)
 
-        Ok(views.html.portfolios.all(portfolios, previousYear, nextYear))
-      }
+        if (investmentDatesOfInterest.isEmpty) {
+          BadRequest(s"This was a bad request: yearsAgo=$numberOfYearsAgo")
+        } else {
+          val oneYearEarlier = numberOfYearsAgo + 1
+          val previousYear = if (earlierDataIsAvailable(oneYearEarlier)) Some(oneYearEarlier) else None
+
+          val oneYearLater = numberOfYearsAgo - 1
+          val nextYear = if (oneYearLater >= 0) Some(oneYearLater) else None
+
+          val portfolios = getPortfolios(investmentDatesOfInterest)
+
+          Ok(views.html.portfolios.all(portfolios, previousYear, nextYear))
+        }
+    }
   }
 }
