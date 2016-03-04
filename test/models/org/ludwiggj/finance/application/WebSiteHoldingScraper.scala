@@ -20,51 +20,51 @@ import scala.util.{Failure, Success}
 
 object WebSiteHoldingScraper extends App {
 
+  private val config = WebSiteConfig("cofunds")
+  private val loginFormBuilder = aLoginForm().basedOnConfig(config)
+  private val users = config.getUserList()
+  private val application = FakeApplication()
+
   def getHoldings(user: User): List[Holding] = {
     WebSiteHoldingFactory(loginFormBuilder, user.name).getHoldings() map {
       holding => holding.copy(userName = user.reportName)
     }
   }
 
-  def generatePeristedHoldingsFileName(userReportName: String) = {
+  def generatePersistedHoldingsFileName(userReportName: String) = {
     val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
     s"$reportHome/holdings_${date}_${userReportName}.txt"
   }
 
-  def persistHoldings(userReportName: String, holdings: List[Holding]): Unit = {
-    val peristedHoldingsFileName = generatePeristedHoldingsFileName(userReportName)
+  def persistHoldingsToFile(userReportName: String, holdings: List[Holding]): Unit = {
+    val peristedHoldingsFileName = generatePersistedHoldingsFileName(userReportName)
 
-    val persister = FilePersister(peristedHoldingsFileName)
-
-    persister.write(holdings)
-
-    HoldingsDatabase().insert(holdings)
+    FilePersister(peristedHoldingsFileName).write(holdings)
   }
 
-  def processHoldings(user: User) = Future {
+  def processHoldings(user: User) = Future[List[Holding]] {
     val userName = user.name
 
     time(s"processHoldings($userName)",
       try {
         val holdings = getHoldings(user)
 
-        val holdingsTotal = holdings map (h => h.value) sum
-
+        val holdingsTotal = holdings.map(h => h.value).sum
         println(s"Total holdings ($userName): £$holdingsTotal")
 
-        persistHoldings(user.reportName, holdings)
+        persistHoldingsToFile(user.reportName, holdings)
 
-        (userName, holdingsTotal)
+        holdings
       } catch {
         case ex: NotAuthenticatedException =>
           val errorMsg = s"Cannot retrieve holdings for $userName [NotAuthenticatedException]"
           println(errorMsg)
-          (userName, BigDecimal(0))
+          List()
       }
     )
   }
 
-  def composeWaitingFuture(fut: Future[(String, BigDecimal)], atMost: FiniteDuration, userName: String) =
+  def composeWaitingFuture(fut: Future[List[Holding]], atMost: FiniteDuration, userName: String) =
     (Future {
       Await.result(fut, atMost)
     }
@@ -72,40 +72,41 @@ object WebSiteHoldingScraper extends App {
       case e: ElementNotFoundException =>
         println(s"Problem retrieving details for $userName, returning £0 for this user.\n"
           + s"Error: ${e.toString}")
-        (userName, BigDecimal(0))
+        List()
     })
 
-  val config = WebSiteConfig("cofunds")
+  def scrape() = {
+    time("Whole thing",
+      try {
+        val listOfFutures = users map { user =>
+          composeWaitingFuture(
+            processHoldings(user), 30 seconds, user.name
+          )
+        }
 
-  val loginFormBuilder = aLoginForm().basedOnConfig(config)
+        val combinedFuture = Future.sequence(listOfFutures)
 
-  val users = config.getUserList()
+        Await.ready(combinedFuture, 31 seconds).value.get match {
+          case Success(results) =>
+            val holdings = results.flatten
 
-  private val application = FakeApplication()
+            val totalHoldings = holdings.map(h => h.value).sum
+            println(s"Total £$totalHoldings")
 
+            HoldingsDatabase().insert(holdings)
+
+          case Failure(ex) =>
+            println(s"Oh dear... ${ex.getMessage}")
+        }
+      } catch {
+        case ex: TimeoutException => println(ex.getMessage)
+      } finally {
+        Play.stop(application)
+      }
+    )
+  }
+
+  // Start here
   Play.start(application)
-
-  time("Whole thing",
-    try {
-      val listOfFutures = users map { user =>
-        composeWaitingFuture(
-          processHoldings(user), 30 seconds, user.name
-        )
-      }
-
-      val combinedFuture = Future.sequence(listOfFutures)
-
-      Await.ready(combinedFuture, 31 seconds).value.get match {
-        case Success(results) =>
-          val totalHoldings = results.foldLeft(BigDecimal(0))((runningTotal, result) => runningTotal + result._2)
-          println(s"Results... $results Total £$totalHoldings")
-        case Failure(ex) =>
-          println(s"Oh dear... ${ex.getMessage}")
-      }
-    } catch {
-      case ex: TimeoutException => println(ex.getMessage)
-    } finally {
-      Play.stop(application)
-    }
-  )
+  scrape()
 }
