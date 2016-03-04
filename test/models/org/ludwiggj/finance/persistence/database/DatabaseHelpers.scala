@@ -30,6 +30,7 @@ trait DatabaseHelpers {
   var capitalistsDreamFundId = 0L
   val capitalistsDreamFundName: FundName = "Capitalists Dream"
   val kappaFundName: FundName = "Kappa"
+  val kappaIIFundName: FundName = "Kappa II"
   val nikeFundName: FundName = "Nike"
 
   // Prices
@@ -46,6 +47,8 @@ trait DatabaseHelpers {
   val kappaPrice = Price(kappaFundName, kappaPriceDate, kappaPriceInPounds)
 
   val kappaPriceLater = Price(kappaFundName, "23/05/2014", 1.65)
+
+  val kappaIIPrice = Price(kappaIIFundName, "24/05/2014", 1.66)
 
   val nikePriceDateGraeme: FinanceDate = "20/06/2014"
   val nikePriceInPoundsGraeme: Double = 3.12
@@ -182,6 +185,16 @@ trait DatabaseHelpers {
   object MultiplePricesForSingleFund extends Schema {
     override def around[T: AsResult](test: => T) = super.around {
       PricesDatabase().insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
+      test
+    }
+  }
+
+  object MultiplePricesForSingleFundAndItsRenamedEquivalent extends Schema {
+    override def around[T: AsResult](test: => T) = super.around {
+      PricesDatabase().insert(
+        List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater, kappaIIPrice
+      ))
+
       test
     }
   }

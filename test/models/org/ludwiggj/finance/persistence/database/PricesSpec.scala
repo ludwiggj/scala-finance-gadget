@@ -7,6 +7,10 @@ import org.specs2.mutable.Specification
 
 class PricesSpec extends Specification with DatabaseHelpers {
 
+  // Following line required due to problem with EhCache
+  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
+  sequential
+
   "get a single price" should {
     "return empty if price is not present" in EmptySchema {
       PricesDatabase().get("fund that is not present", kappaPriceDate) must beEqualTo(None)
@@ -69,34 +73,55 @@ class PricesSpec extends Specification with DatabaseHelpers {
   }
 
   "latestPrices" should {
-    "return the latest price for each fund " in MultiplePricesForTwoFunds {
+    "return the latest price for each fund" in MultiplePricesForTwoFunds {
       PricesDatabase().latestPrices("20/6/2014") should beEqualTo(
         Map(1L -> kappaPriceLater, 2L -> nikePriceGraemeLater)
       )
     }
-  }
 
-  "latestPrices" should {
     "omit a price if it is zero" in MultiplePricesForSingleFund {
       PricesDatabase().latestPrices("16/5/2014") should beEqualTo(
         Map(1L -> kappaPriceEarliest)
       )
     }
-  }
 
-  "latestPrices" should {
     "omit a price if it is a two or more days too late" in MultiplePricesForTwoFunds {
       PricesDatabase().latestPrices("19/6/2014") should beEqualTo(
         Map(1L -> kappaPriceLater, 2L -> nikePriceGraeme)
       )
     }
-  }
 
-  "latestPrices" should {
     "omit a fund if its earliest price is too late" in MultiplePricesForTwoFunds {
       PricesDatabase().latestPrices("21/5/2014") should beEqualTo(
         Map(1L -> kappaPrice)
       )
     }
+
+    "omit prices from name change fund if date of interest is more than one day before the fund change date" in
+      MultiplePricesForSingleFundAndItsRenamedEquivalent {
+        PricesDatabase().latestPrices("22/5/2014") should beEqualTo(
+          Map(1L -> kappaPriceLater)
+        )
+      }
+
+    "include prices from name change fund if date of interest is one day before the fund change date" in
+      MultiplePricesForSingleFundAndItsRenamedEquivalent {
+
+        val expectedUpdatedPrice = kappaIIPrice.copy(fundName = kappaFundName)
+
+        PricesDatabase().latestPrices("23/5/2014") should beEqualTo(
+          Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice)
+        )
+      }
+
+    "include prices from name change fund if date of interest is the fund change date" in
+      MultiplePricesForSingleFundAndItsRenamedEquivalent {
+
+        val expectedUpdatedPrice = kappaIIPrice.copy(fundName = kappaFundName)
+
+        PricesDatabase().latestPrices("24/5/2014") should beEqualTo(
+          Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice)
+        )
+      }
   }
 }

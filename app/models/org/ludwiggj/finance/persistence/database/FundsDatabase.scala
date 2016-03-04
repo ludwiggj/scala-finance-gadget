@@ -26,6 +26,10 @@ class FundsDatabase private {
     }
   }
 
+  def getId(fundName: FundName): Option[Long] = {
+    get(fundName).map(_.id)
+  }
+
   def insert(fund: FundsRow) = {
     db.withSession {
       implicit session =>

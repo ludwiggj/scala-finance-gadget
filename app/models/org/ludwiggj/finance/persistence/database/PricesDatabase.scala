@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.{FundName, FinanceDate, Price}
+import models.org.ludwiggj.finance.domain.{FundChange, FundName, FinanceDate, Price}
 import play.api.db.DB
 import play.api.Play.current
 import scala.language.implicitConversions
@@ -10,6 +10,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, PricesRow, FundsRow}
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
 import models.org.ludwiggj.finance.dateTimeToSqlDate
+import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
 
 class PricesDatabase private {
 
@@ -98,22 +99,46 @@ class PricesDatabase private {
   }
 
   def latestPrices(dateOfInterest: Date): Map[Long, Price] = {
-    val pricesList = db.withSession {
-      implicit session =>
-        (for {
-          (fundId, lastPriceDate) <- latestPriceDates(dateOfInterest)
-          f <- Funds if f.id === fundId
-          p <- Prices if p.fundId === fundId && p.date === lastPriceDate
-        } yield (p.fundId, f.name, lastPriceDate, p.price)
-          ).list
-    }
 
-    pricesList.foldLeft(Map[Long, Price]()) {
-      (m, priceInfo) => {
-        val (fundId, fundName, lastPriceDate, price) = priceInfo
-        m + (fundId -> Price(fundName, lastPriceDate.get, price))
+    def latestPrices: Map[Long, Price] = {
+      val pricesList = db.withSession {
+        implicit session =>
+          (for {
+            (fundId, lastPriceDate) <- latestPriceDates(dateOfInterest)
+            f <- Funds if f.id === fundId
+            p <- Prices if p.fundId === fundId && p.date === lastPriceDate
+          } yield (p.fundId, f.name, lastPriceDate, p.price)
+            ).list
+      }
+
+      pricesList.foldLeft(Map[Long, Price]()) {
+        (m, priceInfo) => {
+          val (fundId, fundName, lastPriceDate, price) = priceInfo
+          m + (fundId -> Price(fundName, lastPriceDate.get, price))
+        }
       }
     }
+
+    def adjustLatestPricesForFundChanges(latestPrices: Map[Long, Price]): Map[Long, Price] = {
+      val fundChangeMap = (for {
+        fc <- FundChange.getFundChangesUpUntil(dateOfInterest.plusDays(1))
+        fundIds <- fc.getFundIds
+      } yield (fundIds)).toMap
+
+      val adjustedPrices = for {
+        (fundId, latestPrice) <- latestPrices
+        newFundId <- fundChangeMap.get(fundId)
+        newFundPrice <- latestPrices.get(newFundId)
+      } yield if (newFundPrice.date > latestPrice.date) {
+        (fundId, newFundPrice.copy(fundName = latestPrice.fundName))
+      } else (fundId, latestPrice)
+
+      val unadjustedPrices = latestPrices.filterKeys(!adjustedPrices.contains(_))
+
+      adjustedPrices ++ unadjustedPrices
+    }
+
+    adjustLatestPricesForFundChanges(latestPrices)
   }
 }
 

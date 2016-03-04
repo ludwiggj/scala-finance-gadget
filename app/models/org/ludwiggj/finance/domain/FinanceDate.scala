@@ -20,6 +20,8 @@ case class FinanceDate(val date: DateTime) extends Ordered[FinanceDate] {
   def compare(that: FinanceDate) = {
     DateTimeComparator.getInstance().compare(this.date, that.date)
   }
+
+  def plusDays(d: Int) = FinanceDate(date.plusDays(d))
 }
 
 object FinanceDate {

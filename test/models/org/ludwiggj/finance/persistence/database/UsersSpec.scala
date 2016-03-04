@@ -6,6 +6,10 @@ import org.specs2.mutable.Specification
 
 class UsersSpec extends Specification with DatabaseHelpers {
 
+  // Following line required due to problem with EhCache
+  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
+  sequential
+
   "get" should {
     "return empty if user is not present" in EmptySchema {
       UsersDatabase().get("Burt Bacharach") must beEqualTo(None)

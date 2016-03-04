@@ -22,7 +22,7 @@ class HoldingSummariesSuite extends FunSuite with Matchers {
         )
 
       val holdingSummaries =
-        HoldingSummaries(aberdeenEthicalTransactionMap, userNameGraeme, "15/09/2014", "testFundChanges")
+        HoldingSummaries(aberdeenEthicalTransactionMap, userNameGraeme, "15/09/2014")
 
       assertThat(holdingSummaries.total.bigDecimal, is(closeTo(BigDecimal(1128.957).bigDecimal, tolerance)))
 
@@ -51,7 +51,7 @@ class HoldingSummariesSuite extends FunSuite with Matchers {
   test("TestHoldingSummaries should handle fund changeovers") {
     new TestHoldingSummaries {
       val holdingSummaries =
-        HoldingSummaries(aberdeenEthicalWithConversionsTransactionMap, userNameGraeme, "30/09/2014", "testFundChanges")
+        HoldingSummaries(aberdeenEthicalWithConversionsTransactionMap, userNameGraeme, "30/09/2014")
 
       assertThat(holdingSummaries.total.bigDecimal, is(closeTo(BigDecimal(1270.658).bigDecimal, tolerance)))
 
@@ -80,7 +80,7 @@ class HoldingSummariesSuite extends FunSuite with Matchers {
   test("TestHoldingSummaries should handle fund changeovers and transfer income between funds") {
     new TestHoldingSummaries {
       val holdingSummaries =
-        HoldingSummaries(aberdeenEthicalWithConversionsTransactionMap, userNameGraeme, "01/10/2014", "testFundChanges")
+        HoldingSummaries(aberdeenEthicalWithConversionsTransactionMap, userNameGraeme, "01/10/2014")
 
       assertThat(holdingSummaries.total.bigDecimal, is(closeTo(BigDecimal(1270.658).bigDecimal, tolerance)))
 

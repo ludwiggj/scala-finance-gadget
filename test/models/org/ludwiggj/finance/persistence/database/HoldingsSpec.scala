@@ -6,6 +6,10 @@ import org.specs2.mutable.Specification
 
 class HoldingsSpec extends Specification with DatabaseHelpers {
 
+  // Following line required due to problem with EhCache
+  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
+  sequential
+
   "insert holding" should {
     "insert user, fund and price if they are not present" in EmptySchema {
       val usersDatabase = UsersDatabase()

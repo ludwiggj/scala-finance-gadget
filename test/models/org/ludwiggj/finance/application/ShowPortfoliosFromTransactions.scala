@@ -40,7 +40,7 @@ object ShowPortfoliosFromTransactions extends App {
         showPortfolio(portfolio)
       }
 
-      val grandTotal = portfolios.foldRight(CashDelta(0, 0))(
+      val grandTotal = portfolios.foldRight(CashDelta())(
         (portfolio: Portfolio, delta: CashDelta) => delta.add(portfolio.delta)
       )
 

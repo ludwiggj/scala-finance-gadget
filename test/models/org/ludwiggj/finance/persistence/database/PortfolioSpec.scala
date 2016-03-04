@@ -8,6 +8,10 @@ import scala.math.BigDecimal.RoundingMode
 
 class PortfolioSpec extends Specification with DatabaseHelpers with MapMatchers {
 
+  // Following line required due to problem with EhCache
+  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
+  sequential
+
   "portfolio" should {
     "be based on all transactions up to and including date for both users" in MultipleTransactionsForTwoUsersAndTwoFunds {
 

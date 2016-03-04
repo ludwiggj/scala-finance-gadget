@@ -28,7 +28,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
       implicit request =>
         val portfolios = getPortfolioDataOnDate(date)
 
-        val grandTotal = portfolios.foldRight(CashDelta(0, 0))(
+        val grandTotal = portfolios.foldRight(CashDelta())(
           (portfolio, delta) => delta.add(portfolio.delta)
         )
 
@@ -72,7 +72,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
           val portfolios = (getInvestmentDates() map (date => {
             val thePortfolios = getPortfolioDataOnDate(date)
 
-            val grandTotal = thePortfolios.foldRight(CashDelta(0, 0))(
+            val grandTotal = thePortfolios.foldRight(CashDelta())(
               (portfolio, delta) => delta.add(portfolio.delta)
             )
 

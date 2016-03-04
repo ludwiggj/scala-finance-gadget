@@ -6,6 +6,10 @@ import org.specs2.mutable.Specification
 
 class FundsSpec extends Specification with DatabaseHelpers {
 
+  // Following line required due to problem with EhCache
+  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
+  sequential
+
   "get" should {
     "return empty if fund is not present" in EmptySchema {
       FundsDatabase().get(solyentGreenFundName) must beEqualTo(None)
