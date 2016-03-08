@@ -1,4 +1,4 @@
-package models.org.ludwiggj.finance.application
+package models.org.ludwiggj.finance.application.reports
 
 import java.sql.Date
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Holdings, Prices, Users}

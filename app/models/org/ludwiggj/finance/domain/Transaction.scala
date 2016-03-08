@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
+
 import scala.language.implicitConversions
-import scala.util.{Success, Try, Failure}
+import scala.util.{Failure, Success, Try}
 
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {

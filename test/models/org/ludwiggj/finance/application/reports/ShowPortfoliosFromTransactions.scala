@@ -1,4 +1,4 @@
-package models.org.ludwiggj.finance.application
+package models.org.ludwiggj.finance.application.reports
 
 import models.org.ludwiggj.finance.Portfolio
 import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate}
