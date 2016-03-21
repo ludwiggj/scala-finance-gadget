@@ -2,33 +2,43 @@ package models.org.ludwiggj.finance.persistence.database
 
 import Tables.UsersRow
 import UsersDatabase.stringToUsersRow
-import org.specs2.mutable.Specification
+import org.scalatest.{BeforeAndAfter, DoNotDiscover}
+import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
-class UsersSpec extends Specification with DatabaseHelpers {
+@DoNotDiscover
+class UsersSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
 
-  // Following line required due to problem with EhCache
-  // See https://groups.google.com/forum/#!topic/play-framework/6EqNOaUS0hE
-  sequential
+  before {
+    DatabaseCleaner.recreateDb()
+  }
 
   "get" should {
-    "return empty if user is not present" in EmptySchema {
-      UsersDatabase().get("Burt Bacharach") must beEqualTo(None)
+    "return empty if user is not present" in {
+      EmptySchema.loadData()
+
+      UsersDatabase().get("Burt Bacharach") must equal(None)
     }
 
-    "return existing user row if it is present" in SingleUser {
-      UsersDatabase().get(fatherTedUserName) must beSome(
+    "return existing user row if it is present" in {
+      SingleUser.loadData()
+
+      UsersDatabase().get(fatherTedUserName) mustBe Some(
         UsersRow(fatherTedUserId, fatherTedUserName)
       )
     }
   }
 
   "getOrInsert" should {
-    "insert user if it is not present" in EmptySchema {
-      UsersDatabase().getOrInsert("bob") must be_>(0L)
+    "insert user if it is not present" in {
+      EmptySchema.loadData()
+
+      UsersDatabase().getOrInsert("bob") must be > 0L
     }
 
-    "return existing user id if user is present" in SingleUser {
-      UsersDatabase().getOrInsert(fatherTedUserName) must beEqualTo(fatherTedUserId)
+    "return existing user id if user is present" in {
+      SingleUser.loadData()
+
+      UsersDatabase().getOrInsert(fatherTedUserName) must equal(fatherTedUserId)
     }
   }
 }

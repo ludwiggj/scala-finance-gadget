@@ -6,7 +6,7 @@ import org.scalatest.{FunSuite, Matchers}
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 
-  ignore("login form works with third party library") {
+  test("login form works with third party library") {
     val config = WebSiteConfig("cofunds")
     val loginForm =
       aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
@@ -16,7 +16,6 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
     // Log in, and verify that log off link is available
     val loggedInPage = loginForm.loginAs(userName)
     loggedInPage.isLoggedIn() should equal(true)
-    println("Logged in")
 
     // Log off, and verify that log in link is available
     val loggedOffPage = loggedInPage.logOff()
@@ -24,8 +23,6 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
 
     val logInLink = loggedOffPage.getFirstByXPath(s"//a[span[text()='$loginText']]")
     logInLink.asText() should equal(loginText)
-
-    println("Logged out")
   }
 
   test("NotAuthenticatedException thrown if cannot log into target page") {

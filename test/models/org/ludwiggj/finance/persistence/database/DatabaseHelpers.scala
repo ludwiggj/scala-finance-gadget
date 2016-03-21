@@ -1,24 +1,11 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain._
-import FundsDatabase.fundNameToFundsRow
-import TransactionsDatabase.{InvestmentRegular, SaleForRegularPayment}
-import UsersDatabase.stringToUsersRow
-import org.specs2.execute.AsResult
-import org.specs2.matcher.MatchResult
-import org.specs2.mutable.Around
-import org.specs2.specification.mutable.SpecificationFeatures
-import play.api.Play.current
-import play.api.db.DB
-import play.api.test.FakeApplication
-import play.api.test.Helpers._
-
-import scala.io.Source
-import scala.slick.driver.MySQLDriver.simple._
+import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
+import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.{InvestmentRegular, SaleForRegularPayment}
+import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 
 trait DatabaseHelpers {
-  this: SpecificationFeatures =>
-
   // Users
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
@@ -81,7 +68,7 @@ trait DatabaseHelpers {
     Some(2.0), nikePriceGraemeLater, 0.649)
 
   private val nikeTransactionGraemeSameDateAsLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, InvestmentRegular,
-      Some(10.2), None, nikePriceGraemeLatest, 3.322)
+    Some(10.2), None, nikePriceGraemeLatest, 3.322)
 
   private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, InvestmentRegular,
     Some(10.2), None, nikePriceGraemeLatest, 3.322)
@@ -96,58 +83,8 @@ trait DatabaseHelpers {
   val kappaFundHolding = Holding(userNameGraeme, kappaPrice, 1.23)
   val nikeFundHolding = Holding(userNameGraeme, nikePriceGraeme, 1.89)
 
-  trait Schema extends Around {
-
-    def sqlFiles = List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql")
-
-    def ddls = for {
-      sqlFile <- sqlFiles
-      evolutionContent = Source.fromFile(s"conf/evolutions/finance/$sqlFile").getLines.mkString("\n")
-      splitEvolutionContent = evolutionContent.split("# --- !Ups")
-      upsDowns = splitEvolutionContent(1).split("# --- !Downs")
-    } yield (upsDowns(1), upsDowns(0))
-
-    def dropDdls = (ddls map {
-      _._1
-    }).reverse
-
-    def createDdls = ddls map {
-      _._2
-    }
-
-    def dropCreateDb() = {
-      DB.withConnection("finance") { implicit connection =>
-
-        for (ddl <- dropDdls ++ createDdls) {
-          connection.createStatement.execute(ddl)
-        }
-      }
-    }
-
-    def around[T: AsResult](test: => T) = {
-
-      def getConfig = Map(
-        "db.finance.driver" -> "com.mysql.jdbc.Driver",
-        "db.finance.url" -> "jdbc:mysql://localhost:3306/financeTest",
-        "db.finance.user" -> "financeTest",
-        "db.finance.password" -> "geckoTest",
-        "db.finance.maxConnectionAge" -> 0,
-        "db.finance.disableConnectionTracking" -> true
-      )
-
-      def fakeApp[T](block: => T): T = {
-        val fakeApplication = FakeApplication(additionalConfiguration = getConfig)
-
-        running(fakeApplication) {
-          def db = Database.forDataSource(DB.getDataSource("finance")(fakeApplication))
-          db.withSession { implicit s: Session => block }
-        }
-      }
-
-      fakeApp {
-        dropCreateDb()
-        test.asInstanceOf[MatchResult[T]].toResult
-      }
+  trait Schema {
+    def loadData(): Unit = {
     }
   }
 
@@ -155,98 +92,88 @@ trait DatabaseHelpers {
   }
 
   object SingleUser extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       fatherTedUserId = UsersDatabase().insert(fatherTedUserName)
-      test
     }
   }
 
   object SingleFund extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       capitalistsDreamFundId = FundsDatabase().insert(capitalistsDreamFundName)
-      test
     }
   }
 
   object SinglePrice extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       PricesDatabase().insert(kappaPrice)
-      test
     }
   }
 
   object TwoPrices extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       PricesDatabase().insert(List(kappaPrice, nikePriceGraeme))
-      test
     }
   }
 
   object MultiplePricesForSingleFund extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       PricesDatabase().insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
-      test
     }
   }
 
   object MultiplePricesForSingleFundAndItsRenamedEquivalent extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       PricesDatabase().insert(
         List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater, kappaIIPrice
-      ))
-
-      test
+        ))
     }
   }
 
   object MultiplePricesForTwoFunds extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       PricesDatabase().insert(List(
         kappaPrice, kappaPriceLater, nikePriceGraeme, nikePriceGraemeLater, nikePriceGraemeLatest)
       )
-
-      test
     }
   }
 
   object TwoHoldings extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       HoldingsDatabase().insert(List(kappaFundHolding, nikeFundHolding))
-      test
     }
   }
 
   object SingleTransaction extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       TransactionsDatabase().insert(nikeTransactionGraeme)
-      test
     }
   }
 
   object MultipleTransactionsForTwoUsersAndTwoFunds extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       TransactionsDatabase().insert(List(
         kappaTransactionGraeme,
         nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
         nikeTransactionAudrey, nikeTransactionAudreyLater
       )
       )
-      test
     }
   }
 
   object MultipleTransactionsForSingleUser extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       TransactionsDatabase().insert(List(
-        nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeSameDateAsLater, nikeTransactionGraemeLatest
+        nikeTransactionGraeme,
+        nikeTransactionGraemeLater,
+        nikeTransactionGraemeSameDateAsLater,
+        nikeTransactionGraemeLatest
       )
       )
-      test
     }
   }
 
   object RegularInvestmentTransactions extends Schema {
-    override def around[T: AsResult](test: => T) = super.around {
+    override def loadData() = {
       val database = TransactionsDatabase()
 
       val nikeFundTx140620 =
@@ -265,8 +192,6 @@ trait DatabaseHelpers {
       database.insert(nikeFundTx140520)
       database.insert(nikeFundTx150520)
       database.insert(secondNikeFundTx140520)
-
-      test
     }
   }
 }

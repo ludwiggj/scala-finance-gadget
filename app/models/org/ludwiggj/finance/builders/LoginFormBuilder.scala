@@ -18,7 +18,7 @@ class LoginFormBuilder {
   }
 
   def build(): Login = {
-    LoginForm(WebClient(BrowserVersion.FIREFOX_24), config.get, targetPage.get);
+    LoginForm(WebClient(BrowserVersion.CHROME), config.get, targetPage.get);
   }
 }
 

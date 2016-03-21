@@ -18,16 +18,16 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  specs2 % Test,
   evolutions,
   "mysql" % "mysql-connector-java" % "latest.release",
   "org.filippodeluca.ssoup" %% "ssoup" % "1.0-SNAPSHOT",
   "com.typesafe" % "config" % "1.0.2",
-  "net.sourceforge.htmlunit" % "htmlunit" % "2.14",
+  "net.sourceforge.htmlunit" % "htmlunit" % "2.20",
   "junit" % "junit" % "4.11" % "test",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2.1" % "test",
   "org.scalamock" %% "scalamock-core" % "3.2.1" % "test",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "org.scalatestplus" %% "play" % "1.4.0" % "test",
   "com.github.nscala-time" %% "nscala-time" % "1.2.0",
   "com.typesafe.slick" %% "slick" % "2.1.0",
   "com.typesafe.slick" %% "slick-codegen" % "2.1.0",
@@ -48,3 +48,6 @@ routesImport += "utils.Binders._"
 lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
 fork in run := false
+
+// Uncomment the following line if working offline
+// offline := true
