@@ -4,9 +4,8 @@ import java.util.concurrent.TimeoutException
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
+import models.org.ludwiggj.finance.Transaction
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
-import models.org.ludwiggj.finance.domain.Transaction
-import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory, User}
 import play.api.Play
@@ -89,7 +88,7 @@ object WebSiteTransactionScraper extends App {
 
         Await.ready(combinedFuture, 31 seconds).value.get match {
           case Success(results) =>
-            TransactionsDatabase().insert(results.flatten)
+            Transaction.insert(results.flatten)
             println(s"Done...")
 
           case Failure(ex) =>

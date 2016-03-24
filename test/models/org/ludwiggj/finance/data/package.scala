@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance
 
 import domain._
-import persistence.database.TransactionsDatabase._
+import Transaction._
 
 package object data {
   val userNameGraeme = "Graeme"

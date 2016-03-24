@@ -1,7 +1,8 @@
 package models.org.ludwiggj.finance.application
 
 import java.sql.Date
-import models.org.ludwiggj.finance.domain.{Price, Transaction}
+import models.org.ludwiggj.finance.Transaction
+import models.org.ludwiggj.finance.domain.Price
 
 package object scratch {
   type TransactionTuple = (String, Date, String, BigDecimal, BigDecimal, Date, BigDecimal, BigDecimal)

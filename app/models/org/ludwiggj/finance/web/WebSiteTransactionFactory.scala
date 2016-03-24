@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.web
 
+import models.org.ludwiggj.finance.Transaction
 import models.org.ludwiggj.finance.builders.LoginFormBuilder
-import models.org.ludwiggj.finance.domain.Transaction
 
 class WebSiteTransactionFactory private(private val loginFormBuilder: LoginFormBuilder, private val userName: String)
   extends {

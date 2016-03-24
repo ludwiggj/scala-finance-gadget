@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
+import models.org.ludwiggj.finance.Transaction
+import models.org.ludwiggj.finance.Transaction._
 import models.org.ludwiggj.finance.domain._
 import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
-import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase.{InvestmentRegular, SaleForRegularPayment}
 import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
 
 trait DatabaseHelpers {
@@ -145,13 +146,13 @@ trait DatabaseHelpers {
 
   object SingleTransaction extends Schema {
     override def loadData() = {
-      TransactionsDatabase().insert(nikeTransactionGraeme)
+      Transaction.insert(nikeTransactionGraeme)
     }
   }
 
   object MultipleTransactionsForTwoUsersAndTwoFunds extends Schema {
     override def loadData() = {
-      TransactionsDatabase().insert(List(
+      Transaction.insert(List(
         kappaTransactionGraeme,
         nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
         nikeTransactionAudrey, nikeTransactionAudreyLater
@@ -162,7 +163,7 @@ trait DatabaseHelpers {
 
   object MultipleTransactionsForSingleUser extends Schema {
     override def loadData() = {
-      TransactionsDatabase().insert(List(
+      Transaction.insert(List(
         nikeTransactionGraeme,
         nikeTransactionGraemeLater,
         nikeTransactionGraemeSameDateAsLater,
@@ -174,8 +175,6 @@ trait DatabaseHelpers {
 
   object RegularInvestmentTransactions extends Schema {
     override def loadData() = {
-      val database = TransactionsDatabase()
-
       val nikeFundTx140620 =
         Transaction(userNameGraeme, "20/06/2014", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.234)
 
@@ -188,10 +187,10 @@ trait DatabaseHelpers {
       val secondNikeFundTx140520 =
         Transaction(userNameGraeme, "20/05/2014", InvestmentRegular, Some(5.0), None, nikePriceGraeme, 1.34)
 
-      database.insert(nikeFundTx140620)
-      database.insert(nikeFundTx140520)
-      database.insert(nikeFundTx150520)
-      database.insert(secondNikeFundTx140520)
+      Transaction.insert(nikeFundTx140620)
+      Transaction.insert(nikeFundTx140520)
+      Transaction.insert(nikeFundTx150520)
+      Transaction.insert(secondNikeFundTx140520)
     }
   }
 }

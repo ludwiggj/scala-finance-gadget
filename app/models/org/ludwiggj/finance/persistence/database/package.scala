@@ -1,6 +1,7 @@
 package models.org.ludwiggj.finance.persistence
 
-import models.org.ludwiggj.finance.domain.{Transaction, Price}
+import models.org.ludwiggj.finance.Transaction
+import models.org.ludwiggj.finance.domain.Price
 import scala.language.implicitConversions
 
 package object database {

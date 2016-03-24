@@ -28,10 +28,9 @@ object SlickAutoGenWithCaseClasses {
 
   val codegen = new scala.slick.codegen.SourceCodeGenerator(model) {
     // add custom code
-    override def code = "\n%s\n%s\n%s\n%s\n".format(
+    override def code = "\n%s\n%s\n%s\n".format(
       "// Graeme, added to handle BigDecimal bug",
-      "import scala.language.implicitConversions",
-      "implicit def string2BigDecimal(value: String) = new scala.math.BigDecimal(new java.math.BigDecimal(value))",
+      "import models.org.ludwiggj.finance.domain._",
       super.code)
 
     // override generator responsible for tables

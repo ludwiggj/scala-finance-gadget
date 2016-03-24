@@ -11,8 +11,7 @@ trait Tables {
   import profile.simple._
   
   // Graeme, added to handle BigDecimal bug
-  import scala.language.implicitConversions
-  implicit def string2BigDecimal(value: String) = new scala.math.BigDecimal(new java.math.BigDecimal(value))
+  import models.org.ludwiggj.finance.domain._
   import scala.slick.model.ForeignKeyAction
   // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
   import scala.slick.jdbc.{GetResult => GR}

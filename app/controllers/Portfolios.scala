@@ -2,13 +2,11 @@ package controllers
 
 import java.sql.Date
 import java.util
-import models.org.ludwiggj.finance.persistence.database.TransactionsDatabase
 import org.joda.time.DateTime
 import play.api.mvc._
 import models.org.ludwiggj.finance.domain.{FinanceDate, CashDelta}
-import models.org.ludwiggj.finance.Portfolio
+import models.org.ludwiggj.finance.{Transaction, Portfolio, dateTimeToDate}
 import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
-import models.org.ludwiggj.finance.dateTimeToDate
 import play.api.cache._
 import javax.inject.Inject
 import play.api.Play.current
@@ -43,10 +41,8 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
   def all(numberOfYearsAgoOption: Option[Int]) = Cached(yearsAgoCacheKey("portfolioDataAll-yearsAgo-")) {
     Action {
       implicit request =>
-        val transactionsDatabase = TransactionsDatabase()
-
         val investmentDates = cache.getOrElse[List[FinanceDate]]("investmentDates") {
-          transactionsDatabase.getRegularInvestmentDates().map(sqlDateToFinanceDate)
+          Transaction.getRegularInvestmentDates().map(sqlDateToFinanceDate)
         }
 
         def investmentDatesFromAPreviousYear(numberOfYearsAgoOfInterest: Int) = {
@@ -65,7 +61,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
 
         def getPortfolios(investmentDatesOfInterest: List[FinanceDate]): Map[FinanceDate, (List[Portfolio], CashDelta)] = {
           def getInvestmentDates(): List[FinanceDate] = {
-            val latestDates = transactionsDatabase.getTransactionsDatesSince(investmentDates.head).map(sqlDateToFinanceDate)
+            val latestDates = Transaction.getTransactionsDatesSince(investmentDates.head).map(sqlDateToFinanceDate)
             latestDates ++ investmentDatesOfInterest
           }
 

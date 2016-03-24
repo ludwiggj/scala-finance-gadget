@@ -1,5 +1,6 @@
 package models.org.ludwiggj.finance.domain
 
+import models.org.ludwiggj.finance.Transaction
 import models.org.ludwiggj.finance.domain.FundChange.getFundChangesUpUntil
 import models.org.ludwiggj.finance.persistence.database.TransactionMap
 

@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.file
 
-import models.org.ludwiggj.finance.domain.Transaction
+import models.org.ludwiggj.finance.Transaction
 
 class FileTransactionFactory private(val userName: String, private val transactionFileName: String) extends {
   val fileName = transactionFileName
