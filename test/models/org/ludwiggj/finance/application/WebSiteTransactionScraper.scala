@@ -4,13 +4,12 @@ import java.util.concurrent.TimeoutException
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import models.org.ludwiggj.finance.Transaction
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
+import models.org.ludwiggj.finance.domain.Transaction
 import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{NotAuthenticatedException, WebSiteConfig, WebSiteTransactionFactory, User}
+import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteTransactionFactory}
 import play.api.Play
 import play.api.test.FakeApplication
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}

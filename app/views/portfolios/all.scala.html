@@ -1,5 +1,4 @@
-@import models.org.ludwiggj.finance.domain.{FinanceDate, CashDelta}
-@import models.org.ludwiggj.finance.Portfolio
+@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio}
 
 @(investmentDates: scala.collection.immutable.Map[FinanceDate, (scala.collection.immutable.List[Portfolio], CashDelta)],
   previousYear: Option[Int], nextYear: Option[Int])

@@ -1,11 +1,9 @@
 package models.org.ludwiggj.finance.domain
 
 import FinanceDate.stringToFinanceDate
-import models.org.ludwiggj.finance.Transaction
-import models.org.ludwiggj.finance.Transaction.InvestmentRegular
+import Transaction.InvestmentRegular
 import models.org.ludwiggj.finance.data.TestTransactions
 import org.scalatest.{FunSuite, Matchers}
-
 
 class TransactionSuite extends FunSuite with Matchers {
 

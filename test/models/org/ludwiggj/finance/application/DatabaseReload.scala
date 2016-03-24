@@ -1,10 +1,9 @@
 package models.org.ludwiggj.finance.application
 
-import java.io.{File, FilenameFilter}
-import models.org.ludwiggj.finance.Transaction
+import models.org.ludwiggj.finance.domain.{Holding, Price, Transaction}
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Holdings, Prices, Transactions, Users}
-import models.org.ludwiggj.finance.persistence.database.{HoldingsDatabase, PricesDatabase}
 import models.org.ludwiggj.finance.persistence.file.{FileHoldingFactory, FilePriceFactory, FileTransactionFactory}
+import java.io.{File, FilenameFilter}
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -59,7 +58,7 @@ object DatabaseReload extends App {
       val holdings = FileHoldingFactory(userName, s"$reportHome/$fileName").getHoldings()
 
       println(s"Persisting holdings for user $userName, file $fileName")
-      HoldingsDatabase().insert(holdings)
+      Holding.insert(holdings)
     }
   }
 
@@ -85,7 +84,7 @@ object DatabaseReload extends App {
     ) {
       val fileName = aFile.getName
       println(s"Persisting prices, file $fileName")
-      PricesDatabase().insert(FilePriceFactory(s"$reportHome/$fileName").getPrices())
+      Price.insert(FilePriceFactory(s"$reportHome/$fileName").getPrices())
     }
   }
 

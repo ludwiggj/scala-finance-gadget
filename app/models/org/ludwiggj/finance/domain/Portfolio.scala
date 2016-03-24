@@ -1,8 +1,6 @@
-package models.org.ludwiggj.finance
+package models.org.ludwiggj.finance.domain
 
 import java.sql.Date
-
-import models.org.ludwiggj.finance.domain._
 
 case class Portfolio(val userName: String, val date: FinanceDate, private val holdings: HoldingSummaries) {
   val delta = CashDelta(holdings.amountIn, holdings.total)

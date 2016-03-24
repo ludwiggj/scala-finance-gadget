@@ -1,10 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.Transaction
-import models.org.ludwiggj.finance.Transaction._
-import models.org.ludwiggj.finance.domain._
-import models.org.ludwiggj.finance.persistence.database.FundsDatabase.fundNameToFundsRow
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
+import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
+import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
+import models.org.ludwiggj.finance.domain.Transaction._
+import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 
 trait DatabaseHelpers {
   // Users
@@ -94,37 +93,37 @@ trait DatabaseHelpers {
 
   object SingleUser extends Schema {
     override def loadData() = {
-      fatherTedUserId = UsersDatabase().insert(fatherTedUserName)
+      fatherTedUserId = User.insert(fatherTedUserName)
     }
   }
 
   object SingleFund extends Schema {
     override def loadData() = {
-      capitalistsDreamFundId = FundsDatabase().insert(capitalistsDreamFundName)
+      capitalistsDreamFundId = Fund.insert(capitalistsDreamFundName)
     }
   }
 
   object SinglePrice extends Schema {
     override def loadData() = {
-      PricesDatabase().insert(kappaPrice)
+      Price.insert(kappaPrice)
     }
   }
 
   object TwoPrices extends Schema {
     override def loadData() = {
-      PricesDatabase().insert(List(kappaPrice, nikePriceGraeme))
+      Price.insert(List(kappaPrice, nikePriceGraeme))
     }
   }
 
   object MultiplePricesForSingleFund extends Schema {
     override def loadData() = {
-      PricesDatabase().insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
+      Price.insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
     }
   }
 
   object MultiplePricesForSingleFundAndItsRenamedEquivalent extends Schema {
     override def loadData() = {
-      PricesDatabase().insert(
+      Price.insert(
         List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater, kappaIIPrice
         ))
     }
@@ -132,7 +131,7 @@ trait DatabaseHelpers {
 
   object MultiplePricesForTwoFunds extends Schema {
     override def loadData() = {
-      PricesDatabase().insert(List(
+      Price.insert(List(
         kappaPrice, kappaPriceLater, nikePriceGraeme, nikePriceGraemeLater, nikePriceGraemeLatest)
       )
     }
@@ -140,7 +139,7 @@ trait DatabaseHelpers {
 
   object TwoHoldings extends Schema {
     override def loadData() = {
-      HoldingsDatabase().insert(List(kappaFundHolding, nikeFundHolding))
+      Holding.insert(List(kappaFundHolding, nikeFundHolding))
     }
   }
 

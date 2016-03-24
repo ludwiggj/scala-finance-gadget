@@ -2,9 +2,9 @@ package models.org.ludwiggj.finance.application.scratch
 
 import java.sql.Date
 
-import models.org.ludwiggj.finance.domain.FinanceDate
+import models.org.ludwiggj.finance.domain.{FinanceDate, Transaction}
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
-import models.org.ludwiggj.finance.Transaction.InvestmentRegular
+import Transaction.InvestmentRegular
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB

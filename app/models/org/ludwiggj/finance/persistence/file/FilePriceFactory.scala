@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.file
 
-import models.org.ludwiggj.finance.domain._
+import models.org.ludwiggj.finance.domain.{Price, _}
 
 class FilePriceFactory private(private val priceFileName: String) extends {
   val fileName = priceFileName

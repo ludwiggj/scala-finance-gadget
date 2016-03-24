@@ -1,14 +1,14 @@
 package models.org.ludwiggj.finance.application.scratch
 
-import java.sql.Date
-import models.org.ludwiggj.finance.Transaction
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
-import models.org.ludwiggj.finance.Transaction.InvestmentRegular
+import models.org.ludwiggj.finance.domain.Transaction
+import models.org.ludwiggj.finance.domain.Transaction.InvestmentRegular
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
 import play.api.test.FakeApplication
 import scala.slick.driver.MySQLDriver.simple._
+import java.sql.Date
 
 object ShowVariousTransactionsGroupBy extends App {
 

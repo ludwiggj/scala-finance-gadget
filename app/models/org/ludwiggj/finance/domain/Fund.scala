@@ -1,16 +1,15 @@
-package models.org.ludwiggj.finance.persistence.database
+package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.domain.FundName
-import models.org.ludwiggj.finance.domain.FundName.fundNameToString
+import models.org.ludwiggj.finance.persistence.database.Tables._
 import play.api.Play.current
 import play.api.db.DB
-
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, Funds}
 
 
-class FundsDatabase private {
+object Fund {
+  implicit def fundNameToFundsRow(fundName: FundName) = FundsRow(0L, fundName)
+
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
   def get(fundName: FundName): Option[FundsRow] = {
@@ -46,11 +45,4 @@ class FundsDatabase private {
         }
     }
   }
-}
-
-// Note: declaring a Funds companion object would break the <> mapping.
-object FundsDatabase {
-  def apply() = new FundsDatabase()
-
-  implicit def fundNameToFundsRow(fundName: FundName) = FundsRow(0L, fundName)
 }

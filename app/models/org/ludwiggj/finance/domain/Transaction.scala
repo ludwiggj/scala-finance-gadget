@@ -1,21 +1,16 @@
-package models.org.ludwiggj.finance
+package models.org.ludwiggj.finance.domain
 
-import java.sql.Date
-
-import models.org.ludwiggj.finance.domain.Price
-import models.org.ludwiggj.finance.persistence.database.Tables._
-import models.org.ludwiggj.finance.persistence.database.UsersDatabase.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, FundsRow, Prices, PricesRow, Transactions, TransactionsRow, Users, UsersRow}
 import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
+import User.stringToUsersRow
 import play.api.Play.current
 import play.api.db.DB
-
 import scala.collection.immutable.ListMap
-import scala.slick.driver.MySQLDriver.simple._
-import models.org.ludwiggj.finance.domain._
-
 import scala.language.implicitConversions
+import scala.slick.driver.MySQLDriver.simple._
 import scala.util.{Failure, Success, Try}
+import java.sql.Date
 
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
@@ -60,8 +55,6 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 }
 
 object Transaction {
-
-  import models.org.ludwiggj.finance.domain._
 
   val InvestmentRegular = "Investment Regular"
   val InvestmentLumpSum = "Investment Lump Sum"
@@ -115,7 +108,7 @@ object Transaction {
 
         if (!get().contains(transaction)) {
 
-          val userId = UsersDatabase().getOrInsert(transaction.userName)
+          val userId = User.getOrInsert(transaction.userName)
 
           def insert(fundId: Long) {
             Transactions += TransactionsRow(
@@ -124,9 +117,9 @@ object Transaction {
             )
           }
 
-          PricesDatabase().insert(transaction.price)
+          Price.insert(transaction.price)
 
-          FundsDatabase().get(transaction.fundName) match {
+          Fund.get(transaction.fundName) match {
             case Some(fundsRow) => insert(fundsRow.id)
             case _ => println(s"Could not insert Transaction: fund ${transaction.fundName} not found")
           }
@@ -218,7 +211,7 @@ object Transaction {
 
         sortedTransactionsOfInterest.mapValues(rows => {
           val (_, _, fundId, _, _) = rows.head
-          val latestPrice = PricesDatabase().latestPrices(dateOfInterest)(fundId)
+          val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
 
           val txs = for {
             (userName, fundName, fundId, priceRow, tx) <- rows

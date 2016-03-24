@@ -1,12 +1,13 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import Tables.UsersRow
-import UsersDatabase.stringToUsersRow
+import models.org.ludwiggj.finance.domain.User
+import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
 @DoNotDiscover
-class UsersSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
+class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
 
   before {
     DatabaseCleaner.recreateDb()
@@ -16,13 +17,13 @@ class UsersSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return empty if user is not present" in {
       EmptySchema.loadData()
 
-      UsersDatabase().get("Burt Bacharach") must equal(None)
+      User.get("Burt Bacharach") must equal(None)
     }
 
     "return existing user row if it is present" in {
       SingleUser.loadData()
 
-      UsersDatabase().get(fatherTedUserName) mustBe Some(
+      User.get(fatherTedUserName) mustBe Some(
         UsersRow(fatherTedUserId, fatherTedUserName)
       )
     }
@@ -32,13 +33,13 @@ class UsersSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "insert user if it is not present" in {
       EmptySchema.loadData()
 
-      UsersDatabase().getOrInsert("bob") must be > 0L
+      User.getOrInsert("bob") must be > 0L
     }
 
     "return existing user id if user is present" in {
       SingleUser.loadData()
 
-      UsersDatabase().getOrInsert(fatherTedUserName) must equal(fatherTedUserId)
+      User.getOrInsert(fatherTedUserName) must equal(fatherTedUserId)
     }
   }
 }

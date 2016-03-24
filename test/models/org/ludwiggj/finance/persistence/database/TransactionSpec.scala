@@ -1,15 +1,15 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import java.sql.Date
-import models.org.ludwiggj.finance.Transaction
-import models.org.ludwiggj.finance.Transaction._
 import models.org.ludwiggj.finance.stringToSqlDate
+import models.org.ludwiggj.finance.domain.{Fund, Price, Transaction, User}
+import models.org.ludwiggj.finance.domain.Transaction._
 import Tables.{FundsRow, UsersRow}
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
+import java.sql.Date
 
 @DoNotDiscover
-class TransactionsSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
+class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
     DatabaseCleaner.recreateDb()
@@ -19,28 +19,25 @@ class TransactionsSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp 
     "insert user, fund and price if they are not present" in {
       EmptySchema.loadData()
 
-      val fundsDatabase = FundsDatabase()
-      val pricesDatabase = PricesDatabase()
-      val usersDatabase = UsersDatabase()
       val userName = "Graeme"
       val kappaFundTransaction = Transaction(userNameGraeme,
         kappaPriceDate, InvestmentRegular, Some(2.0), None, kappaPrice, 1.234)
 
-      usersDatabase.get(userName) mustBe None
-      fundsDatabase.get(kappaFundName) mustBe None
-      pricesDatabase.get(kappaFundName, kappaPriceDate) mustBe None
+      User.get(userName) mustBe None
+      Fund.get(kappaFundName) mustBe None
+      Price.get(kappaFundName, kappaPriceDate) mustBe None
 
       Transaction.insert(kappaFundTransaction)
 
-      inside(usersDatabase.get(userName).get) { case UsersRow(_, name) =>
+      inside(User.get(userName).get) { case UsersRow(_, name) =>
         name must equal(userName)
       }
 
-      inside(fundsDatabase.get(kappaFundName).get) { case FundsRow(_, name) =>
+      inside(Fund.get(kappaFundName).get) { case FundsRow(_, name) =>
         name must equal(kappaFundName.name)
       }
 
-      pricesDatabase.get(kappaFundName, kappaPriceDate) mustBe Some(kappaPrice)
+      Price.get(kappaFundName, kappaPriceDate) mustBe Some(kappaPrice)
 
       Transaction.get() must contain theSameElementsAs List(kappaFundTransaction)
     }

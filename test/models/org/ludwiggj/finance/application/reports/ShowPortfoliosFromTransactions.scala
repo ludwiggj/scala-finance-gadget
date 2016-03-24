@@ -1,7 +1,6 @@
 package models.org.ludwiggj.finance.application.reports
 
-import models.org.ludwiggj.finance.{Transaction, Portfolio}
-import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate}
+import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio, Transaction}
 import play.api.Play
 import play.api.test.FakeApplication
 

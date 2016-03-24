@@ -6,7 +6,6 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.Holding
-import models.org.ludwiggj.finance.persistence.database.HoldingsDatabase
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{User, NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
 import play.api.Play
@@ -93,7 +92,7 @@ object WebSiteHoldingScraper extends App {
             val totalHoldings = holdings.map(h => h.value).sum
             println(s"Total £$totalHoldings")
 
-            HoldingsDatabase().insert(holdings)
+            Holding.insert(holdings)
 
           case Failure(ex) =>
             println(s"Oh dear... ${ex.getMessage}")

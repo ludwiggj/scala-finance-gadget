@@ -1,12 +1,15 @@
-package models.org.ludwiggj.finance.persistence.database
+package models.org.ludwiggj.finance.domain
 
-import play.api.db.DB
+import models.org.ludwiggj.finance.persistence.database.Tables._
 import play.api.Play.current
+import play.api.db.DB
+
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
-import Tables.{Users, UsersRow}
 
-class UsersDatabase private {
+object User {
+  implicit def stringToUsersRow(name: String) = UsersRow(0L, name)
+
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
   def get(userName: String): Option[UsersRow] = {
@@ -38,11 +41,4 @@ class UsersDatabase private {
         }
     }
   }
-}
-
-// Note: declaring a Users companion object would break the <> mapping.
-object UsersDatabase {
-  def apply() = new UsersDatabase()
-
-  implicit def stringToUsersRow(name: String) = UsersRow(0L, name)
 }

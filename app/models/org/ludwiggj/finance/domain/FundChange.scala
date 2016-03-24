@@ -1,15 +1,14 @@
 package models.org.ludwiggj.finance.domain
 
-import com.typesafe.config.{ConfigFactory, Config}
-import models.org.ludwiggj.finance.persistence.database.FundsDatabase
+import com.typesafe.config.{Config, ConfigFactory}
 import scala.collection.JavaConversions._
 
 case class FundChange(val oldFundName: FundName, val newFundName: FundName, val fromDate: FinanceDate) {
 
   def getFundIds: Option[(Long, Long)] = {
     for {
-      oldFundId <- FundsDatabase().getId(oldFundName)
-      newFundId <- FundsDatabase().getId(newFundName)
+      oldFundId <- Fund.getId(oldFundName)
+      newFundId <- Fund.getId(newFundName)
     } yield (oldFundId, newFundId)
   }
 }

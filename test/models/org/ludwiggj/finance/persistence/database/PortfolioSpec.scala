@@ -1,6 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.{Portfolio, stringToSqlDate}
+import models.org.ludwiggj.finance.domain.Portfolio
+import models.org.ludwiggj.finance.stringToSqlDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 

@@ -6,12 +6,12 @@ import play.api.test.FakeApplication
 
 // This is the "master" suite
 class MasterSuite extends Suites(
-  new FundsSpec,
-  new UsersSpec,
-  new HoldingsSpec,
+  new FundSpec,
+  new UserSpec,
+  new HoldingSpec,
   new PortfolioSpec,
-  new PricesSpec,
-  new TransactionsSpec
+  new PriceSpec,
+  new TransactionSpec
 ) with OneAppPerSuite {
 
   def getConfig = Map(
