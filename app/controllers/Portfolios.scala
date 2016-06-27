@@ -22,6 +22,8 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
   }
 
   def onDate(date: Date) = Cached(s"portfolioDataOnDate-$date") {
+    // To switch caching off...
+    // def onDate(date: Date) = {
     Action {
       implicit request =>
         val portfolios = getPortfolioDataOnDate(date)
@@ -39,6 +41,8 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
   }
 
   def all(numberOfYearsAgoOption: Option[Int]) = Cached(yearsAgoCacheKey("portfolioDataAll-yearsAgo-")) {
+    // To switch caching off...
+    // def all(numberOfYearsAgoOption: Option[Int]) = {
     Action {
       implicit request =>
         val investmentDates = cache.getOrElse[List[FinanceDate]]("investmentDates") {
