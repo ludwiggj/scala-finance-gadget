@@ -204,3 +204,4 @@ Schroder Gbl Property Income Maximiser Z Fund Inc|25/08/2014|0.4906
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/09/2014|0.4678
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/10/2014|0.4871
 Schroder Gbl Property Income Maximiser Z Fund Inc|25/01/2015|0.5232
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/02/2016|0.4828

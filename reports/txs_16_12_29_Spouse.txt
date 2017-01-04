@@ -1,3 +1,27 @@
+Kames Ethical Equity B Fund Acc|28/12/2016|Investment Regular|46.60||28/12/2016|2.0523|22.7063
+Unicorn UK Ethical Income B Fund Acc|28/12/2016|Investment Regular|46.60||28/12/2016|1.0396|44.8250
+Henderson Global Care Growth I Fund Acc|13/12/2016|Sale for Regular Payment||34.13|13/12/2016|2.593|13.1622
+Henderson Global Care UK Income I Fund Inc|30/11/2016|Dividend Reinvestment|148.23||30/11/2016|1.405|105.5018
+Kames Ethical Equity B Fund Acc|25/11/2016|Investment Regular|46.60||25/11/2016|1.9803|23.5318
+Unicorn UK Ethical Income B Fund Acc|25/11/2016|Investment Regular|46.60||25/11/2016|1.0031|46.4560
+F&C Responsible UK Income 2 Fund Inc|11/11/2016|Sale for Regular Payment||36.70|11/11/2016|1.727|21.2457
+F&C Responsible UK Income 2 Fund Inc|31/10/2016|Dividend Reinvestment|54.11||31/10/2016|1.759|30.7618
+Kames Ethical Equity B Fund Acc|25/10/2016|Investment Regular|46.60||25/10/2016|2.0293|22.9636
+Unicorn UK Ethical Income B Fund Acc|25/10/2016|Investment Regular|46.60||25/10/2016|1.0053|46.3544
+Henderson Global Care Growth I Fund Acc|13/10/2016|Sale for Regular Payment||34.49|13/10/2016|2.644|13.0443
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|30/09/2016|Dividend Reinvestment|41.37||30/09/2016|0.5895|70.1782
+Kames Ethical Equity B Fund Acc|26/09/2016|Investment Regular|93.20||26/09/2016|2.0414|45.6550
+F&C Responsible UK Income 2 Fund Inc|13/09/2016|Sale for Regular Payment||34.54|13/09/2016|1.788|19.3163
+EdenTree Amity European B Fund Inc|31/08/2016|Dividend Reinvestment|92.24||31/08/2016|2.258|40.8504
+Kames Ethical Equity B Fund Acc|25/08/2016|Investment Regular|500.00||25/08/2016|2.0468|244.2838
+F&C Responsible UK Income 2 Fund Inc|11/08/2016|Sale for Regular Payment||33.50|11/08/2016|1.798|18.6281
+F&C Responsible UK Equity Growth 2 Fund Inc|01/08/2016|Dividend Reinvestment|29.49||01/08/2016|0.7115|41.4477
+F&C Responsible UK Income 2 Fund Inc|01/08/2016|Dividend Reinvestment|224.74||01/08/2016|1.744|128.8647
+Royal London Sustainable Leaders C Trust Inc|01/08/2016|Dividend Reinvestment|33.28||01/08/2016|1.514|21.9816
+Kames Ethical Equity B Fund Acc|25/07/2016|Investment Regular|500.00||25/07/2016|1.9679|254.0780
+Henderson Global Care Growth I Fund Acc|13/07/2016|Sale for Regular Payment||32.63|13/07/2016|2.432|13.4161
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|01/07/2016|Dividend Reinvestment|33.81||30/06/2016|0.56|60.3750
+Kames Ethical Equity B Fund Acc|27/06/2016|Investment Regular|500.00||27/06/2016|1.7444|286.6316
 F&C Responsible UK Income 2 Fund Inc|13/06/2016|Sale for Regular Payment||30.65|13/06/2016|1.684|18.1954
 Alliance Trust SF Global Growth 2 Fund Acc|31/05/2016|Switch In|2591.23||31/05/2016|1.104|2347.1287
 Henderson Global Care UK Income I Fund Inc|31/05/2016|Dividend Reinvestment|96.03||31/05/2016|1.423|67.4842
