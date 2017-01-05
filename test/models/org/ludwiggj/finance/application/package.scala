@@ -1,7 +1,8 @@
 package models.org.ludwiggj.finance
 
 package object application {
-  val reportHome = "reports"
+  val dataHome = "data"
+  val holdingsHome = "holdings"
 
   def time[R](name: String, block: => R): R = {
     val t0 = System.nanoTime()

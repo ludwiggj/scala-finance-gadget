@@ -24,70 +24,65 @@ object WebSiteTransactionScraper extends App {
   private val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
   private val application = FakeApplication()
 
-  def getTransactions(user: User): List[Transaction] = {
-    val transactionFactory = WebSiteTransactionFactory(loginFormBuilder, user.name)
-
-    val transactions = transactionFactory.getTransactions() map {
-      tx => tx.copy(userName = user.reportName)
+  def getTransactions(user: User): Future[(User, List[Transaction])] = Future {
+    def getTransactions(): List[Transaction] = {
+      WebSiteTransactionFactory(loginFormBuilder, user.name).getTransactions() map {
+        tx => tx.copy(userName = user.reportName)
+      }
     }
-    transactions
-  }
 
-  def generatePersistedTransactionsFileName(user: User): String = {
-    s"$reportHome/txs_${date}_${user.reportName}.txt"
-  }
-
-  def persistTransactionsToFile(user: User, transactions: List[Transaction]): Unit = {
-    val persister = FilePersister(generatePersistedTransactionsFileName(user))
-    persister.write(transactions)
-  }
-
-  def processTransactions(user: User): Future[List[Transaction]] = Future {
     val userName = user.name
+    val emptyResult = (user, List())
 
     time(s"processTransactions($userName)",
       try {
-        val transactions: List[Transaction] = getTransactions(user)
+        val transactions: List[Transaction] = getTransactions()
 
         println(s"Total transactions ($userName): ${transactions size}")
 
-        persistTransactionsToFile(user, transactions)
-        transactions
+        (user, transactions)
       } catch {
         case ex: ElementNotFoundException =>
-          println(s"Cannot retrieve transactions for $userName, ${ex.toString}")
-          List()
+          println(s"Cannot retrieve transactions for $userName [ElementNotFoundException]. Error ${ex.toString}")
+          emptyResult
+
         case ex: NotAuthenticatedException =>
-          println(s"Cannot retrieve transactions for $userName [NotAuthenticatedException]")
-          List()
+          println(s"Cannot retrieve transactions for $userName [NotAuthenticatedException]. Error ${ex.toString}")
+          emptyResult
       }
     )
   }
 
-  def composeWaitingFuture(fut: Future[List[Transaction]], atMost: FiniteDuration, userName: String) =
-    (Future {
-      Await.result(fut, atMost)
-    }
-      recover {
-      case e: ElementNotFoundException =>
-        println(s"Problem retrieving details for $userName, Error: ${e.toString}")
-        List()
-    })
-
   def scrape() = {
+    def processTransactions(listOfUserTransactions: List[(User, List[Transaction])]) = {
+      def persistTransactionsToFile(user: User, transactions: List[Transaction]): Unit = {
+        def generatePersistedTransactionsFileName(user: User): String = {
+          s"$dataHome/txs_${date}_${user.reportName}.txt"
+        }
+
+        val persister = FilePersister(generatePersistedTransactionsFileName(user))
+        persister.write(transactions)
+      }
+
+      for {
+        (user, transactions) <- listOfUserTransactions
+      } {
+        persistTransactionsToFile(user, transactions)
+        Transaction.insert(transactions)
+      }
+    }
+
     time("Whole thing",
       try {
         val listOfFutures = users map { user =>
-          composeWaitingFuture(
-            processTransactions(user), 30 seconds, user.name
-          )
+          getTransactions(user)
         }
 
         val combinedFuture = Future.sequence(listOfFutures)
 
-        Await.ready(combinedFuture, 31 seconds).value.get match {
-          case Success(results) =>
-            Transaction.insert(results.flatten)
+        Await.ready(combinedFuture, 30 seconds).value.get match {
+          case Success(listOfUserTransactions) =>
+            processTransactions(listOfUserTransactions)
             println(s"Done...")
 
           case Failure(ex) =>

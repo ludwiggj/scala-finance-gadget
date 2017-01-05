@@ -5,9 +5,9 @@ import java.util.concurrent.TimeoutException
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
-import models.org.ludwiggj.finance.domain.Holding
+import models.org.ludwiggj.finance.domain.{Holding, Price}
 import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{User, NotAuthenticatedException, WebSiteConfig, WebSiteHoldingFactory}
+import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteHoldingFactory}
 import play.api.Play
 import play.api.test.FakeApplication
 
@@ -24,82 +24,88 @@ object WebSiteHoldingScraper extends App {
   private val users = config.getUserList()
   private val application = FakeApplication()
 
-  def getHoldings(user: User): List[Holding] = {
-    WebSiteHoldingFactory(loginFormBuilder, user.name).getHoldings() map {
-      holding => holding.copy(userName = user.reportName)
+  def getHoldings(user: User) = Future[(User, List[Holding])] {
+    def getHoldings(): List[Holding] = {
+      WebSiteHoldingFactory(loginFormBuilder, user.name).getHoldings() map {
+        holding => holding.copy(userName = user.reportName)
+      }
     }
-  }
 
-  def generatePersistedHoldingsFileName(userReportName: String) = {
-    val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
-    s"$reportHome/holdings_${date}_${userReportName}.txt"
-  }
-
-  def persistHoldingsToFile(userReportName: String, holdings: List[Holding]): Unit = {
-    val peristedHoldingsFileName = generatePersistedHoldingsFileName(userReportName)
-
-    FilePersister(peristedHoldingsFileName).write(holdings)
-  }
-
-  def processHoldings(user: User) = Future[List[Holding]] {
     val userName = user.name
+    val emptyResult = (user, List())
 
     time(s"processHoldings($userName)",
       try {
-        val holdings = getHoldings(user)
+        val holdings = getHoldings()
 
         val holdingsTotal = holdings.map(h => h.value).sum
         println(s"Total holdings ($userName): £$holdingsTotal")
 
-        persistHoldingsToFile(user.reportName, holdings)
-
-        holdings
+        (user, holdings)
       } catch {
         case ex: NotAuthenticatedException =>
-          val errorMsg = s"Cannot retrieve holdings for $userName [NotAuthenticatedException]"
-          println(errorMsg)
-          List()
+          println(s"Cannot retrieve holdings for $userName [NotAuthenticatedException]. Error ${ex.toString}")
+          emptyResult
+
+        case ex: ElementNotFoundException =>
+          println(s"Cannot retrieve holdings for $userName [ElementNotFoundException]. Error ${ex.toString}")
+          emptyResult
       }
     )
   }
 
-  def composeWaitingFuture(fut: Future[List[Holding]], atMost: FiniteDuration, userName: String) =
-    (Future {
-      Await.result(fut, atMost)
-    }
-      recover {
-      case e: ElementNotFoundException =>
-        println(s"Problem retrieving details for $userName, returning £0 for this user.\n"
-          + s"Error: ${e.toString}")
-        List()
-    })
-
   def scrape() = {
+    def processHoldings(listOfUserHoldings: List[(User, List[Holding])]) = {
+      val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
+
+      def persistHoldingsToFile(userReportName: String, holdings: List[Holding]): Unit = {
+        FilePersister(fileName = s"$holdingsHome/holdings_${date}_${userReportName}.txt").write(holdings)
+      }
+
+      def persistPricesToFile(userReportName: String, prices: List[Price]): Unit = {
+        FilePersister(fileName = s"$dataHome/prices_${date}_${userReportName}.txt").write(prices)
+      }
+
+      for {
+        (user, holdings) <- listOfUserHoldings
+      } {
+        persistHoldingsToFile(user.reportName, holdings)
+
+        val prices = holdings.map(_.price)
+        persistPricesToFile(user.reportName, prices)
+        Price.insert(prices)
+      }
+    }
+
+    def displayTotalHoldingAmount(listOfUserHoldings: List[(User, List[Holding])]) = {
+      val allHoldings = listOfUserHoldings.map(_._2).flatten
+      val totalHoldingAmount = allHoldings.map(h => h.value).sum
+      println(s"Total £$totalHoldingAmount")
+    }
+
+    // scrape(): start here
     time("Whole thing",
       try {
         val listOfFutures = users map { user =>
-          composeWaitingFuture(
-            processHoldings(user), 30 seconds, user.name
-          )
+          getHoldings(user)
         }
 
         val combinedFuture = Future.sequence(listOfFutures)
 
-        Await.ready(combinedFuture, 31 seconds).value.get match {
-          case Success(results) =>
-            val holdings = results.flatten
-
-            val totalHoldings = holdings.map(h => h.value).sum
-            println(s"Total £$totalHoldings")
-
-            Holding.insert(holdings)
+        Await.ready(combinedFuture, 30 seconds).value.get match {
+          case Success(listOfUserHoldings) =>
+            processHoldings(listOfUserHoldings)
+            displayTotalHoldingAmount(listOfUserHoldings)
+            println(s"Done...")
 
           case Failure(ex) =>
             println(s"Oh dear... ${ex.getMessage}")
+            ex.printStackTrace()
         }
       } catch {
         case ex: TimeoutException => println(ex.getMessage)
-      } finally {
+      }
+      finally {
         Play.stop(application)
       }
     )

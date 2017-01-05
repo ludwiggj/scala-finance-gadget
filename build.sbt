@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   evolutions,
-  "mysql" % "mysql-connector-java" % "latest.release",
+  "mysql" % "mysql-connector-java" % "5.1.38",
   "org.filippodeluca.ssoup" %% "ssoup" % "1.0-SNAPSHOT",
   "com.typesafe" % "config" % "1.0.2",
   "net.sourceforge.htmlunit" % "htmlunit" % "2.20",

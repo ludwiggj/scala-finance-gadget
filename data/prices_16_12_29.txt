@@ -1,0 +1,255 @@
+Aberdeen Ethical World Equity I Fund Inc|20/01/2016|1.2814
+EdenTree Amity European B Fund Inc|20/01/2016|1.8870
+F&C Responsible UK Equity Growth 2 Fund Inc|20/01/2016|0.6279
+F&C Responsible UK Income 2 Fund Inc|20/01/2016|1.6610
+Henderson Global Care Growth I Fund Acc|20/01/2016|2.0340
+Henderson Global Care UK Income I Fund Inc|20/01/2016|1.3310
+M&G Feeder of Property Portfolio I Fund Acc|20/01/2016|13.8331
+Royal London Sustainable Leaders C Trust Inc|20/01/2016|1.3330
+Schroder Gbl Property Income Maximiser Z Fund Inc|20/01/2016|0.4634
+Aberdeen Ethical World Equity I Fund Inc|25/01/2016|1.3041
+EdenTree Amity European B Fund Inc|25/01/2016|1.9390
+F&C Responsible UK Equity Growth 2 Fund Inc|25/01/2016|0.6471
+F&C Responsible UK Income 2 Fund Inc|25/01/2016|1.6960
+Henderson Global Care Growth I Fund Acc|25/01/2016|2.0550
+Henderson Global Care UK Income I Fund Inc|25/01/2016|1.3780
+M&G Feeder of Property Portfolio I Fund Acc|25/01/2016|13.8386
+Royal London Sustainable Leaders C Trust Inc|25/01/2016|1.3760
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/01/2016|0.4664
+Schroder Gbl Property Income Maximiser Z Fund Inc|25/02/2016|0.4828
+Aberdeen Ethical World Equity I Fund Inc|26/02/2016|1.3774
+EdenTree Amity European B Fund Inc|26/02/2016|1.9680
+F&C Responsible UK Equity Growth 2 Fund Inc|26/02/2016|0.6570
+F&C Responsible UK Income 2 Fund Inc|26/02/2016|1.6950
+Henderson Global Care Growth I Fund Acc|26/02/2016|2.1000
+Henderson Global Care UK Income I Fund Inc|26/02/2016|1.3870
+M&G Feeder of Property Portfolio I Fund Acc|26/02/2016|13.9322
+Royal London Sustainable Leaders C Trust Inc|26/02/2016|1.3860
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|26/02/2016|0.4828
+Aberdeen Ethical World Equity I Fund Inc|24/03/2016|1.4318
+EdenTree Amity European B Fund Inc|24/03/2016|2.0410
+F&C Responsible UK Equity Growth 2 Fund Inc|24/03/2016|0.6698
+F&C Responsible UK Income 2 Fund Inc|24/03/2016|1.7270
+Henderson Global Care Growth I Fund Acc|24/03/2016|2.1970
+Henderson Global Care UK Income I Fund Inc|24/03/2016|1.4100
+M&G Feeder of Property Portfolio I Fund Acc|24/03/2016|13.9617
+Royal London Sustainable Leaders C Trust Inc|24/03/2016|1.3820
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|24/03/2016|0.5035
+Aberdeen Ethical World Equity I Fund Inc|29/03/2016|1.4213
+EdenTree Amity European B Fund Inc|29/03/2016|2.0280
+F&C Responsible UK Equity Growth 2 Fund Inc|29/03/2016|0.6680
+F&C Responsible UK Income 2 Fund Inc|29/03/2016|1.7240
+Henderson Global Care Growth I Fund Acc|29/03/2016|2.1920
+Henderson Global Care UK Income I Fund Inc|29/03/2016|1.4050
+M&G Feeder of Property Portfolio I Fund Acc|29/03/2016|13.9694
+Royal London Sustainable Leaders C Trust Inc|29/03/2016|1.3760
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|29/03/2016|0.5017
+Aberdeen Ethical World Equity I Fund Inc|22/04/2016|1.4840
+EdenTree Amity European B Fund Inc|22/04/2016|2.1090
+F&C Responsible UK Equity Growth 2 Fund Inc|22/04/2016|0.6847
+F&C Responsible UK Income 2 Fund Inc|22/04/2016|1.7600
+Henderson Global Care Growth I Fund Acc|22/04/2016|2.2650
+Henderson Global Care UK Income I Fund Inc|22/04/2016|1.3950
+M&G Feeder of Property Portfolio I Fund Acc|22/04/2016|14.0097
+Royal London Sustainable Leaders C Trust Inc|22/04/2016|1.4100
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|22/04/2016|0.5044
+Aberdeen Ethical World Equity I Fund Inc|27/04/2016|1.4552
+EdenTree Amity European B Fund Inc|27/04/2016|2.0760
+F&C Responsible UK Equity Growth 2 Fund Inc|27/04/2016|0.6791
+F&C Responsible UK Income 2 Fund Inc|27/04/2016|1.7510
+Henderson Global Care Growth I Fund Acc|27/04/2016|2.2330
+Henderson Global Care UK Income I Fund Inc|27/04/2016|1.3870
+M&G Feeder of Property Portfolio I Fund Acc|27/04/2016|14.0164
+Royal London Sustainable Leaders C Trust Inc|27/04/2016|1.3840
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|27/04/2016|0.5036
+Aberdeen Ethical World Equity I Fund Inc|18/05/2016|1.4315
+EdenTree Amity European B Fund Inc|18/05/2016|2.0390
+F&C Responsible UK Equity Growth 2 Fund Inc|18/05/2016|0.6777
+F&C Responsible UK Income 2 Fund Inc|18/05/2016|1.7380
+Henderson Global Care Growth I Fund Acc|18/05/2016|2.1750
+Henderson Global Care UK Income I Fund Inc|18/05/2016|1.3810
+M&G Feeder of Property Portfolio I Fund Acc|18/05/2016|13.1816
+Royal London Sustainable Leaders C Trust Inc|18/05/2016|1.3780
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|18/05/2016|0.5040
+Aberdeen Ethical World Equity I Fund Inc|26/05/2016|1.4437
+EdenTree Amity European B Fund Inc|26/05/2016|2.0700
+F&C Responsible UK Equity Growth 2 Fund Inc|26/05/2016|0.6919
+F&C Responsible UK Income 2 Fund Inc|26/05/2016|1.7810
+Henderson Global Care Growth I Fund Acc|26/05/2016|2.1960
+Henderson Global Care UK Income I Fund Inc|26/05/2016|1.4170
+M&G Feeder of Property Portfolio I Fund Acc|26/05/2016|13.1865
+Royal London Sustainable Leaders C Trust Inc|26/05/2016|1.4100
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|26/05/2016|0.4959
+Alliance Trust SF Global Growth 2 Fund Acc|02/06/2016|1.1150
+EdenTree Amity European B Fund Inc|02/06/2016|2.1120
+F&C Responsible UK Equity Growth 2 Fund Inc|02/06/2016|0.6790
+F&C Responsible UK Income 2 Fund Inc|02/06/2016|1.7300
+Henderson Global Care Growth I Fund Acc|02/06/2016|2.2460
+Henderson Global Care UK Income I Fund Inc|02/06/2016|1.4120
+M&G Feeder of Property Portfolio I Fund Acc|02/06/2016|13.2050
+Royal London Sustainable Leaders C Trust Inc|02/06/2016|1.3920
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|02/06/2016|0.5047
+Alliance Trust SF Global Growth 2 Fund Acc|27/06/2016|1.1360
+EdenTree Amity European B Fund Inc|27/06/2016|2.0300
+F&C Responsible UK Equity Growth 2 Fund Inc|27/06/2016|0.6293
+F&C Responsible UK Income 2 Fund Inc|27/06/2016|1.5950
+Henderson Global Care Growth I Fund Acc|27/06/2016|2.3070
+Henderson Global Care UK Income I Fund Inc|27/06/2016|1.3060
+M&G Feeder of Property Portfolio I Fund Acc|27/06/2016|13.2361
+Royal London Sustainable Leaders C Trust Inc|27/06/2016|1.3450
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|27/06/2016|0.5538
+Alliance Trust SF Global Growth 2 Fund Acc|28/06/2016|1.1110
+EdenTree Amity European B Fund Inc|28/06/2016|2.0370
+F&C Responsible UK Equity Growth 2 Fund Inc|28/06/2016|0.6369
+F&C Responsible UK Income 2 Fund Inc|28/06/2016|1.6080
+Henderson Global Care Growth I Fund Acc|28/06/2016|2.2440
+Henderson Global Care UK Income I Fund Inc|28/06/2016|1.3280
+Kames Ethical Equity B Fund Acc|28/06/2016|1.7663
+M&G Feeder of Property Portfolio I Fund Acc|28/06/2016|13.2370
+Royal London Sustainable Leaders C Trust Inc|28/06/2016|1.3590
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|28/06/2016|0.5502
+Alliance Trust SF Global Growth 2 Fund Acc|04/07/2016|1.1660
+EdenTree Amity European B Fund Inc|04/07/2016|2.1070
+F&C Responsible UK Equity Growth 2 Fund Inc|04/07/2016|0.6708
+F&C Responsible UK Income 2 Fund Inc|04/07/2016|1.6740
+Henderson Global Care Growth I Fund Acc|04/07/2016|2.3700
+Henderson Global Care UK Income I Fund Inc|04/07/2016|1.4050
+Kames Ethical Equity B Fund Acc|04/07/2016|1.8532
+M&G Feeder of Property Portfolio I Fund Acc|04/07/2016|12.4825
+Royal London Sustainable Leaders C Trust Inc|04/07/2016|1.4390
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|04/07/2016|0.5759
+Alliance Trust SF Global Growth 2 Fund Acc|19/07/2016|1.2140
+EdenTree Amity European B Fund Inc|19/07/2016|2.1360
+F&C Responsible UK Equity Growth 2 Fund Inc|19/07/2016|0.6963
+F&C Responsible UK Income 2 Fund Inc|19/07/2016|1.7100
+Henderson Global Care Growth I Fund Acc|19/07/2016|2.4730
+Henderson Global Care UK Income I Fund Inc|19/07/2016|1.4330
+Kames Ethical Equity B Fund Acc|19/07/2016|1.9394
+M&G Feeder of Property Portfolio I Fund Acc|19/07/2016|12.2764
+Royal London Sustainable Leaders C Trust Inc|19/07/2016|1.4750
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|19/07/2016|0.5909
+Alliance Trust SF Global Growth 2 Fund Acc|05/08/2016|1.2200
+EdenTree Amity European B Fund Inc|05/08/2016|2.1840
+F&C Responsible UK Equity Growth 2 Fund Inc|05/08/2016|0.7187
+F&C Responsible UK Income 2 Fund Inc|05/08/2016|1.7640
+Henderson Global Care Growth I Fund Acc|05/08/2016|2.4750
+Henderson Global Care UK Income I Fund Inc|05/08/2016|1.4740
+Kames Ethical Equity B Fund Acc|05/08/2016|2.0019
+M&G Feeder of Property Portfolio I Fund Acc|05/08/2016|12.0784
+Royal London Sustainable Leaders C Trust Inc|05/08/2016|1.5230
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|05/08/2016|0.5974
+Alliance Trust SF Global Growth 2 Fund Acc|23/08/2016|1.2370
+EdenTree Amity European B Fund Inc|23/08/2016|2.2580
+F&C Responsible UK Equity Growth 2 Fund Inc|23/08/2016|0.7340
+F&C Responsible UK Income 2 Fund Inc|23/08/2016|1.8040
+Henderson Global Care Growth I Fund Acc|23/08/2016|2.5270
+Henderson Global Care UK Income I Fund Inc|23/08/2016|1.5050
+Kames Ethical Equity B Fund Acc|23/08/2016|2.0490
+M&G Feeder of Property Portfolio I Fund Acc|23/08/2016|12.0804
+Royal London Sustainable Leaders C Trust Inc|23/08/2016|1.5390
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|23/08/2016|0.5994
+Alliance Trust SF Global Growth 2 Fund Acc|25/08/2016|1.2300
+EdenTree Amity European B Fund Inc|25/08/2016|2.2440
+F&C Responsible UK Equity Growth 2 Fund Inc|25/08/2016|0.7305
+F&C Responsible UK Income 2 Fund Inc|25/08/2016|1.8020
+Henderson Global Care Growth I Fund Acc|25/08/2016|2.5230
+Henderson Global Care UK Income I Fund Inc|25/08/2016|1.5000
+Kames Ethical Equity B Fund Acc|25/08/2016|2.0468
+M&G Feeder of Property Portfolio I Fund Acc|25/08/2016|12.0811
+Royal London Sustainable Leaders C Trust Inc|25/08/2016|1.5320
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|25/08/2016|0.5986
+Alliance Trust SF Global Growth 2 Fund Acc|16/09/2016|1.2100
+EdenTree Amity European B Fund Inc|16/09/2016|2.2170
+F&C Responsible UK Equity Growth 2 Fund Inc|16/09/2016|0.7317
+F&C Responsible UK Income 2 Fund Inc|16/09/2016|1.7950
+Henderson Global Care Growth I Fund Acc|16/09/2016|2.4710
+Henderson Global Care UK Income I Fund Inc|16/09/2016|1.4790
+Kames Ethical Equity B Fund Acc|16/09/2016|2.0446
+M&G Feeder of Property Portfolio I Fund Acc|16/09/2016|12.4665
+Royal London Sustainable Leaders C Trust Inc|16/09/2016|1.5240
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|16/09/2016|0.5708
+Alliance Trust SF Global Growth 2 Fund Acc|30/09/2016|1.2350
+EdenTree Amity European B Fund Inc|30/09/2016|2.2460
+F&C Responsible UK Equity Growth 2 Fund Inc|30/09/2016|0.7287
+F&C Responsible UK Income 2 Fund Inc|30/09/2016|1.7890
+Henderson Global Care Growth I Fund Acc|30/09/2016|2.5350
+Henderson Global Care UK Income I Fund Inc|30/09/2016|1.4760
+Kames Ethical Equity B Fund Acc|30/09/2016|2.0362
+M&G Feeder of Property Portfolio I Fund Acc|30/09/2016|12.5729
+Royal London Sustainable Leaders C Trust Inc|30/09/2016|1.5430
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|30/09/2016|0.5895
+Alliance Trust SF Global Growth 2 Fund Acc|07/10/2016|1.2970
+EdenTree Amity European B Fund Inc|07/10/2016|2.3660
+F&C Responsible UK Equity Growth 2 Fund Inc|07/10/2016|0.7440
+F&C Responsible UK Income 2 Fund Inc|07/10/2016|1.8140
+Henderson Global Care Growth I Fund Acc|07/10/2016|2.6640
+Henderson Global Care UK Income I Fund Inc|07/10/2016|1.4610
+Kames Ethical Equity B Fund Acc|07/10/2016|2.0628
+M&G Feeder of Property Portfolio I Fund Acc|07/10/2016|12.5811
+Royal London Sustainable Leaders C Trust Inc|07/10/2016|1.5720
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|07/10/2016|0.5882
+Alliance Trust SF Global Growth 2 Fund Acc|12/10/2016|1.2930
+EdenTree Amity European B Fund Inc|12/10/2016|2.3640
+F&C Responsible UK Equity Growth 2 Fund Inc|12/10/2016|0.7425
+F&C Responsible UK Income 2 Fund Inc|12/10/2016|1.8080
+Henderson Global Care Growth I Fund Acc|12/10/2016|2.6450
+Henderson Global Care UK Income I Fund Inc|12/10/2016|1.4590
+Kames Ethical Equity B Fund Acc|12/10/2016|2.0557
+M&G Feeder of Property Portfolio I Fund Acc|12/10/2016|12.5868
+Royal London Sustainable Leaders C Trust Inc|12/10/2016|1.5660
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|12/10/2016|0.5898
+Alliance Trust SF Global Growth 2 Fund Acc|26/10/2016|1.2900
+EdenTree Amity European B Fund Inc|26/10/2016|2.3710
+F&C Responsible UK Equity Growth 2 Fund Inc|26/10/2016|0.7212
+F&C Responsible UK Income 2 Fund Inc|26/10/2016|1.7670
+Henderson Global Care Growth I Fund Acc|26/10/2016|2.6310
+Henderson Global Care UK Income I Fund Inc|26/10/2016|1.4360
+Kames Ethical Equity B Fund Acc|26/10/2016|1.9989
+M&G Feeder of Property Portfolio I Fund Acc|26/10/2016|12.6492
+Royal London Sustainable Leaders C Trust Inc|26/10/2016|1.5470
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|26/10/2016|0.5956
+Unicorn UK Ethical Income B Fund Acc|26/10/2016|0.9955
+Alliance Trust SF Global Growth 2 Fund Acc|23/11/2016|1.2540
+EdenTree Amity European B Fund Inc|23/11/2016|2.2780
+F&C Responsible UK Equity Growth 2 Fund Inc|23/11/2016|0.7156
+F&C Responsible UK Income 2 Fund Inc|23/11/2016|1.7420
+Henderson Global Care Growth I Fund Acc|23/11/2016|2.5970
+Henderson Global Care UK Income I Fund Inc|23/11/2016|1.4070
+Kames Ethical Equity B Fund Acc|23/11/2016|1.9928
+M&G Feeder of Property Portfolio I Fund Acc|23/11/2016|12.7443
+Royal London Sustainable Leaders C Trust Inc|23/11/2016|1.4920
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|23/11/2016|0.5510
+Unicorn UK Ethical Income B Fund Acc|23/11/2016|1.0027
+Alliance Trust SF Global Growth 2 Fund Acc|25/11/2016|1.2480
+EdenTree Amity European B Fund Inc|25/11/2016|2.2590
+F&C Responsible UK Equity Growth 2 Fund Inc|25/11/2016|0.7164
+F&C Responsible UK Income 2 Fund Inc|25/11/2016|1.7390
+Henderson Global Care Growth I Fund Acc|25/11/2016|2.5910
+Henderson Global Care UK Income I Fund Inc|25/11/2016|1.4000
+Kames Ethical Equity B Fund Acc|25/11/2016|1.9803
+M&G Feeder of Property Portfolio I Fund Acc|25/11/2016|12.7462
+Royal London Sustainable Leaders C Trust Inc|25/11/2016|1.4900
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|25/11/2016|0.5473
+Unicorn UK Ethical Income B Fund Acc|25/11/2016|1.0031
+Alliance Trust SF Global Growth 2 Fund Acc|23/12/2016|1.2770
+EdenTree Amity European B Fund Inc|23/12/2016|2.4200
+F&C Responsible UK Equity Growth 2 Fund Inc|23/12/2016|0.7296
+F&C Responsible UK Income 2 Fund Inc|23/12/2016|1.7750
+Henderson Global Care Growth I Fund Acc|23/12/2016|2.6630
+Henderson Global Care UK Income I Fund Inc|23/12/2016|1.4600
+Kames Ethical Equity B Fund Acc|23/12/2016|2.0482
+M&G Feeder of Property Portfolio I Fund Acc|23/12/2016|12.8203
+Royal London Sustainable Leaders C Trust Inc|23/12/2016|1.5230
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|23/12/2016|0.5689
+Unicorn UK Ethical Income B Fund Acc|23/12/2016|1.0379
+Alliance Trust SF Global Growth 2 Fund Acc|28/12/2016|1.2860
+EdenTree Amity European B Fund Inc|28/12/2016|2.4230
+F&C Responsible UK Equity Growth 2 Fund Inc|28/12/2016|0.7324
+F&C Responsible UK Income 2 Fund Inc|28/12/2016|1.7780
+Henderson Global Care Growth I Fund Acc|28/12/2016|2.6770
+Henderson Global Care UK Income I Fund Inc|28/12/2016|1.4600
+Kames Ethical Equity B Fund Acc|28/12/2016|2.0523
+M&G Feeder of Property Portfolio I Fund Acc|28/12/2016|12.8283
+Royal London Sustainable Leaders C Trust Inc|29/12/2016|1.5260
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|28/12/2016|0.5699
+Unicorn UK Ethical Income B Fund Acc|29/12/2016|1.0390

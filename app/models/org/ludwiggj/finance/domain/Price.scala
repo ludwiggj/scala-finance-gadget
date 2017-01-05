@@ -7,15 +7,18 @@ import Fund.fundNameToFundsRow
 import FinanceDate.sqlDateToFinanceDate
 import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import play.api.Play.current
 import play.api.db.DB
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
-case class Price(val fundName: FundName, val date: FinanceDate, val inPounds: BigDecimal) {
+case class Price(val fundName: FundName, val date: FinanceDate, val inPounds: BigDecimal) extends PersistableToFile {
 
   override def toString =
     s"Price [name: $fundName, date: $date, price: £$inPounds]"
+
+  def toFileFormat = s"$fundName$separator$date$separator$inPounds"
 }
 
 object Price {
