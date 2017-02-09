@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.application
 
 import java.io.{File, FilenameFilter}
 import models.org.ludwiggj.finance.domain.{Price, Transaction}
-import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Holdings, Prices, Transactions, Users}
+import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
 import play.api.Play
 import play.api.Play.current
@@ -33,14 +33,12 @@ object DatabaseReload extends App {
     val users: TableQuery[Users] = TableQuery[Users]
     val funds: TableQuery[Funds] = TableQuery[Funds]
     val prices: TableQuery[Prices] = TableQuery[Prices]
-    val holdings: TableQuery[Holdings] = TableQuery[Holdings]
     val transactions: TableQuery[Transactions] = TableQuery[Transactions]
 
 
     db.withSession {
       implicit session =>
         transactions.delete
-        holdings.delete
         prices.delete
         funds.delete
         users.delete

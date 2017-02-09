@@ -17,7 +17,7 @@ trait Tables {
   import scala.slick.jdbc.{GetResult => GR}
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = Funds.ddl ++ Holdings.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
+  lazy val ddl = Funds.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
   
   /** Entity class storing rows of table Funds
    *  @param id Database column ID DBType(BIGINT), AutoInc, PrimaryKey
@@ -44,45 +44,6 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table Funds */
   lazy val Funds = new TableQuery(tag => new Funds(tag))
-  
-  /** Entity class storing rows of table Holdings
-   *  @param fundId Database column FUND_ID DBType(BIGINT)
-   *  @param userId Database column USER_ID DBType(BIGINT)
-   *  @param units Database column UNITS DBType(DECIMAL)
-   *  @param date Database column HOLDING_DATE DBType(DATE) */
-  case class HoldingsRow(fundId: Long, userId: Long, units: scala.math.BigDecimal, date: java.sql.Date)
-  /** GetResult implicit for fetching HoldingsRow objects using plain SQL queries */
-  implicit def GetResultHoldingsRow(implicit e0: GR[Long], e1: GR[scala.math.BigDecimal], e2: GR[java.sql.Date]): GR[HoldingsRow] = GR{
-    prs => import prs._
-    HoldingsRow.tupled((<<[Long], <<[Long], <<[scala.math.BigDecimal], <<[java.sql.Date]))
-  }
-  /** Table description of table HOLDINGS. Objects of this class serve as prototypes for rows in queries. */
-  class Holdings(_tableTag: Tag) extends Table[HoldingsRow](_tableTag, "HOLDINGS") {
-    def * = (fundId, userId, units, date) <> (HoldingsRow.tupled, HoldingsRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (fundId.?, userId.?, units.?, date.?).shaped.<>({r=>import r._; _1.map(_=> HoldingsRow.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column FUND_ID DBType(BIGINT) */
-    val fundId: Column[Long] = column[Long]("FUND_ID")
-    /** Database column USER_ID DBType(BIGINT) */
-    val userId: Column[Long] = column[Long]("USER_ID")
-    /** Database column UNITS DBType(DECIMAL) */
-    val units: Column[scala.math.BigDecimal] = column[scala.math.BigDecimal]("UNITS")
-    /** Database column HOLDING_DATE DBType(DATE) */
-    val date: Column[java.sql.Date] = column[java.sql.Date]("HOLDING_DATE")
-    
-    /** Primary key of Holdings (database name HOLDINGS_PK) */
-    val pk = primaryKey("HOLDINGS_PK", (fundId, userId, date))
-    
-    /** Foreign key referencing Funds (database name HOLDINGS_FUND_FK) */
-    lazy val fundsFk = foreignKey("HOLDINGS_FUND_FK", fundId, Funds)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing Prices (database name HOLDINGS_PRICES_FK) */
-    lazy val pricesFk = foreignKey("HOLDINGS_PRICES_FK", (fundId, date), Prices)(r => (r.fundId, r.date), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing Users (database name HOLDINGS_USERS_FK) */
-    lazy val usersFk = foreignKey("HOLDINGS_USERS_FK", userId, Users)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  }
-  /** Collection-like TableQuery object for table Holdings */
-  lazy val Holdings = new TableQuery(tag => new Holdings(tag))
   
   /** Entity class storing rows of table Prices
    *  @param fundId Database column FUND_ID DBType(BIGINT)

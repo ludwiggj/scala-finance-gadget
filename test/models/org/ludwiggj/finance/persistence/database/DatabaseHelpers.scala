@@ -79,10 +79,6 @@ trait DatabaseHelpers {
   private val nikeTransactionAudreyLater = Transaction(userNameAudrey, nikePriceDateAudreyLater, InvestmentRegular,
     Some(10.2), None, nikePriceAudreyLater, 3.1)
 
-  // Holdings
-  val kappaFundHolding = Holding(userNameGraeme, kappaPrice, 1.23)
-  val nikeFundHolding = Holding(userNameGraeme, nikePriceGraeme, 1.89)
-
   trait Schema {
     def loadData(): Unit = {
     }
@@ -134,12 +130,6 @@ trait DatabaseHelpers {
       Price.insert(List(
         kappaPrice, kappaPriceLater, nikePriceGraeme, nikePriceGraemeLater, nikePriceGraemeLatest)
       )
-    }
-  }
-
-  object TwoHoldings extends Schema {
-    override def loadData() = {
-      Holding.insert(List(kappaFundHolding, nikeFundHolding))
     }
   }
 

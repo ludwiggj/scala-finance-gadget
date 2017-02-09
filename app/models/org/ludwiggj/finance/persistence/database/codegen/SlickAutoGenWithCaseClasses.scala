@@ -19,7 +19,7 @@ object SlickAutoGenWithCaseClasses {
     "jdbc:mysql://localhost:3306/finance", "finance", "gecko", new Properties(), "com.mysql.jdbc.Driver")
 
   // filter out desired tables
-  val included = Seq("FUNDS", "HOLDINGS", "PRICES", "TRANSACTIONS", "USERS")
+  val included = Seq("FUNDS", "PRICES", "TRANSACTIONS", "USERS")
 
   val model = db.withSession { implicit session =>
     val tables = MySQLDriver.defaultTables.toList.filter(t => included contains t.name.name)
@@ -41,7 +41,6 @@ object SlickAutoGenWithCaseClasses {
       override def Column = new Column(_) {
         // customize Scala column names
         override def rawName = (table.model.name.table, this.model.name) match {
-          case ("HOLDINGS", "HOLDING_DATE") => "date"
           case ("PRICES", "PRICE_DATE") => "date"
           case ("TRANSACTIONS", "TRANSACTION_DATE") => "date"
           case _ => super.rawName

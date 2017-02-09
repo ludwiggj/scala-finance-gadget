@@ -6,7 +6,7 @@ import play.api.Play.current
 
 object DatabaseCleaner {
 
-  val sqlFiles = List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql")
+  val sqlFiles = List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql")
 
   val ddls = for {
     sqlFile <- sqlFiles
