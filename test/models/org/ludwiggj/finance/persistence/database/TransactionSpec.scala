@@ -29,7 +29,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Transaction.insert(kappaFundTransaction)
 
-      inside(User.get(userName).get) { case UsersRow(_, name) =>
+      inside(User.get(userName).get) { case UsersRow(_, name, _) =>
         name must equal(userName)
       }
 

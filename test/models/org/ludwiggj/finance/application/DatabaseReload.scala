@@ -1,9 +1,10 @@
 package models.org.ludwiggj.finance.application
 
 import java.io.{File, FilenameFilter}
-import models.org.ludwiggj.finance.domain.{Price, Transaction}
+import models.org.ludwiggj.finance.domain.{Price, Transaction, User}
 import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
+import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -45,6 +46,13 @@ object DatabaseReload extends App {
     }
   }
 
+  //TODO - This is effectively a duplicate of info in 7.sql file. Ideally need one source of truth.
+  //       Either do it in DatabaseCleaner, or parse 7.sql directly.
+  def reloadUserAccounts() = {
+    User.insert(UsersRow(0, "Me", Some("Me")))
+    User.insert(UsersRow(0, "Spouse", Some("Spouse")))
+  }
+
   def reloadTransactions() = {
     val transactionPattern =
       """txs.*_([a-zA-Z]+)\.txt""".r
@@ -76,7 +84,7 @@ object DatabaseReload extends App {
   Play.start(application)
 
   deleteAllRows()
-
+  reloadUserAccounts()
   reloadTransactions()
   reloadPrices()
 

@@ -159,7 +159,7 @@ object Transaction {
       implicit session =>
         q.list map {
           case (((TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
-          PricesRow(_, _, price)), FundsRow(_, fundName)), UsersRow(_, userName)) =>
+          PricesRow(_, _, price)), FundsRow(_, fundName)), UsersRow(_, userName, _)) =>
             Transaction(userName, date, description, amountIn, amountOut, Price(fundName, priceDate, price), units)
         }
     }

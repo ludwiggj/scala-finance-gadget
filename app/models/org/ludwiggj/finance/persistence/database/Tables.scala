@@ -130,23 +130,26 @@ trait Tables {
   
   /** Entity class storing rows of table Users
    *  @param id Database column ID DBType(BIGINT), AutoInc, PrimaryKey
-   *  @param name Database column NAME DBType(VARCHAR), Length(254,true) */
-  case class UsersRow(id: Long, name: String)
+   *  @param name Database column NAME DBType(VARCHAR), Length(254,true)
+   *  @param password Database column PASSWORD DBType(VARCHAR), Length(254,true), Default(None) */
+  case class UsersRow(id: Long, name: String, password: Option[String] = None)
   /** GetResult implicit for fetching UsersRow objects using plain SQL queries */
-  implicit def GetResultUsersRow(implicit e0: GR[Long], e1: GR[String]): GR[UsersRow] = GR{
+  implicit def GetResultUsersRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]]): GR[UsersRow] = GR{
     prs => import prs._
-    UsersRow.tupled((<<[Long], <<[String]))
+    UsersRow.tupled((<<[Long], <<[String], <<?[String]))
   }
   /** Table description of table USERS. Objects of this class serve as prototypes for rows in queries. */
   class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
-    def * = (id, name) <> (UsersRow.tupled, UsersRow.unapply)
+    def * = (id, name, password) <> (UsersRow.tupled, UsersRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, name.?).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, name.?, password).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get, _3)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column ID DBType(BIGINT), AutoInc, PrimaryKey */
     val id: Column[Long] = column[Long]("ID", O.AutoInc, O.PrimaryKey)
     /** Database column NAME DBType(VARCHAR), Length(254,true) */
     val name: Column[String] = column[String]("NAME", O.Length(254,varying=true))
+    /** Database column PASSWORD DBType(VARCHAR), Length(254,true), Default(None) */
+    val password: Column[Option[String]] = column[Option[String]]("PASSWORD", O.Length(254,varying=true), O.Default(None))
     
     /** Uniqueness Index over (name) (database name NAME) */
     val index1 = index("NAME", name, unique=true)

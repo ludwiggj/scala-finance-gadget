@@ -6,29 +6,33 @@ import play.api.Play.current
 
 object DatabaseCleaner {
 
-  val sqlFiles = List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql")
-
-  val ddls = for {
+  def getDdls(sqlFiles: List[String]) = for {
     sqlFile <- sqlFiles
     evolutionContent = Source.fromFile(s"conf/evolutions/finance/$sqlFile").getLines.mkString("\n")
     splitEvolutionContent = evolutionContent.split("# --- !Ups")
     upsDowns = splitEvolutionContent(1).split("# --- !Downs")
   } yield (upsDowns(1), upsDowns(0))
 
-  val dropDdls = (ddls map {
-    _._1
-  }).reverse
-
-  val createDdls = ddls map {
-    _._2
-  }
-
-  def recreateDb() = {
+  def executeDbStatements(statements: List[String]) = {
     DB.withConnection("finance") { implicit connection =>
 
-      for (ddl <- dropDdls ++ createDdls) {
+      for (ddl <- statements) {
         connection.createStatement.execute(ddl)
       }
     }
+  }
+
+  def recreateDb() = {
+    val ddls = getDdls(List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql", "7.sql"))
+
+    val dropDdls = (ddls map {
+      _._1
+    }).reverse
+
+    val createDdls = ddls map {
+      _._2
+    }
+
+    executeDbStatements(dropDdls ++ createDdls)
   }
 }
