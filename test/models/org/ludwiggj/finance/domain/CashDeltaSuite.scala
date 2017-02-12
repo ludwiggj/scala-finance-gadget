@@ -27,4 +27,11 @@ class CashDeltaSuite extends FunSuite with Matchers {
   test("Gain percentage is zero when amount in is zero") {
     CashDelta(0, 1).gainPct should equal (0.0)
   }
+
+  test("Should be able to add two CashDeltas together") {
+    val addedDeltas = CashDelta(1, 2).add(CashDelta(1, 3))
+
+    addedDeltas.gain should equal (3)
+    addedDeltas.gainPct should equal (150.0)
+  }
 }

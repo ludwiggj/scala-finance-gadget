@@ -1,6 +1,6 @@
-@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio}
+@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio, PortfolioList}
 
-@(portfolios: scala.collection.immutable.List[Portfolio], dateOfInterest: FinanceDate, grandTotal: CashDelta)
+@(portfolioList: PortfolioList, dateOfInterest: FinanceDate)
 <html>
 <head>
     <style type="text/css" media="screen">
@@ -30,6 +30,7 @@
     </style>
 </head>
 <table>
+    @defining(portfolioList.delta) { grandTotal =>
     <tr>
         <td><strong>GRAND TOTAL (@dateOfInterest)</strong></td>
         <td style="text-align:right">@("£%9.2f".format(grandTotal.amountIn))</td>
@@ -38,11 +39,13 @@
         <td style="text-align:right">@("£%9.2f".format(grandTotal.gain))</td>
         <td style="text-align:right">@("%6.2f".format(grandTotal.gainPct))</td>
     </tr>
+    }
+
     <tr class="blank_row">
-            <td colspan="10"/>
+        <td colspan="10"/>
     </tr>
 
-    @for(portfolio <- portfolios) {
+    @for(portfolio <- portfolioList.iterator) {
     <tr>
         <th>Fund Name</th>
         <th>Amount In</th>

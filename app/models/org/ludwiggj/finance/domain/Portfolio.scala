@@ -11,6 +11,7 @@ case class Portfolio(val userName: String, val date: FinanceDate, private val ho
 }
 
 object Portfolio {
+  // TODO - move this to PortfolioList
   def get(dateOfInterest: Date): List[Portfolio] = {
 
     val transactions = Transaction.getTransactionsUpToAndIncluding(dateOfInterest)

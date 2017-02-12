@@ -1,7 +1,7 @@
 package controllers
 
 import models.org.ludwiggj.finance.dateTimeToDate
-import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio, Transaction}
+import models.org.ludwiggj.finance.domain.{FinanceDate, PortfolioList, Portfolio, Transaction}
 import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
 import java.sql.Date
 import java.util
@@ -15,9 +15,9 @@ import scala.collection.immutable.SortedMap
 
 class Portfolios @Inject()(cache: CacheApi) extends Controller {
 
-  private def getPortfolioDataOnDate(date: Date): List[Portfolio] = {
-    cache.getOrElse[List[Portfolio]](s"portfolios-$date") {
-      Portfolio.get(date)
+  private def getPortfolioDataOnDate(date: Date): PortfolioList = {
+    cache.getOrElse[PortfolioList](s"portfolios-$date") {
+      new PortfolioList(Portfolio.get(date))
     }
   }
 
@@ -28,11 +28,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
       implicit request =>
         val portfolios = getPortfolioDataOnDate(date)
 
-        val grandTotal = portfolios.foldRight(CashDelta())(
-          (portfolio, delta) => delta.add(portfolio.delta)
-        )
-
-        Ok(views.html.portfolios.details(portfolios, date, grandTotal))
+        Ok(views.html.portfolios.details(portfolios, date))
     }
   }
 
@@ -63,7 +59,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
           !investmentDatesFromAPreviousYear(numberOfYearsAgoOfInterest).isEmpty
         }
 
-        def getPortfolios(investmentDatesOfInterest: List[FinanceDate]): Map[FinanceDate, (List[Portfolio], CashDelta)] = {
+        def getPortfolios(investmentDatesOfInterest: List[FinanceDate]): Map[FinanceDate, PortfolioList] = {
           def getInvestmentDates(): List[FinanceDate] = {
             val latestDates = Transaction.getTransactionsDatesSince(investmentDates.head).map(sqlDateToFinanceDate)
             latestDates ++ investmentDatesOfInterest
@@ -72,11 +68,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
           val portfolios = (getInvestmentDates() map (date => {
             val thePortfolios = getPortfolioDataOnDate(date)
 
-            val grandTotal = thePortfolios.foldRight(CashDelta())(
-              (portfolio, delta) => delta.add(portfolio.delta)
-            )
-
-            (date, (thePortfolios, grandTotal))
+            (date, thePortfolios)
           }))
 
           implicit val Ord = implicitly[Ordering[FinanceDate]]

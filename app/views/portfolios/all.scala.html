@@ -1,7 +1,6 @@
-@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio}
+@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio, PortfolioList}
 
-@(investmentDates: scala.collection.immutable.Map[FinanceDate, (scala.collection.immutable.List[Portfolio], CashDelta)],
-  previousYear: Option[Int], nextYear: Option[Int])
+@(data: scala.collection.immutable.Map[FinanceDate, PortfolioList], previousYear: Option[Int], nextYear: Option[Int])
 <html>
 <head>
     <style type="text/css" media="screen">
@@ -39,10 +38,10 @@
   <a href="@controllers.routes.Portfolios.all(nextYear)">Next -></a>
 }
 <table>
-    @investmentDates.head match { case (_, (portfolios, _)) =>
+    @data.head match { case (_, portfolioList) =>
     <tr>
         <th/>
-        @for(portfolio <- portfolios) {
+        @for(portfolio <- portfolioList.iterator) {
         <th colspan="2">@portfolio.userName</th>
         }
         <th colspan="4">TOTAL</th>
@@ -50,7 +49,7 @@
 
     <tr>
         <th>Date</th>
-        @for(portfolio <- portfolios) {
+        @for(_ <- portfolioList.iterator) {
         <th>Amount In</th>
         <th>Total</th>
         }
@@ -61,21 +60,23 @@
     </tr>
     }
 
-    @investmentDates.map { case (investmentDate, (portfolios, cashDelta)) =>
+    @data.map { case (investmentDate, portfolioList) =>
     <tr>
         <td>
             <a href="@controllers.routes.Portfolios.onDate(investmentDate)">@investmentDate</a>
         </td>
 
-        @for(portfolio <- portfolios) {
+        @for(portfolio <- portfolioList.iterator) {
         <td style="text-align:right">@("£%8.2f".format(portfolio.delta.amountIn))</td>
         <td style="text-align:right">@("£%9.2f".format(portfolio.delta.total))</td>
         }
 
+        @defining(portfolioList.delta) { cashDelta =>
         <td style="text-align:right">@("£%8.2f".format(cashDelta.amountIn))</td>
         <td style="text-align:right"><strong>@("£%9.2f".format(cashDelta.total))</strong></td>
         <td style="text-align:right">@("£%8.2f".format(cashDelta.gain))</td>
         <td style="text-align:right">@("%6.2f".format(cashDelta.gainPct))</td>
+        }
 
     </tr>
     }
