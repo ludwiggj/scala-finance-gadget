@@ -31,11 +31,11 @@
 </head>
 <body>
 @if(previousYear.isDefined) {
-  <a href="@controllers.routes.Portfolios.all(previousYear)"><- Previous</a>&nbsp&nbsp&nbsp
+  <a href="@controllers.routes.Portfolios.all(previousYear.get)"><- Previous</a>&nbsp&nbsp&nbsp
 }
 
 @if(nextYear.isDefined) {
-  <a href="@controllers.routes.Portfolios.all(nextYear)">Next -></a>
+  <a href="@controllers.routes.Portfolios.all(nextYear.get)">Next -></a>
 }
 <table>
     @data.head match { case (_, portfolioList) =>

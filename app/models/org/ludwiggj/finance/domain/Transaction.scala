@@ -193,33 +193,41 @@ object Transaction {
     }
   }
 
-  def getTransactionsUpToAndIncluding(dateOfInterest: Date): TransactionMap = {
-    db.withSession {
-      implicit session =>
-        val transactionsOfInterest = (for {
-          t <- Transactions.filter {
-            _.date <= dateOfInterest
-          }
-          f <- Funds if f.id === t.fundId
-          u <- Users if u.id === t.userId
-          p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-        } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+  private def getTransactionsUpToAndIncluding(dateOfInterest: Date, transactionsOfInterest: Date => TransactionsOfInterestType): TransactionMap = {
+    val transactions = transactionsOfInterest(dateOfInterest)
 
-        val sortedTransactionsOfInterest = ListMap(transactionsOfInterest.toSeq.sortBy(k => k._1): _*)
+    val sortedTransactions = ListMap(transactions.toSeq.sortBy(k => k._1): _*)
 
-        def amountOption(amount: BigDecimal) = if (amount == 0.0) None else Some(amount)
+    def amountOption(amount: BigDecimal) = if (amount == 0.0) None else Some(amount)
 
-        sortedTransactionsOfInterest.mapValues(rows => {
-          val (_, _, fundId, _, _) = rows.head
-          val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
+    sortedTransactions.mapValues(rows => {
+      val (_, _, fundId, _, _) = rows.head
+      val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
 
-          val txs = for {
-            (userName, fundName, fundId, priceRow, tx) <- rows
-          } yield Transaction(userName, tx.date, tx.description, amountOption(tx.amountIn),
-            amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units)
-          (txs, latestPrice)
-        }
-        )
+      val txs = for {
+        (userName, fundName, fundId, priceRow, tx) <- rows
+      } yield Transaction(userName, tx.date, tx.description, amountOption(tx.amountIn),
+        amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units)
+      (txs, latestPrice)
     }
+    )
+  }
+
+  def getTransactionsUpToAndIncluding(dateOfInterest: Date): TransactionMap = {
+    def transactionsOfInterest(dateOfInterest: Date): TransactionsOfInterestType = {
+      db.withSession {
+        implicit session =>
+          (for {
+            t <- Transactions.filter {
+              _.date <= dateOfInterest
+            }
+            f <- Funds if f.id === t.fundId
+            u <- Users if u.id === t.userId
+            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
+          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+      }
+    }
+
+    getTransactionsUpToAndIncluding(dateOfInterest, transactionsOfInterest _)
   }
 }
