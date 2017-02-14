@@ -14,7 +14,7 @@ class PortfolioSuite extends FunSuite with Matchers {
 
       val holdingSummaries = HoldingSummaries(aberdeenEthicalWithConversionsTransactionMap, userNameGraeme, "30/09/2014")
 
-      val portfolioDelta = (new Portfolio(userNameGraeme, FinanceDate("30/09/2014"), holdingSummaries)).delta
+      val portfolioDelta = Portfolio(userNameGraeme, FinanceDate("30/09/2014"), holdingSummaries).delta
 
       portfolioDelta.amountIn should equal(BigDecimal(1250.5))
       assertThat(portfolioDelta.total.bigDecimal, is(closeTo(BigDecimal(1270.65814967).bigDecimal, tolerance)))

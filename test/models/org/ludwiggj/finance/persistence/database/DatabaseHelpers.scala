@@ -3,12 +3,13 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.domain.Transaction._
-import models.org.ludwiggj.finance.domain.User.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
 
 trait DatabaseHelpers {
   // Users
   var fatherTedUserId = 0L
   val fatherTedUserName = "Father_Ted"
+  val fatherTedPassword = "Penitent_Man"
   val userNameGraeme = "Graeme"
   val userNameAudrey = "Audrey"
 
@@ -89,7 +90,7 @@ trait DatabaseHelpers {
 
   object SingleUser extends Schema {
     override def loadData() = {
-      fatherTedUserId = User.insert(fatherTedUserName)
+      fatherTedUserId = User.insert(UsersRow(0L, fatherTedUserName, Some(fatherTedPassword)))
     }
   }
 
@@ -142,8 +143,7 @@ trait DatabaseHelpers {
   object MultipleTransactionsForTwoUsersAndTwoFunds extends Schema {
     override def loadData() = {
       Transaction.insert(List(
-        kappaTransactionGraeme,
-        nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
+        kappaTransactionGraeme, nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
         nikeTransactionAudrey, nikeTransactionAudreyLater
       )
       )

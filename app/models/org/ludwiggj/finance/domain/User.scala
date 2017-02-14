@@ -41,4 +41,12 @@ object User {
         }
     }
   }
+
+  def authenticate(username: String, password: String): Int = {
+    db.withSession { implicit session =>
+      val q1 = for (u <- Users if u.name === username && u.password === password) yield u
+      println("^^^^^^^^" + Query(q1.length).first)
+      Query(q1.length).first
+    }
+  }
 }

@@ -10,7 +10,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
 
   before {
-    DatabaseCleaner.recreateDb()
+    Database.recreate()
   }
 
   "get" should {
@@ -24,7 +24,7 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
       SingleUser.loadData()
 
       User.get(fatherTedUserName) mustBe Some(
-        UsersRow(fatherTedUserId, fatherTedUserName)
+        UsersRow(fatherTedUserId, fatherTedUserName, Some(fatherTedPassword))
       )
     }
   }
@@ -40,6 +40,26 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
       SingleUser.loadData()
 
       User.getOrInsert(fatherTedUserName) must equal(fatherTedUserId)
+    }
+  }
+
+  "authenticate" should {
+    "return 0 if user is not present" in {
+      EmptySchema.loadData()
+
+      User.authenticate(fatherTedUserName, "blah") must equal(0)
+    }
+
+    "return 1 if user is present and password does not match" in {
+      SingleUser.loadData()
+
+      User.authenticate(fatherTedUserName, "blah") must equal(0)
+    }
+
+    "return 1 if user is present and password matches" in {
+      SingleUser.loadData()
+
+      User.authenticate(fatherTedUserName, fatherTedPassword) must equal(1)
     }
   }
 }

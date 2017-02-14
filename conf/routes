@@ -1,3 +1,8 @@
 GET /                             controllers.Application.index
 GET /portfolios                   controllers.Portfolios.all(yearsAgo: Int ?= 0)
 GET /portfolioDetails/:date       controllers.Portfolios.onDate(date: java.sql.Date)
+
+# Authentication
+GET     /login                              controllers.Application.login
+POST    /login                              controllers.Application.authenticate
+GET     /logout                             controllers.Application.logout

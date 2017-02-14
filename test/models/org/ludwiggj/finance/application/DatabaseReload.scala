@@ -46,9 +46,8 @@ object DatabaseReload extends App {
     }
   }
 
-  //TODO - This is effectively a duplicate of info in 7.sql file. Ideally need one source of truth.
-  //       Either do it in DatabaseCleaner, or parse 7.sql directly.
   def reloadUserAccounts() = {
+    User.insert(UsersRow(0, "Admin", Some("Admin")))
     User.insert(UsersRow(0, "Me", Some("Me")))
     User.insert(UsersRow(0, "Spouse", Some("Spouse")))
   }

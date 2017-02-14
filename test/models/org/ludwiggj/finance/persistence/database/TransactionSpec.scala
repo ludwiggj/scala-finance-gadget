@@ -12,7 +12,7 @@ import java.sql.Date
 class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
-    DatabaseCleaner.recreateDb()
+    Database.recreate()
   }
 
   "insert transaction" should {
@@ -91,7 +91,18 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
         Date.valueOf("2014-06-21")
       )
 
-      Transaction.getTransactionsDatesSince("20/6/2014") must contain theSameElementsAs expectedDates
+      Transaction.getTransactionDatesSince("20/6/2014") must contain theSameElementsAs expectedDates
+    }
+
+    "return all transaction dates since specified date for specified user in order with most recent date first" in {
+      MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
+
+      val expectedDates: List[Date] = List(
+        Date.valueOf("2014-06-21"),
+        Date.valueOf("2014-06-25")
+      )
+
+      Transaction.getTransactionDatesSince("20/6/2014", userNameGraeme) must contain theSameElementsAs expectedDates
     }
   }
 
@@ -101,15 +112,15 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014")
 
-      transactionMap must contain (
+      transactionMap must contain(
         (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice)
       )
 
-      transactionMap must contain (
+      transactionMap must contain(
         (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey)
       )
 
-      transactionMap must contain (
+      transactionMap must contain(
         (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
       )
 
@@ -121,15 +132,27 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("20/6/2014")
 
-      transactionMap must contain (
+      transactionMap must contain(
         (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice)
       )
 
-      transactionMap must contain (
+      transactionMap must contain(
         (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme), nikePriceGraemeLater)
       )
 
       transactionMap.size must equal(2)
+    }
+
+    "return all transactions up to and including date for a specified user" in {
+      MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
+
+      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014", userNameAudrey)
+
+      transactionMap must contain(
+        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey)
+      )
+
+      transactionMap.size must equal(1)
     }
   }
 }

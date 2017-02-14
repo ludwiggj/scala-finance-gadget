@@ -8,7 +8,7 @@ import play.api.test.FakeApplication
 class MasterSuite extends Suites(
   new FundSpec,
   new UserSpec,
-  new PortfolioSpec,
+  new PortfolioListSpec,
   new PriceSpec,
   new TransactionSpec
 ) with OneAppPerSuite {

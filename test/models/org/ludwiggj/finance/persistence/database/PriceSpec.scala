@@ -10,7 +10,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
-    DatabaseCleaner.recreateDb()
+    Database.recreate()
   }
 
   "get a single price" should {

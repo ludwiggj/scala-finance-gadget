@@ -1,12 +1,38 @@
 package models.org.ludwiggj.finance.domain
 
-// TODO - portfolios should be private
-// TODO - search and replace occurrences of List[Portfolio]
-case class PortfolioList(val portfolios: List[Portfolio]) {
-  // TODO - may not need date
-  val date: FinanceDate = portfolios.head.date
+import java.sql.Date
+import scala.language.implicitConversions
+
+case class PortfolioList(private val portfolios: List[Portfolio]) {
   val delta = portfolios.foldRight(CashDelta())(
     (portfolio, delta) => delta.add(portfolio.delta)
   )
+
   def iterator = portfolios.iterator
+}
+
+object PortfolioList {
+  implicit def listOfPortfoliosToPortfolioList(portfolios: List[Portfolio]) = {
+    new PortfolioList(portfolios)
+  }
+
+  def get(dateOfInterest: Date): PortfolioList = {
+
+    val transactions = Transaction.getTransactionsUpToAndIncluding(dateOfInterest)
+
+    val userNames = transactions.keys.map {
+      _._1
+    }.toList.distinct.sorted
+
+    userNames map { userName =>
+      Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest))
+    }
+  }
+
+  def get(dateOfInterest: Date, userName: String): PortfolioList = {
+
+    val transactions = Transaction.getTransactionsUpToAndIncluding(dateOfInterest, userName)
+
+    List(Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest)))
+  }
 }

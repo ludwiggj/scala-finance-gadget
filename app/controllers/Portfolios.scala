@@ -1,47 +1,42 @@
 package controllers
 
 import models.org.ludwiggj.finance.dateTimeToDate
-import models.org.ludwiggj.finance.domain.{FinanceDate, PortfolioList, Portfolio, Transaction}
 import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
+import models.org.ludwiggj.finance.domain.{FinanceDate, PortfolioList, Transaction}
+import models.org.ludwiggj.finance.web.User
 import java.sql.Date
 import java.util
 import javax.inject.Inject
 import org.joda.time.DateTime
 import play.api.mvc._
 import play.api.cache._
-import play.api.Play.current
-
+import scala.concurrent.duration._
 import scala.collection.immutable.SortedMap
 
-class Portfolios @Inject()(cache: CacheApi) extends Controller {
+class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
 
-  private def getPortfolioDataOnDate(date: Date): PortfolioList = {
-    cache.getOrElse[PortfolioList](s"portfolios-$date") {
-      new PortfolioList(Portfolio.get(date))
+  def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
+
+  private def getPortfolioDataOnDate(username: String, date: Date): PortfolioList = {
+    println(s"getPortfolioDataOnDate: $username-portfolio-$date")
+    cache.getOrElse[PortfolioList](s"$username-portfolio-$date", 5.minutes) {
+      if (User.isAdmin(username)) PortfolioList.get(date) else PortfolioList.get(date, username)
     }
   }
 
-  private def yearsAgoCacheKey(prefix: String) = { (header: RequestHeader) =>
-    prefix + header.getQueryString("yearsAgo").getOrElse("0")
-  }
-
-  def onDate(date: Date) = Cached(s"portfolioDataOnDate-$date") {
-    // To switch caching off...
-    // def onDate(date: Date) = {
-    Action {
+  def onDate(date: Date) = {
+    IsAuthenticated { username =>
       implicit request =>
-        val portfolios = getPortfolioDataOnDate(date)
-
+        val portfolios = getPortfolioDataOnDate(username, date)
         Ok(views.html.portfolios.details(portfolios, date))
     }
   }
 
-  def all(yearOffset: Int) = Cached(yearsAgoCacheKey("portfolioData-yearOffset-")) {
-    // To switch caching off...
-    // def all(numberOfYearsAgo: Int) = {
-    Action {
+  def all(yearOffset: Int) = {
+    IsAuthenticated { username =>
       implicit request =>
-        val allInvestmentDates = cache.getOrElse[List[FinanceDate]]("allInvestmentDates") {
+        println(s"all: $username-allInvestmentDates")
+        val allInvestmentDates = cache.getOrElse[List[FinanceDate]](s"$username-allInvestmentDates", 5.minutes) {
           Transaction.getRegularInvestmentDates().map(sqlDateToFinanceDate)
         }
 
@@ -57,13 +52,16 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller {
 
         def getPortfolios(investmentDates: List[FinanceDate]): Map[FinanceDate, PortfolioList] = {
           def investmentDatesSince(date: FinanceDate): List[FinanceDate] = {
-            Transaction.getTransactionsDatesSince(date).map(sqlDateToFinanceDate)
+            if (User.isAdmin(username))
+              Transaction.getTransactionDatesSince(date).map(sqlDateToFinanceDate)
+            else
+              Transaction.getTransactionDatesSince(date, username).map(sqlDateToFinanceDate)
           }
 
           val allDates = investmentDatesSince(allInvestmentDates.head) ++ investmentDates
 
           val portfolios = (allDates map (date => {
-            val thePortfolios = getPortfolioDataOnDate(date)
+            val thePortfolios = getPortfolioDataOnDate(username, date)
 
             (date, thePortfolios)
           }))

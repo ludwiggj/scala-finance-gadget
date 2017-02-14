@@ -35,8 +35,11 @@
 }
 
 @if(nextYear.isDefined) {
-  <a href="@controllers.routes.Portfolios.all(nextYear.get)">Next -></a>
+  <a href="@controllers.routes.Portfolios.all(nextYear.get)">Next -></a>&nbsp&nbsp&nbsp
 }
+
+<a href="@controllers.routes.Application.logout">Logout</a>
+
 <table>
     @data.head match { case (_, portfolioList) =>
     <tr>

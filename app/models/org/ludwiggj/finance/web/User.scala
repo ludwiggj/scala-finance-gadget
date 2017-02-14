@@ -21,4 +21,8 @@ object User {
     config.getString("reportName"),
     (config.getConfigList("attributes") map (Attribute(_))).toList
   )
+
+  def isAdmin(username: String) = {
+    "Admin".equals(username)
+  }
 }

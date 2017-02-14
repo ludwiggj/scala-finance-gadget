@@ -183,12 +183,25 @@ object Transaction {
     }
   }
 
-  def getTransactionsDatesSince(dateOfInterest: Date): List[Date] = {
+  def getTransactionDatesSince(dateOfInterest: Date): List[Date] = {
     db.withSession {
       implicit session =>
         Transactions
+          .filter { _.date > dateOfInterest }
           .map { _.date }
-          .filter { _ > dateOfInterest }
+          .sorted.list.distinct.reverse
+    }
+  }
+
+  def getTransactionDatesSince(dateOfInterest: Date, userName: String): List[Date] = {
+    db.withSession {
+      implicit session =>
+        Transactions.innerJoin(Users).on(_.userId === _.id)
+          .filter { case (_, u) => u.name === userName }
+          .map { case (t, _) => t.date }
+          .filter {
+            _ > dateOfInterest
+          }
           .sorted.list.distinct.reverse
     }
   }
@@ -223,6 +236,24 @@ object Transaction {
             }
             f <- Funds if f.id === t.fundId
             u <- Users if u.id === t.userId
+            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
+          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+      }
+    }
+
+    getTransactionsUpToAndIncluding(dateOfInterest, transactionsOfInterest _)
+  }
+
+  def getTransactionsUpToAndIncluding(dateOfInterest: Date, userName: String): TransactionMap = {
+    def transactionsOfInterest(dateOfInterest: Date): TransactionsOfInterestType = {
+      db.withSession {
+        implicit session =>
+          (for {
+            t <- Transactions.filter {
+              _.date <= dateOfInterest
+            }
+            f <- Funds if f.id === t.fundId
+            u <- Users if u.id === t.userId && u.name === userName
             p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
           } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
       }
