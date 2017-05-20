@@ -81,9 +81,11 @@ object Price {
   }
 
   private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
+    val priceSqlDate: Date = priceDate.date
+
     db.withSession {
       implicit session =>
-        Prices filter (_.date === dateTimeToSqlDate(priceDate.date))
+        Prices filter (_.date === priceSqlDate)
     }
   }
 
