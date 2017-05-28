@@ -1,14 +1,14 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.data.TestFundNames
 import org.scalatest.{FunSuite, Matchers}
 
 class FundNameSuite extends FunSuite with Matchers {
 
   test("FundName and cleaned up version are equal") {
-    new TestFundNames {
-      fundNameBeforeNameCorrection should equal (fundNameAfterNameCorrection)
-    }
+    val fundNameBeforeNameCorrection = FundName(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ")
+    val fundNameAfterNameCorrection = FundName("Schroder Gbl Property Income Maximiser Z Fund Inc")
+
+    fundNameBeforeNameCorrection should equal(fundNameAfterNameCorrection)
   }
 
   test("Smaller than returns true if first fund name is before the second alphabetically") {

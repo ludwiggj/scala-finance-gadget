@@ -1,24 +1,24 @@
 package models.org.ludwiggj.finance.persistence.file
 
-import models.org.ludwiggj.finance.data.{TestHoldings, TestPrices, TestTransactions}
+import models.org.ludwiggj.finance.data.{TestHoldings, TestPrices, TestTransactionsMultipleFunds, userA}
 import org.scalatest.{FunSuite, Matchers}
 
 class RoundTripTest extends FunSuite with Matchers {
 
   test("transactions can be persisted and reconstituted") {
-    new TestTransactions {
+    new TestTransactionsMultipleFunds {
       val txFile = "tx_round_trip_test.txt"
 
-      println(s"About to persist transactions: $transactionsMultipleFunds")
+      println(s"About to persist transactions: $txsMultipleFunds")
 
-      FilePersister(txFile).write(transactionsMultipleFunds)
+      FilePersister(txFile).write(txsMultipleFunds)
 
       val reconstitutedTransactions =
-        FileTransactionFactory(userNameGraeme, txFile).getTransactions()
+        FileTransactionFactory(userA, txFile).getTransactions()
 
       println(s"reconstitutedTransactions: $reconstitutedTransactions")
 
-      reconstitutedTransactions should contain theSameElementsAs transactionsMultipleFunds
+      reconstitutedTransactions should contain theSameElementsAs txsMultipleFunds
     }
   }
 
@@ -30,7 +30,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
       FilePersister(holdingFile).write(holdingsMultipleFunds)
 
-      val reconstitutedHoldings = FileHoldingFactory(userNameGraeme, holdingFile).getHoldings()
+      val reconstitutedHoldings = FileHoldingFactory(userA, holdingFile).getHoldings()
 
       println(s"reconstitutedHoldings: $reconstitutedHoldings")
 

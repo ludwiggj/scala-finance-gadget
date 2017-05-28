@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.web
 
 import models.org.ludwiggj.finance.builders.LoginFormBuilder
-import models.org.ludwiggj.finance.data.{TestHoldings, TestTransactions}
+import models.org.ludwiggj.finance.data.{TestHoldings, TestTransactionsMultipleFunds, userA}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSuite, Matchers}
 
@@ -22,12 +22,12 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
       inSequence {
         (loginFormBuilder.loggingIntoPage _).expects("valuations").returning(loginFormBuilder)
         (loginFormBuilder.build _).expects().returning(loginForm)
-        (loginForm.loginAs _).expects(userNameGraeme).returning(htmlPage)
+        (loginForm.loginAs _).expects(userA).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedHoldingsXml)
         (htmlPage.logOff _).expects()
       }
 
-      val actualHoldings = WebSiteHoldingFactory(loginFormBuilder, userNameGraeme).getHoldings()
+      val actualHoldings = WebSiteHoldingFactory(loginFormBuilder, userA).getHoldings()
 
       println(actualHoldings)
 
@@ -36,7 +36,7 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
   }
 
   test("Retrieve transactions from web page") {
-    new TestTransactions {
+    new TestTransactionsMultipleFunds {
       val loginFormBuilder = mock[LoginFormBuilder]
       val loginForm = mock[Login]
       val htmlPage = mock[HtmlEntity]
@@ -48,16 +48,16 @@ class WebSiteFactoryTest extends FunSuite with MockFactory with Matchers {
       inSequence {
         (loginFormBuilder.loggingIntoPage _).expects("transactions").returning(loginFormBuilder)
         (loginFormBuilder.build _).expects().returning(loginForm)
-        (loginForm.loginAs _).expects(userNameGraeme).returning(htmlPage)
+        (loginForm.loginAs _).expects(userA).returning(htmlPage)
         (htmlPage.asXml _).expects().returning(mockedTransactionXml)
         (htmlPage.logOff _).expects()
       }
 
-      val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, userNameGraeme).getTransactions()
+      val actualTransactions = WebSiteTransactionFactory(loginFormBuilder, userA).getTransactions()
 
       println(actualTransactions)
 
-      actualTransactions should contain theSameElementsAs transactionsMultipleFunds
+      actualTransactions should contain theSameElementsAs txsMultipleFunds
     }
   }
 }

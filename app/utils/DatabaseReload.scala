@@ -1,14 +1,14 @@
-package models.org.ludwiggj.finance.application
+package utils
 
 import java.io.{File, FilenameFilter}
+
 import models.org.ludwiggj.finance.domain.{Price, Transaction, User}
-import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, Prices, Transactions, Users}
+import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
-import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
-import play.api.Play
-import play.api.Play.current
+import play.api.{Configuration, Environment, Play}
 import play.api.db.DB
-import play.api.test.FakeApplication
+import play.api.inject.guice.GuiceApplicationBuilder
+
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.matching.Regex
 
@@ -78,14 +78,16 @@ object DatabaseReload extends App {
     }
   }
 
-  private val application = FakeApplication()
+  val config = Configuration.load(Environment.simple(), Map("config.resource" -> "application.conf"))
+  implicit val application = new GuiceApplicationBuilder(configuration = config).build()
 
-  Play.start(application)
-
-  deleteAllRows()
-  reloadUserAccounts()
-  reloadTransactions()
-  reloadPrices()
-
-  Play.stop(application)
+  try {
+    Play.start(application)
+    deleteAllRows()
+    reloadUserAccounts()
+    reloadTransactions()
+    reloadPrices()
+  } finally {
+    Play.stop(application)
+  }
 }

@@ -5,80 +5,41 @@ import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.domain.Transaction._
 import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
 
+// TODO - additional private vals?
+
 trait DatabaseHelpers {
-  // Users
-  var fatherTedUserId = 0L
-  val fatherTedUserName = "Father_Ted"
-  val fatherTedPassword = "Penitent_Man"
-  val userNameGraeme = "Graeme"
-  val userNameAudrey = "Audrey"
-
-  // Funds
-  val solyentGreenFundName: FundName = "Solyent Green"
-  var capitalistsDreamFundId = 0L
-  val capitalistsDreamFundName: FundName = "Capitalists Dream"
-  val kappaFundName: FundName = "Kappa"
-  val kappaIIFundName: FundName = "Kappa II"
-  val nikeFundName: FundName = "Nike"
-
   // Prices
-  val kappaPriceEarliestDate: FinanceDate = "12/05/2014"
-  val kappaPriceEarliestInPounds: Double = 2.50
-  val kappaPriceEarliest = Price(kappaFundName, kappaPriceEarliestDate, kappaPriceEarliestInPounds)
+  val kappaPrice140512 = Price("Kappa", "12/05/2014", 2.50)
+  val kappaPriceZero140516 = Price("Kappa", "16/05/2014", 0.0)
+  val kappaPrice140520, kappaPrice = Price("Kappa", "20/05/2014", 1.12)
+  val kappaPrice140523 = Price("Kappa", "23/05/2014", 1.65)
 
-  val kappaPriceEarlyButZeroDate: FinanceDate = "16/05/2014"
-  val kappaPriceEarlyButZeroInPounds: Double = 0.0
-  val kappaPriceEarlyButZero = Price(kappaFundName, kappaPriceEarlyButZeroDate, kappaPriceEarlyButZeroInPounds)
+  val kappaIIPrice140524 = Price("Kappa II", "24/05/2014", 1.66)
 
-  val kappaPriceDate: FinanceDate = "20/05/2014"
-  val kappaPriceInPounds: Double = 1.12
-  val kappaPrice = Price(kappaFundName, kappaPriceDate, kappaPriceInPounds)
-
-  val kappaPriceLater = Price(kappaFundName, "23/05/2014", 1.65)
-
-  val kappaIIPrice = Price(kappaIIFundName, "24/05/2014", 1.66)
-
-  val nikePriceDateGraeme: FinanceDate = "20/06/2014"
-  val nikePriceInPoundsGraeme: Double = 3.12
-  val nikePriceGraeme = Price(nikeFundName, nikePriceDateGraeme, nikePriceInPoundsGraeme)
-
-  private val nikePriceDateGraemeLater: FinanceDate = "21/06/2014"
-  private val nikePriceInPoundsGraemeLater: Double = 3.08
-  val nikePriceGraemeLater = Price(nikeFundName, nikePriceDateGraemeLater, nikePriceInPoundsGraemeLater)
-
-  private val nikePriceDateGraemeLatest = "25/06/2014"
-  private val nikePriceInPoundsGraemeLatest = 3.24
-  val nikePriceGraemeLatest = Price(nikeFundName, nikePriceDateGraemeLatest, nikePriceInPoundsGraemeLatest)
-
-  private val nikePriceDateAudrey: FinanceDate = "22/06/2014"
-  private val nikePriceInPoundsAudrey: Double = 3.01
-  val nikePriceAudrey = Price(nikeFundName, nikePriceDateAudrey, nikePriceInPoundsAudrey)
-
-  private val nikePriceDateAudreyLater: FinanceDate = "27/06/2014"
-  private val nikePriceInPoundsAudreyLater: Double = 3.29
-  private val nikePriceAudreyLater = Price(nikeFundName, nikePriceDateAudreyLater, nikePriceInPoundsAudreyLater)
+  val nikePrice140620, nikePrice = Price("Nike", "20/06/2014", 3.12)
+  val nikePrice140621 = Price("Nike", "21/06/2014", 3.08)
+  val nikePrice140622 = Price("Nike", "22/06/2014", 3.01)
+  val nikePrice140625 = Price("Nike", "25/06/2014", 3.24)
+  val nikePrice140627 = Price("Nike", "27/06/2014", 3.29)
 
   // Transactions
-  val kappaTransactionGraeme = Transaction(userNameGraeme, kappaPriceDate, InvestmentRegular, Some(282.1), None,
-    kappaPrice, 251.875)
+  val userAKappaTx140520 =
+    Transaction("User A", kappaPrice.date, InvestmentRegular, Some(282.1), None, kappaPrice, 251.875)
 
-  val nikeTransactionGraeme = Transaction(userNameGraeme, nikePriceDateGraeme, InvestmentRegular, Some(3.5), None,
-    nikePriceGraeme, 1.122)
+  val userANikeTx140620 =
+    Transaction("User A", nikePrice140620.date, InvestmentRegular, Some(3.5), None, nikePrice140620, 1.122)
 
-  val nikeTransactionGraemeLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, SaleForRegularPayment, None,
-    Some(2.0), nikePriceGraemeLater, 0.649)
+  val userANikeTx140621 =
+    Transaction("User A", nikePrice140621.date, SaleForRegularPayment, None, Some(2.0), nikePrice140621, 0.649)
 
-  private val nikeTransactionGraemeSameDateAsLater = Transaction(userNameGraeme, nikePriceDateGraemeLater, InvestmentRegular,
-    Some(10.2), None, nikePriceGraemeLatest, 3.322)
+  val userANikeTx140625 =
+    Transaction("User A", nikePrice140625.date, InvestmentRegular, Some(10.2), None, nikePrice140625, 3.322)
 
-  private val nikeTransactionGraemeLatest = Transaction(userNameGraeme, nikePriceDateGraemeLatest, InvestmentRegular,
-    Some(10.2), None, nikePriceGraemeLatest, 3.322)
+  val userBNikeTx140622 =
+    Transaction("User B", nikePrice140622.date, InvestmentRegular, Some(9.12), None, nikePrice140622, 3.03)
 
-  val nikeTransactionAudrey = Transaction(userNameAudrey, nikePriceDateAudrey, InvestmentRegular, Some(9.12),
-    None, nikePriceAudrey, 3.03)
-
-  private val nikeTransactionAudreyLater = Transaction(userNameAudrey, nikePriceDateAudreyLater, InvestmentRegular,
-    Some(10.2), None, nikePriceAudreyLater, 3.1)
+  val userBNikeTx140627 =
+    Transaction("User B", nikePrice140627.date, InvestmentRegular, Some(10.2), None, nikePrice140627, 3.1)
 
   trait Schema {
     def loadData(): Unit = {
@@ -89,14 +50,18 @@ trait DatabaseHelpers {
   }
 
   object SingleUser extends Schema {
+    var userId = 0L
+    val ted = UsersRow(0L, "Father_Ted", Some("Penitent_Man"))
     override def loadData() = {
-      fatherTedUserId = User.insert(UsersRow(0L, fatherTedUserName, Some(fatherTedPassword)))
+      userId = User.insert(ted)
     }
   }
 
   object SingleFund extends Schema {
+    val fundName: FundName = "Capitalists Dream"
+    var fundId = 0L
     override def loadData() = {
-      capitalistsDreamFundId = Fund.insert(capitalistsDreamFundName)
+      fundId = Fund.insert(fundName)
     }
   }
 
@@ -108,43 +73,40 @@ trait DatabaseHelpers {
 
   object TwoPrices extends Schema {
     override def loadData() = {
-      Price.insert(List(kappaPrice, nikePriceGraeme))
+      Price.insert(List(kappaPrice, nikePrice))
     }
   }
 
   object MultiplePricesForSingleFund extends Schema {
     override def loadData() = {
-      Price.insert(List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater))
+      Price.insert(List(kappaPrice140512, kappaPriceZero140516, kappaPrice140520, kappaPrice140523))
     }
   }
 
   object MultiplePricesForSingleFundAndItsRenamedEquivalent extends Schema {
     override def loadData() = {
-      Price.insert(
-        List(kappaPriceEarliest, kappaPriceEarlyButZero, kappaPrice, kappaPriceLater, kappaIIPrice
-        ))
+      Price.insert(List(kappaPrice140512, kappaPriceZero140516, kappaPrice140520, kappaPrice140523, kappaIIPrice140524))
     }
   }
 
   object MultiplePricesForTwoFunds extends Schema {
     override def loadData() = {
-      Price.insert(List(
-        kappaPrice, kappaPriceLater, nikePriceGraeme, nikePriceGraemeLater, nikePriceGraemeLatest)
-      )
+      Price.insert(List(kappaPrice140520, kappaPrice140523, nikePrice140620, nikePrice140621, nikePrice140625))
     }
   }
 
   object SingleTransaction extends Schema {
     override def loadData() = {
-      Transaction.insert(nikeTransactionGraeme)
+      Transaction.insert(userANikeTx140620)
     }
   }
 
   object MultipleTransactionsForTwoUsersAndTwoFunds extends Schema {
     override def loadData() = {
       Transaction.insert(List(
-        kappaTransactionGraeme, nikeTransactionGraeme, nikeTransactionGraemeLater, nikeTransactionGraemeLatest,
-        nikeTransactionAudrey, nikeTransactionAudreyLater
+        userAKappaTx140520,
+        userANikeTx140620, userANikeTx140621, userANikeTx140625,
+        userBNikeTx140622, userBNikeTx140627
       )
       )
     }
@@ -152,34 +114,29 @@ trait DatabaseHelpers {
 
   object MultipleTransactionsForSingleUser extends Schema {
     override def loadData() = {
-      Transaction.insert(List(
-        nikeTransactionGraeme,
-        nikeTransactionGraemeLater,
-        nikeTransactionGraemeSameDateAsLater,
-        nikeTransactionGraemeLatest
-      )
-      )
+      Transaction.insert(List(userANikeTx140620, userANikeTx140621, userANikeTx140621, userANikeTx140625))
     }
   }
 
   object RegularInvestmentTransactions extends Schema {
     override def loadData() = {
+      val nikePrice140520 = Price("Nike", "20/05/2014", 2.97)
+      val nikePrice150520 = Price("Nike", "20/05/2015", 3.28)
+
       val nikeFundTx140620 =
-        Transaction(userNameGraeme, "20/06/2014", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.234)
+        Transaction("User A", nikePrice140620.date, InvestmentRegular, Some(2.0), None, nikePrice140620, 1.234)
 
       val nikeFundTx140520 =
-        Transaction(userNameGraeme, "20/05/2014", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.34)
+        Transaction("User A", nikePrice140520.date, InvestmentRegular, Some(2.0), None, nikePrice140520, 1.34)
 
       val nikeFundTx150520 =
-        Transaction(userNameGraeme, "20/05/2015", InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.64)
+        Transaction("User A", nikePrice150520.date, InvestmentRegular, Some(2.0), None, nikePrice150520, 1.64)
 
       val secondNikeFundTx140520 =
-        Transaction(userNameGraeme, "20/05/2014", InvestmentRegular, Some(5.0), None, nikePriceGraeme, 1.34)
+        Transaction("User A", nikePrice140520.date, InvestmentRegular, Some(5.0), None, nikePrice140520, 1.34)
 
-      Transaction.insert(nikeFundTx140620)
-      Transaction.insert(nikeFundTx140520)
-      Transaction.insert(nikeFundTx150520)
-      Transaction.insert(secondNikeFundTx140520)
+      Transaction.insert(List(nikeFundTx140620, nikeFundTx140520, nikeFundTx150520, secondNikeFundTx140520))
     }
   }
+
 }

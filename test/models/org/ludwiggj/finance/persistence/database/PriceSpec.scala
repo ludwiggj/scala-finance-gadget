@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{FinanceDate, Fund, Price}
+import models.org.ludwiggj.finance.domain.{FinanceDate, Fund, FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.Tables.FundsRow
 import models.org.ludwiggj.finance.stringToSqlDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
@@ -17,15 +17,13 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return empty if price is not present" in {
       EmptySchema.loadData()
 
-      Price.get("fund that is not present", kappaPriceDate) must equal(None)
+      Price.get("fund that is not present", "20/05/2014") must equal(None)
     }
 
     "return existing price if it is present" in {
       SinglePrice.loadData()
 
-      Price.get(kappaFundName, kappaPriceDate) mustBe Some(
-        Price(kappaFundName, kappaPriceDate, kappaPriceInPounds)
-      )
+      Price.get(kappaPrice.fundName, kappaPrice.date) mustBe Some(kappaPrice)
     }
   }
 
@@ -33,34 +31,22 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       "return the list" in {
         TwoPrices.loadData()
 
-        Price.get() must contain theSameElementsAs
-          List(
-            Price(kappaFundName, kappaPriceDate, kappaPriceInPounds),
-            Price(nikeFundName, nikePriceDateGraeme, nikePriceInPoundsGraeme)
-          )
+        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice)
       }
 
       "be unchanged if attempt to add price for same date" in {
         TwoPrices.loadData()
 
-        Price.insert(Price(kappaFundName, kappaPriceDate, 2.12))
-        Price.get() must contain theSameElementsAs
-          List(
-            Price(kappaFundName, kappaPriceDate, kappaPriceInPounds),
-            Price(nikeFundName, nikePriceDateGraeme, nikePriceInPoundsGraeme)
-          )
+        Price.insert(kappaPrice.copy(inPounds = 2.12))
+        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice)
       }
 
       "increase by one in length if add new unique price" in {
         TwoPrices.loadData()
 
-        Price.insert(Price("holding1", FinanceDate("21/05/2014"), 2.12))
-        Price.get() must contain theSameElementsAs
-          List(
-            Price(kappaFundName, kappaPriceDate, kappaPriceInPounds),
-            Price(nikeFundName, nikePriceDateGraeme, nikePriceInPoundsGraeme),
-            Price("holding1", FinanceDate("21/05/2014"), 2.12)
-          )
+        val newPrice = Price("holding1", FinanceDate("21/05/2014"), 2.12)
+        Price.insert(newPrice)
+        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice, newPrice)
       }
     }
 
@@ -68,18 +54,20 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "insert fund if it is not present" in {
       EmptySchema.loadData()
 
-      Fund.get(capitalistsDreamFundName) mustBe None
+      val newFundName: FundName = "NewFund"
 
-      val capitalistsDreamFundPriceDate = FinanceDate("20/05/2014")
-      val price = Price(capitalistsDreamFundName, capitalistsDreamFundPriceDate, 1.2)
+      Fund.get(newFundName) mustBe None
+
+      val capitalistsDreamFundPriceDate = "20/05/2014"
+      val price = Price(newFundName, capitalistsDreamFundPriceDate, 1.2)
 
       Price.insert(price)
 
-      inside(Fund.get(capitalistsDreamFundName).get) { case FundsRow(_, name) =>
-        name must equal(capitalistsDreamFundName.name)
+      inside(Fund.get(newFundName).get) { case FundsRow(_, name) =>
+        name must equal(newFundName.name)
       }
 
-      Price.get(capitalistsDreamFundName, capitalistsDreamFundPriceDate) mustBe Some(price)
+      Price.get(newFundName, capitalistsDreamFundPriceDate) mustBe Some(price)
     }
   }
 
@@ -88,7 +76,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("20/6/2014") must equal(
-        Map(1L -> kappaPriceLater, 2L -> nikePriceGraemeLater)
+        Map(1L -> kappaPrice140523, 2L -> nikePrice140621)
       )
     }
 
@@ -96,7 +84,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFund.loadData()
 
       Price.latestPrices("16/5/2014") must equal(
-        Map(1L -> kappaPriceEarliest)
+        Map(1L -> kappaPrice140512)
       )
     }
 
@@ -104,7 +92,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("19/6/2014") must equal(
-        Map(1L -> kappaPriceLater, 2L -> nikePriceGraeme)
+        Map(1L -> kappaPrice140523, 2L -> nikePrice140620)
       )
     }
 
@@ -120,26 +108,26 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
       Price.latestPrices("22/5/2014") must equal(
-        Map(1L -> kappaPriceLater)
+        Map(1L -> kappaPrice140523)
       )
     }
 
     "include prices from name change fund if date of interest is one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      val expectedUpdatedPrice = kappaIIPrice.copy(fundName = kappaFundName)
+      val expectedUpdatedPrice = kappaIIPrice140524.copy(fundName = "Kappa")
 
       Price.latestPrices("23/5/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice)
+        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice140524)
       )
     }
 
     "include prices from name change fund if date of interest is the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
-      val expectedUpdatedPrice = kappaIIPrice.copy(fundName = kappaFundName)
+      val expectedUpdatedPrice = kappaIIPrice140524.copy(fundName = "Kappa")
 
       Price.latestPrices("24/5/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice)
+        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice140524)
       )
     }
   }

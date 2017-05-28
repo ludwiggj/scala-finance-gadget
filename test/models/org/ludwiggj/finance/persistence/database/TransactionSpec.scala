@@ -19,18 +19,20 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     "insert user, fund and price if they are not present" in {
       EmptySchema.loadData()
 
-      val userName = "Graeme"
-      val kappaFundTransaction = Transaction(userNameGraeme,
-        kappaPriceDate, InvestmentRegular, Some(2.0), None, kappaPrice, 1.234)
+      val userA = "User A"
+      val kappaFundName = kappaPrice.fundName
+      val kappaPriceDate = kappaPrice.date
 
-      User.get(userName) mustBe None
+      val kappaTx = Transaction(userA, kappaPriceDate, InvestmentRegular, Some(2.0), None, kappaPrice, 1.234)
+
+      User.get(userA) mustBe None
       Fund.get(kappaFundName) mustBe None
       Price.get(kappaFundName, kappaPriceDate) mustBe None
 
-      Transaction.insert(kappaFundTransaction)
+      Transaction.insert(kappaTx)
 
-      inside(User.get(userName).get) { case UsersRow(_, name, _) =>
-        name must equal(userName)
+      inside(User.get(userA).get) { case UsersRow(_, name, _) =>
+        name must equal(userA)
       }
 
       inside(Fund.get(kappaFundName).get) { case FundsRow(_, name) =>
@@ -39,7 +41,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Price.get(kappaFundName, kappaPriceDate) mustBe Some(kappaPrice)
 
-      Transaction.get() must contain theSameElementsAs List(kappaFundTransaction)
+      Transaction.get() must contain theSameElementsAs List(kappaTx)
     }
   }
 
@@ -49,7 +51,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Transaction.get().size must equal(1)
 
-      Transaction.insert(nikeTransactionGraeme)
+      Transaction.insert(userANikeTx140620)
 
       Transaction.get().size must equal(1)
     }
@@ -59,8 +61,9 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Transaction.get().size must equal(1)
 
+      //TODO - fix!
       val duplicateTransactionForAnotherUser =
-        Transaction(userNameAudrey, nikePriceDateGraeme, InvestmentRegular, Some(2.0), None, nikePriceGraeme, 1.234)
+        Transaction("User B", nikePrice.date, InvestmentRegular, Some(2.0), None, nikePrice, 1.234)
 
       Transaction.insert(duplicateTransactionForAnotherUser)
 
@@ -102,7 +105,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
         Date.valueOf("2014-06-25")
       )
 
-      Transaction.getTransactionDatesSince("20/6/2014", userNameGraeme) must contain theSameElementsAs expectedDates
+      Transaction.getTransactionDatesSince("20/6/2014", "User A") must contain theSameElementsAs expectedDates
     }
   }
 
@@ -113,15 +116,15 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014")
 
       transactionMap must contain(
-        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice)
+        ("User A", "Kappa") -> (Seq(userAKappaTx140520), kappaPrice)
       )
 
       transactionMap must contain(
-        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey)
+        ("User B", "Nike") -> (Seq(userBNikeTx140622), nikePrice140622)
       )
 
       transactionMap must contain(
-        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme, nikeTransactionGraemeLater), nikePriceAudrey)
+        ("User A", "Nike") -> (Seq(userANikeTx140620, userANikeTx140621), nikePrice140622)
       )
 
       transactionMap.size must equal(3)
@@ -133,11 +136,11 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("20/6/2014")
 
       transactionMap must contain(
-        (userNameGraeme, kappaFundName: String) -> (Seq(kappaTransactionGraeme), kappaPrice)
+        ("User A", "Kappa") -> (Seq(userAKappaTx140520), kappaPrice140520)
       )
 
       transactionMap must contain(
-        (userNameGraeme, nikeFundName: String) -> (Seq(nikeTransactionGraeme), nikePriceGraemeLater)
+        ("User A", "Nike") -> (Seq(userANikeTx140620), nikePrice140621)
       )
 
       transactionMap.size must equal(2)
@@ -146,10 +149,10 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     "return all transactions up to and including date for a specified user" in {
       MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
 
-      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014", userNameAudrey)
+      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014", "User B")
 
       transactionMap must contain(
-        (userNameAudrey, nikeFundName: String) -> (Seq(nikeTransactionAudrey), nikePriceAudrey)
+        ("User B", "Nike") -> (Seq(userBNikeTx140622), nikePrice140622)
       )
 
       transactionMap.size must equal(1)

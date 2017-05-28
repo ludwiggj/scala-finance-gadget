@@ -1,28 +1,25 @@
-package models.org.ludwiggj.finance.application
-
-import java.util.concurrent.TimeoutException
+package utils
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import models.org.ludwiggj.finance.builders.LoginFormBuilder._
-import models.org.ludwiggj.finance.domain.{Holding, Price}
-import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteHoldingFactory}
-import play.api.Play
-import play.api.test.FakeApplication
-
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Configuration, Environment, Play}
+import java.util.concurrent.TimeoutException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
+import models.org.ludwiggj.finance.builders.LoginFormBuilder._
+import models.org.ludwiggj.finance.domain.{Holding, Price}
+import models.org.ludwiggj.finance.persistence.file.FilePersister
+import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteHoldingFactory}
 
 object WebSiteHoldingScraper extends App {
 
   private val config = WebSiteConfig("cofunds")
   private val loginFormBuilder = aLoginForm().basedOnConfig(config)
   private val users = config.getUserList()
-  private val application = FakeApplication()
 
   def getHoldings(user: User) = Future[(User, List[Holding])] {
     def getHoldings(): List[Holding] = {
@@ -105,13 +102,17 @@ object WebSiteHoldingScraper extends App {
       } catch {
         case ex: TimeoutException => println(ex.getMessage)
       }
-      finally {
-        Play.stop(application)
-      }
     )
   }
 
   // Start here
-  Play.start(application)
-  scrape()
+  val appConfig = Configuration.load(Environment.simple(), Map("config.resource" -> "application.conf"))
+  implicit val application = new GuiceApplicationBuilder(configuration = appConfig).build()
+
+  try {
+    Play.start(application)
+    scrape()
+  } finally {
+    Play.stop(application)
+  }
 }

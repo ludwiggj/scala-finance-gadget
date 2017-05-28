@@ -1,6 +1,4 @@
-package models.org.ludwiggj.finance
-
-package object application {
+package object utils {
   val dataHome = "data"
   val holdingsHome = "holdings"
 

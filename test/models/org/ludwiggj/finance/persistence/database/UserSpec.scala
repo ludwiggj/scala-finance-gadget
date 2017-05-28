@@ -23,8 +23,8 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
     "return existing user row if it is present" in {
       SingleUser.loadData()
 
-      User.get(fatherTedUserName) mustBe Some(
-        UsersRow(fatherTedUserId, fatherTedUserName, Some(fatherTedPassword))
+      User.get(SingleUser.ted.name) mustBe Some(
+        SingleUser.ted.copy(id = SingleUser.userId)
       )
     }
   }
@@ -39,7 +39,7 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
     "return existing user id if user is present" in {
       SingleUser.loadData()
 
-      User.getOrInsert(fatherTedUserName) must equal(fatherTedUserId)
+      User.getOrInsert(SingleUser.ted.name) must equal(SingleUser.userId)
     }
   }
 
@@ -47,19 +47,19 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
     "return 0 if user is not present" in {
       EmptySchema.loadData()
 
-      User.authenticate(fatherTedUserName, "blah") must equal(0)
+      User.authenticate("dummy user", "blah") must equal(0)
     }
 
     "return 1 if user is present and password does not match" in {
       SingleUser.loadData()
 
-      User.authenticate(fatherTedUserName, "blah") must equal(0)
+      User.authenticate(SingleUser.ted.name, "blah") must equal(0)
     }
 
     "return 1 if user is present and password matches" in {
       SingleUser.loadData()
 
-      User.authenticate(fatherTedUserName, fatherTedPassword) must equal(1)
+      User.authenticate(SingleUser.ted.name, SingleUser.ted.password.get) must equal(1)
     }
   }
 }

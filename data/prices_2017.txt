@@ -108,3 +108,14 @@ M&G Feeder of Property Portfolio I Fund Acc|12/05/2017|13.0800
 Royal London Sustainable Leaders C Trust Inc|12/05/2017|1.6620
 Schroder Gbl Real Estate Securities Inc Z Fund Inc|12/05/2017|0.5612
 Unicorn UK Ethical Income B Fund Acc|12/05/2017|1.1984
+EdenTree Amity European B Fund Inc|26/05/2017|2.7790
+F&C Responsible UK Equity Growth 2 Fund Inc|26/05/2017|0.8280
+F&C Responsible UK Income 2 Fund Inc|26/05/2017|1.9500
+Henderson Global Care Growth I Fund Acc|26/05/2017|2.9150
+Henderson Global Care UK Income I Fund Inc|26/05/2017|1.5830
+Kames Ethical Equity B Fund Acc|26/05/2017|2.2075
+Liontrust SF Global Growth 2 Fund Acc|26/05/2017|1.4070
+M&G Feeder of Property Portfolio I Fund Acc|26/05/2017|13.0944
+Royal London Sustainable Leaders C Trust Inc|26/05/2017|1.6920
+Schroder Gbl Real Estate Securities Inc Z Fund Inc|26/05/2017|0.5712
+Unicorn UK Ethical Income B Fund Acc|26/05/2017|1.2158
