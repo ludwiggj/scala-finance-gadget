@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance
 
 import domain._
 import Transaction._
-import models.org.ludwiggj.finance.persistence.database.TransactionMap
+import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFund
 
 package object data {
   val userA = "User A"
@@ -108,7 +108,7 @@ package object data {
   }
 
   trait TestHoldingSummaries extends TestTransactions {
-    private val txMap: Map[String, TransactionMap] = Map(
+    private val txMap: Map[String, TransactionsPerUserAndFund] = Map(
       "aberdeen140901" -> Map(
         (userA, price("aberdeen140625").fundName.name) -> (aberdeenTxs, price("aberdeen140625")),
         (userA, price("aberdeenB140901").fundName.name) -> (aberdeenBTxs, price("aberdeenB140901"))

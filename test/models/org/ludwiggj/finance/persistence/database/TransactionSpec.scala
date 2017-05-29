@@ -1,12 +1,12 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.stringToSqlDate
+import java.sql.Date
+
 import models.org.ludwiggj.finance.domain.{Fund, Price, Transaction, User}
-import models.org.ludwiggj.finance.domain.Transaction._
-import Tables.{FundsRow, UsersRow}
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, UsersRow}
+import models.org.ludwiggj.finance.stringToSqlDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
-import java.sql.Date
 
 @DoNotDiscover
 class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
@@ -15,33 +15,32 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     Database.recreate()
   }
 
+  private val userA = "User A"
+
   "insert transaction" should {
     "insert user, fund and price if they are not present" in {
       EmptySchema.loadData()
 
-      val userA = "User A"
-      val kappaFundName = kappaPrice.fundName
-      val kappaPriceDate = kappaPrice.date
-
-      val kappaTx = Transaction(userA, kappaPriceDate, InvestmentRegular, Some(2.0), None, kappaPrice, 1.234)
+      val kappaFundName = price("kappa140520").fundName
+      val kappaPriceDate = price("kappa140520").date
 
       User.get(userA) mustBe None
       Fund.get(kappaFundName) mustBe None
       Price.get(kappaFundName, kappaPriceDate) mustBe None
 
-      Transaction.insert(kappaTx)
+      Transaction.insert(txUserA("kappa140520"))
 
-      inside(User.get(userA).get) { case UsersRow(_, name, _) =>
-        name must equal(userA)
+      inside(User.get(userA).get) {
+        case UsersRow(_, name, _) => name must equal(userA)
       }
 
-      inside(Fund.get(kappaFundName).get) { case FundsRow(_, name) =>
-        name must equal(kappaFundName.name)
+      inside(Fund.get(kappaFundName).get) {
+        case FundsRow(_, name) => name must equal(kappaFundName.name)
       }
 
-      Price.get(kappaFundName, kappaPriceDate) mustBe Some(kappaPrice)
+      Price.get(kappaFundName, kappaPriceDate) mustBe Some(price("kappa140520"))
 
-      Transaction.get() must contain theSameElementsAs List(kappaTx)
+      Transaction.get() must contain theSameElementsAs List(txUserA("kappa140520"))
     }
   }
 
@@ -51,7 +50,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Transaction.get().size must equal(1)
 
-      Transaction.insert(userANikeTx140620)
+      Transaction.insert(txUserA("nike140620"))
 
       Transaction.get().size must equal(1)
     }
@@ -61,11 +60,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
 
       Transaction.get().size must equal(1)
 
-      //TODO - fix!
-      val duplicateTransactionForAnotherUser =
-        Transaction("User B", nikePrice.date, InvestmentRegular, Some(2.0), None, nikePrice, 1.234)
-
-      Transaction.insert(duplicateTransactionForAnotherUser)
+      Transaction.insert(txUserA("nike140620").copy(userName = "User B"))
 
       Transaction.get().size must equal(2)
     }
@@ -76,36 +71,36 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       RegularInvestmentTransactions.loadData()
 
       val expectedDates: List[Date] = List(
-        Date.valueOf("2015-05-20"),
-        Date.valueOf("2014-06-20"),
-        Date.valueOf("2014-05-20")
+        price("nike150520").date,
+        price("nike140620").date,
+        price("nike140520").date
       )
 
-      Transaction.getRegularInvestmentDates() must contain theSameElementsAs expectedDates
+      Transaction.getRegularInvestmentDates() must contain theSameElementsInOrderAs expectedDates
     }
   }
 
   "get investment dates since date" should {
-    "return all transaction dates since specified date in order with most recent date first" in {
+    "return all transaction dates after specified date in order with most recent date first" in {
       MultipleTransactionsForSingleUser.loadData()
 
       val expectedDates: List[Date] = List(
-        Date.valueOf("2014-06-25"),
-        Date.valueOf("2014-06-21")
+        price("nike140625").date,
+        price("nike140621").date
       )
 
-      Transaction.getTransactionDatesSince("20/6/2014") must contain theSameElementsAs expectedDates
+      Transaction.getDatesSince("20/6/2014") must contain theSameElementsInOrderAs expectedDates
     }
 
-    "return all transaction dates since specified date for specified user in order with most recent date first" in {
+    "return all transaction dates after specified date for specified user in order with most recent date first" in {
       MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
 
       val expectedDates: List[Date] = List(
-        Date.valueOf("2014-06-21"),
-        Date.valueOf("2014-06-25")
+        price("nike140625").date,
+        price("nike140621").date
       )
 
-      Transaction.getTransactionDatesSince("20/6/2014", "User A") must contain theSameElementsAs expectedDates
+      Transaction.getDatesSince("20/6/2014", userA) must contain theSameElementsInOrderAs expectedDates
     }
   }
 
@@ -113,18 +108,18 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     "return all transactions up to and including date for both users" in {
       MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
 
-      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014")
+      val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("22/6/2014")
 
       transactionMap must contain(
-        ("User A", "Kappa") -> (Seq(userAKappaTx140520), kappaPrice)
+        (userA, "Kappa") -> (Seq(txUserA("kappa140520")), price("kappa140520"))
       )
 
       transactionMap must contain(
-        ("User B", "Nike") -> (Seq(userBNikeTx140622), nikePrice140622)
+        ("User B", "Nike") -> (Seq(txUserB("nike140622")), price("nike140622"))
       )
 
       transactionMap must contain(
-        ("User A", "Nike") -> (Seq(userANikeTx140620, userANikeTx140621), nikePrice140622)
+        (userA, "Nike") -> (Seq(txUserA("nike140620"), txUserA("nike140621")), price("nike140622"))
       )
 
       transactionMap.size must equal(3)
@@ -133,14 +128,14 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     "omit more transactions for an earlier date" in {
       MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
 
-      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("20/6/2014")
+      val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("20/6/2014")
 
       transactionMap must contain(
-        ("User A", "Kappa") -> (Seq(userAKappaTx140520), kappaPrice140520)
+        (userA, "Kappa") -> (Seq(txUserA("kappa140520")), price("kappa140520"))
       )
 
       transactionMap must contain(
-        ("User A", "Nike") -> (Seq(userANikeTx140620), nikePrice140621)
+        (userA, "Nike") -> (Seq(txUserA("nike140620")), price("nike140621"))
       )
 
       transactionMap.size must equal(2)
@@ -149,10 +144,10 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
     "return all transactions up to and including date for a specified user" in {
       MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
 
-      val transactionMap: TransactionMap = Transaction.getTransactionsUpToAndIncluding("22/6/2014", "User B")
+      val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("22/6/2014", "User B")
 
       transactionMap must contain(
-        ("User B", "Nike") -> (Seq(userBNikeTx140622), nikePrice140622)
+        ("User B", "Nike") -> (Seq(txUserB("nike140622")), price("nike140622"))
       )
 
       transactionMap.size must equal(1)

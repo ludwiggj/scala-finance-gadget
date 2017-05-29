@@ -7,19 +7,19 @@ import org.scalatest.{FunSuite, Matchers}
 
 class FinanceDateSuite extends FunSuite with Matchers {
 
-  test("A finance date should display correct output") {
+  test("Finance date displays correct output") {
     FinanceDate("29/04/2014").toString should equal("29/04/2014")
   }
 
-  test("Equality returns true for equal dates") {
+  test("Identical dates are equal") {
     FinanceDate("29/04/2014") should equal(FinanceDate("29/04/2014"))
   }
 
-  test("Equality returns false for unequal dates") {
+  test("Different dates are unequal") {
     FinanceDate("29/04/2014") should not equal (FinanceDate("30/04/2014"))
   }
 
-  test("Equality returns false when other argument is null") {
+  test("Date is not equal to null") {
     FinanceDate("29/04/2014") should not equal (null)
   }
 

@@ -18,7 +18,7 @@ object PortfolioList {
 
   def get(dateOfInterest: Date): PortfolioList = {
 
-    val transactions = Transaction.getTransactionsUpToAndIncluding(dateOfInterest)
+    val transactions = Transaction.getTransactionsUntil(dateOfInterest)
 
     val userNames = transactions.keys.map {
       _._1
@@ -31,7 +31,7 @@ object PortfolioList {
 
   def get(dateOfInterest: Date, userName: String): PortfolioList = {
 
-    val transactions = Transaction.getTransactionsUpToAndIncluding(dateOfInterest, userName)
+    val transactions = Transaction.getTransactionsUntil(dateOfInterest, userName)
 
     List(Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest)))
   }

@@ -6,9 +6,9 @@ import org.scalatest.{FunSuite, Matchers}
 class PriceSuite extends FunSuite with Matchers with TestPrices {
 
   test("Prices with dirty and cleaned up fund names are equal") {
-    val priceBeforeNameCorrection = Price("^Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
-    val priceAfterNameCorrection = Price("Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
-    priceBeforeNameCorrection should equal(priceAfterNameCorrection)
+    val price = Price("^Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
+    val correctedPrice = Price("Schroder Gbl Property Income Maximiser Z Fund Inc", "25/12/2014", "0.4799")
+    price should equal(correctedPrice)
   }
 
   test("Price.toFileFormat is correct") {

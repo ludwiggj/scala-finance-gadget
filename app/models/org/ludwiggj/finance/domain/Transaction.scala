@@ -1,16 +1,17 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.persistence.database.Tables.{Funds, FundsRow, Prices, PricesRow, Transactions, TransactionsRow, Users, UsersRow}
+import java.sql.Date
+
+import models.org.ludwiggj.finance.domain.User.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
-import User.stringToUsersRow
 import play.api.Play.current
 import play.api.db.DB
 import scala.collection.immutable.ListMap
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.{Failure, Success, Try}
-import java.sql.Date
 
 case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
                        val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
@@ -56,6 +57,14 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 
 object Transaction {
 
+  // TODO - Make these an enum (or equivalent)
+  // Something along these lines...
+  /*
+  sealed abstract class TransactionTypeBase
+  case class TransactionType(value: String)
+  object InvestmentRegular extends TransactionType("Investment Regular")
+   */
+
   val InvestmentRegular = "Investment Regular"
   val InvestmentLumpSum = "Investment Lump Sum"
   val DividendReinvestment = "Dividend Reinvestment"
@@ -86,6 +95,7 @@ object Transaction {
       stripAllWhitespaceExceptSpace(row)
 
     import models.org.ludwiggj.finance.domain.stringToBigDecimal
+
     val priceInPounds = Try(stringToBigDecimal(priceInPence) / 100) match {
       case Success(price) => price
       case Failure(ex: NumberFormatException) => BigDecimal(0)
@@ -99,7 +109,17 @@ object Transaction {
     Transaction(userName, row(1), row(2), row(3), row(4), Price(row(0), row(5), row(6)), row(7))
   }
 
+  // Database interactions
   def db = Database.forDataSource(DB.getDataSource("finance"))
+
+  // TODO - The following 2 implicits shouldn't be needed...
+  implicit def bigDecimalToOption(value: BigDecimal) = {
+    if (value == 0) None else Some(value)
+  }
+
+  implicit def optionToBigDecimal(value: Option[BigDecimal]): BigDecimal = {
+    if (value.isDefined) value.get else 0
+  }
 
   def insert(transaction: Transaction) {
 
@@ -107,20 +127,18 @@ object Transaction {
       implicit session =>
 
         if (!get().contains(transaction)) {
-
-          val userId = User.getOrInsert(transaction.userName)
-
-          def insert(fundId: Long) {
+          def insert(fundId: Long, userId: Long) {
             Transactions += TransactionsRow(
               fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
               transaction.priceDate, transaction.units
             )
           }
 
+          val userId = User.getOrInsert(transaction.userName)
           Price.insert(transaction.price)
 
           Fund.get(transaction.fundName) match {
-            case Some(fundsRow) => insert(fundsRow.id)
+            case Some(fundsRow) => insert(fundsRow.id, userId)
             case _ => println(s"Could not insert Transaction: fund ${transaction.fundName} not found")
           }
         }
@@ -133,67 +151,62 @@ object Transaction {
     }
   }
 
-  implicit class TransactionExtension(q: Query[Transactions, TransactionsRow, Seq]) {
-    def withFunds = {
-      q.join(Funds).on((t, f) => t.fundId === f.id)
-    }
+  def get(): List[Transaction] = {
+    val txQuery = Transactions
+      .join(Prices).on((t, p) => t.fundId === p.fundId && t.priceDate === p.date)
+      .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
+      .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
 
-    def withFundsAndPricesAndUser = {
-      q.join(Prices).on((t, p) => t.fundId === p.fundId && t.priceDate === p.date)
-        .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
-        .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
-    }
-  }
-
-  implicit def bigDecimalToOption(value: BigDecimal) = {
-    if (value == 0) None else Some(value)
-  }
-
-  implicit def optionToBigDecimal(value: Option[BigDecimal]): BigDecimal = {
-    if (value.isDefined) value.get else 0
-  }
-
-  implicit def asListOfTransactions(q: Query[(((Transactions, Prices), Funds), Users),
-    (((TransactionsRow, PricesRow), FundsRow), UsersRow), Seq]): List[Transaction] = {
     db.withSession {
       implicit session =>
-        q.list map {
-          case (((TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
-          PricesRow(_, _, price)), FundsRow(_, fundName)), UsersRow(_, userName, _)) =>
+        txQuery.list map {
+          case
+            (
+              (
+                (
+                  TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
+                  PricesRow(_, _, price)
+                  ),
+                FundsRow(_, fundName)
+                ),
+              UsersRow(_, userName, _)
+              )
+          =>
             Transaction(userName, date, description, amountIn, amountOut, Price(fundName, priceDate, price), units)
         }
     }
   }
 
-  def get(): List[Transaction] = {
-    db.withSession {
-      implicit session =>
-        Transactions.withFundsAndPricesAndUser
-    }
-  }
-
-  def getRegularInvestmentDates(): List[Date] = {
+  private def getDates(transactionFilter: (Transactions) => Column[Boolean]): List[Date] = {
     db.withSession {
       implicit session =>
         Transactions
-          .filter { tx => tx.description === InvestmentRegular }
+          .filter {
+            transactionFilter(_)
+          }
           .map {
             _.date
           }.sorted.list.distinct.reverse
     }
   }
 
-  def getTransactionDatesSince(dateOfInterest: Date): List[Date] = {
-    db.withSession {
-      implicit session =>
-        Transactions
-          .filter { _.date > dateOfInterest }
-          .map { _.date }
-          .sorted.list.distinct.reverse
+  def getRegularInvestmentDates(): List[Date] = {
+    def transactionFilter(t: Transactions) = {
+      t.description === InvestmentRegular
     }
+
+    getDates(transactionFilter _)
   }
 
-  def getTransactionDatesSince(dateOfInterest: Date, userName: String): List[Date] = {
+  def getDatesSince(dateOfInterest: Date): List[Date] = {
+    def transactionFilter(t: Transactions) = {
+      t.date > dateOfInterest
+    }
+
+    getDates(transactionFilter _)
+  }
+
+  def getDatesSince(dateOfInterest: Date, userName: String): List[Date] = {
     db.withSession {
       implicit session =>
         Transactions.innerJoin(Users).on(_.userId === _.id)
@@ -206,59 +219,55 @@ object Transaction {
     }
   }
 
-  private def getTransactionsUpToAndIncluding(dateOfInterest: Date, transactionsOfInterest: Date => TransactionsOfInterestType): TransactionMap = {
-    val transactions = transactionsOfInterest(dateOfInterest)
-
-    val sortedTransactions = ListMap(transactions.toSeq.sortBy(k => k._1): _*)
+  private def getTransactionsUntil(dateOfInterest: Date,
+                                   userFilter: (Transactions, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
 
     def amountOption(amount: BigDecimal) = if (amount == 0.0) None else Some(amount)
 
-    sortedTransactions.mapValues(rows => {
-      val (_, _, fundId, _, _) = rows.head
+    val candidates = db.withSession {
+      implicit session =>
+        (for {
+          t <- Transactions.filter {
+            _.date <= dateOfInterest
+          }
+          f <- Funds if f.id === t.fundId
+          u <- Users if userFilter(t, u)
+          p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
+        } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+    }
+
+    val sortedCandidates = ListMap(candidates.toSeq.sortBy(k => k._1): _*)
+
+    sortedCandidates.mapValues(rows => {
+      val fundId = rows.head._3
       val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
 
       val txs = for {
         (userName, fundName, fundId, priceRow, tx) <- rows
-      } yield Transaction(userName, tx.date, tx.description, amountOption(tx.amountIn),
-        amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units)
+      } yield
+        Transaction(
+          userName, tx.date, tx.description, amountOption(tx.amountIn),
+          amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units
+        )
+
       (txs, latestPrice)
     }
     )
   }
 
-  def getTransactionsUpToAndIncluding(dateOfInterest: Date): TransactionMap = {
-    def transactionsOfInterest(dateOfInterest: Date): TransactionsOfInterestType = {
-      db.withSession {
-        implicit session =>
-          (for {
-            t <- Transactions.filter {
-              _.date <= dateOfInterest
-            }
-            f <- Funds if f.id === t.fundId
-            u <- Users if u.id === t.userId
-            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
-      }
+  def getTransactionsUntil(dateOfInterest: Date): TransactionsPerUserAndFund = {
+    def userFilter(t: Transactions, u: Users) = {
+      u.id === t.userId
     }
 
-    getTransactionsUpToAndIncluding(dateOfInterest, transactionsOfInterest _)
+    getTransactionsUntil(dateOfInterest, userFilter _)
   }
 
-  def getTransactionsUpToAndIncluding(dateOfInterest: Date, userName: String): TransactionMap = {
-    def transactionsOfInterest(dateOfInterest: Date): TransactionsOfInterestType = {
-      db.withSession {
-        implicit session =>
-          (for {
-            t <- Transactions.filter {
-              _.date <= dateOfInterest
-            }
-            f <- Funds if f.id === t.fundId
-            u <- Users if u.id === t.userId && u.name === userName
-            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
-      }
+  def getTransactionsUntil(dateOfInterest: Date, userName: String): TransactionsPerUserAndFund = {
+    def userFilter(t: Transactions, u: Users) = {
+      u.id === t.userId && u.name === userName
     }
 
-    getTransactionsUpToAndIncluding(dateOfInterest, transactionsOfInterest _)
+    getTransactionsUntil(dateOfInterest, userFilter _)
   }
 }

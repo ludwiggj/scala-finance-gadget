@@ -53,9 +53,9 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
         def getPortfolios(investmentDates: List[FinanceDate]): Map[FinanceDate, PortfolioList] = {
           def investmentDatesSince(date: FinanceDate): List[FinanceDate] = {
             if (User.isAdmin(username))
-              Transaction.getTransactionDatesSince(date).map(sqlDateToFinanceDate)
+              Transaction.getDatesSince(date).map(sqlDateToFinanceDate)
             else
-              Transaction.getTransactionDatesSince(date, username).map(sqlDateToFinanceDate)
+              Transaction.getDatesSince(date, username).map(sqlDateToFinanceDate)
           }
 
           val allDates = investmentDatesSince(allInvestmentDates.head) ++ investmentDates

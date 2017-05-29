@@ -5,10 +5,10 @@ import org.scalatest.{FunSuite, Matchers}
 class FundNameSuite extends FunSuite with Matchers {
 
   test("FundName and cleaned up version are equal") {
-    val fundNameBeforeNameCorrection = FundName(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ")
-    val fundNameAfterNameCorrection = FundName("Schroder Gbl Property Income Maximiser Z Fund Inc")
+    val fundName = FundName(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ")
+    val correctedFundName = FundName("Schroder Gbl Property Income Maximiser Z Fund Inc")
 
-    fundNameBeforeNameCorrection should equal(fundNameAfterNameCorrection)
+    fundName should equal(correctedFundName)
   }
 
   test("Smaller than returns true if first fund name is before the second alphabetically") {

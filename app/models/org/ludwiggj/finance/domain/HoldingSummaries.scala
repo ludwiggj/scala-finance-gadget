@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.domain.FundChange.getFundChangesUpUntil
-import models.org.ludwiggj.finance.persistence.database.TransactionMap
+import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFund
 
 //TODO - rename to HoldingSummaryList
 case class HoldingSummaries(val holdings: List[HoldingSummary]) {
@@ -18,7 +18,7 @@ case class HoldingSummaries(val holdings: List[HoldingSummary]) {
 
 object HoldingSummaries {
 
-  def apply(transactions: TransactionMap, userName: String, dateOfInterest: FinanceDate): HoldingSummaries = {
+  def apply(transactions: TransactionsPerUserAndFund, userName: String, dateOfInterest: FinanceDate): HoldingSummaries = {
 
     def adjustHoldings(holdings: List[HoldingSummary], fundChange: FundChange): List[HoldingSummary] = {
 

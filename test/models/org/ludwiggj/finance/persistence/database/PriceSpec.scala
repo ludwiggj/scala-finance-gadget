@@ -23,7 +23,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return existing price if it is present" in {
       SinglePrice.loadData()
 
-      Price.get(kappaPrice.fundName, kappaPrice.date) mustBe Some(kappaPrice)
+      Price.get(price("kappa140520").fundName, price("kappa140520").date) mustBe Some(price("kappa140520"))
     }
   }
 
@@ -31,14 +31,14 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       "return the list" in {
         TwoPrices.loadData()
 
-        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice)
+        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
       }
 
       "be unchanged if attempt to add price for same date" in {
         TwoPrices.loadData()
 
-        Price.insert(kappaPrice.copy(inPounds = 2.12))
-        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice)
+        Price.insert(price("kappa140520").copy(inPounds = 2.12))
+        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
       }
 
       "increase by one in length if add new unique price" in {
@@ -46,7 +46,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
 
         val newPrice = Price("holding1", FinanceDate("21/05/2014"), 2.12)
         Price.insert(newPrice)
-        Price.get() must contain theSameElementsAs List(kappaPrice, nikePrice, newPrice)
+        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"), newPrice)
       }
     }
 
@@ -76,7 +76,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("20/6/2014") must equal(
-        Map(1L -> kappaPrice140523, 2L -> nikePrice140621)
+        Map(1L -> price("kappa140523"), 2L -> price("nike140621"))
       )
     }
 
@@ -84,7 +84,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFund.loadData()
 
       Price.latestPrices("16/5/2014") must equal(
-        Map(1L -> kappaPrice140512)
+        Map(1L -> price("kappa140512"))
       )
     }
 
@@ -92,7 +92,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("19/6/2014") must equal(
-        Map(1L -> kappaPrice140523, 2L -> nikePrice140620)
+        Map(1L -> price("kappa140523"), 2L -> price("nike140620"))
       )
     }
 
@@ -100,7 +100,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("21/5/2014") must equal(
-        Map(1L -> kappaPrice)
+        Map(1L -> price("kappa140520"))
       )
     }
 
@@ -108,26 +108,26 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
       Price.latestPrices("22/5/2014") must equal(
-        Map(1L -> kappaPrice140523)
+        Map(1L -> price("kappa140523"))
       )
     }
 
     "include prices from name change fund if date of interest is one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      val expectedUpdatedPrice = kappaIIPrice140524.copy(fundName = "Kappa")
+      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
       Price.latestPrices("23/5/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice140524)
+        Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
       )
     }
 
     "include prices from name change fund if date of interest is the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
-      val expectedUpdatedPrice = kappaIIPrice140524.copy(fundName = "Kappa")
+      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
       Price.latestPrices("24/5/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> kappaIIPrice140524)
+        Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
       )
     }
   }

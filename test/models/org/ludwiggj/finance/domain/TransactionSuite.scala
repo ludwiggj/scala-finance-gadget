@@ -17,25 +17,25 @@ class TransactionSuite extends FunSuite with Matchers with TestTransactionsMulti
     tx("mgFeeder140425") should not equal (tx("ecclesiastical140502"))
   }
 
-  test("Transaction.fundName is correct") {
+  test("Transaction.fundName") {
     tx("mgFeeder140425").fundName should equal(price("mgFeeder140425").fundName)
   }
 
-  test("Transaction.priceDate is correct") {
+  test("Transaction.priceDate") {
     tx("mgFeeder140425").priceDate should equal(price("mgFeeder140425").date)
   }
 
-  test("Transaction.priceInPounds is correct") {
+  test("Transaction.priceInPounds") {
     tx("mgFeeder140425").priceInPounds should equal(price("mgFeeder140425").inPounds)
   }
 
-  test("Transaction.toFileFormat is correct") {
+  test("Transaction.toFileFormat") {
     tx("mgFeeder140425").toFileFormat should equal(
       "M&G Feeder of Property Portfolio I Fund Acc|25/04/2014|Investment Regular|200.0||25/04/2014|11.5308|17.3449"
     )
   }
 
-  test("Transaction.toString is correct") {
+  test("Transaction.toString") {
     tx("mgFeeder140425").toString should equal(
       s"Tx [userName: $userA, holding: M&G Feeder of Property Portfolio I Fund Acc, date: 25/04/2014, "
         + "description: Investment Regular, in: Some(200.0), out: None, price date: 25/04/2014, price: 11.5308, "
