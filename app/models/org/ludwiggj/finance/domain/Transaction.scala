@@ -2,6 +2,7 @@ package models.org.ludwiggj.finance.domain
 
 import java.sql.Date
 
+import models.org.ludwiggj.finance.domain.TransactionType.{InvestmentRegular, TransactionType}
 import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
@@ -13,8 +14,13 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.{Failure, Success, Try}
 
-case class Transaction(val userName: String, val date: FinanceDate, val description: String, val in: Option[BigDecimal],
-                       val out: Option[BigDecimal], val price: Price, val units: BigDecimal) extends PersistableToFile {
+case class Transaction(val userName: String,
+                       val date: FinanceDate,
+                       val description: TransactionType,
+                       val in: Option[BigDecimal],
+                       val out: Option[BigDecimal],
+                       val price: Price,
+                       val units: BigDecimal) extends PersistableToFile {
 
   val fundName = price.fundName
 
@@ -57,20 +63,7 @@ case class Transaction(val userName: String, val date: FinanceDate, val descript
 
 object Transaction {
 
-  // TODO - Make these an enum (or equivalent)
-  // Something along these lines...
-  /*
-  sealed abstract class TransactionTypeBase
-  case class TransactionType(value: String)
-  object InvestmentRegular extends TransactionType("Investment Regular")
-   */
-
-  val InvestmentRegular = "Investment Regular"
-  val InvestmentLumpSum = "Investment Lump Sum"
-  val DividendReinvestment = "Dividend Reinvestment"
-  val SaleForRegularPayment = "Sale for Regular Payment"
-  val UnitShareConversionIn = "Unit/Share Conversion +"
-  val UnitShareConversionOut = "Unit/Share Conversion -"
+  implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
 
   private implicit def parseNumberOption(candidateNumber: String): Option[BigDecimal] = {
     val filteredNumber = stripNonFPDigits(candidateNumber)

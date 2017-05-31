@@ -1,8 +1,8 @@
 package models.org.ludwiggj.finance
 
 import domain._
-import Transaction._
-import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFund
+import domain.TransactionType._
+import persistence.database.TransactionsPerUserAndFund
 
 package object data {
   val userA = "User A"

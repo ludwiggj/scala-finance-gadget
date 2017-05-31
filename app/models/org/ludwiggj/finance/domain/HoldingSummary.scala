@@ -1,5 +1,7 @@
 package models.org.ludwiggj.finance.domain
 
+import TransactionType.{InvestmentLumpSum, InvestmentRegular, UnitShareConversionIn, UnitShareConversionOut}
+
 case class HoldingSummary(val amountIn: BigDecimal, val unitsIn: BigDecimal,
                           private val unitsOutOption: Option[BigDecimal],
                           val price: Price) extends Ordered[HoldingSummary] {
@@ -24,8 +26,6 @@ case class HoldingSummary(val amountIn: BigDecimal, val unitsIn: BigDecimal,
 }
 
 object HoldingSummary {
-
-  import Transaction._
 
   def apply(transactions: List[Transaction], price: Price): HoldingSummary = {
 

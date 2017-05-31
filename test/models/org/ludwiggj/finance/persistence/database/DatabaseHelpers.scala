@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
-import models.org.ludwiggj.finance.domain.Transaction._
+import models.org.ludwiggj.finance.domain.TransactionType._
 import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
 
 trait DatabaseHelpers {
@@ -32,8 +32,6 @@ trait DatabaseHelpers {
     "nike140625" -> Transaction(
       "User A", price("nike140625").date, InvestmentRegular, Some(10.2), None, price("nike140625"), 3.322)
   )
-
-//  Transaction(userA, price("kappa140520").date, InvestmentRegular, Some(2.0), None, price("kappa140520"), 1.234)
 
   val txUserB: Map[String, Transaction] = Map(
     "nike140622" -> Transaction(
