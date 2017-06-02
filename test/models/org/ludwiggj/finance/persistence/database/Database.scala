@@ -4,14 +4,23 @@ import scala.io.Source
 import play.api.db.DB
 import play.api.Play.current
 
+import scala.util.{Failure, Success, Try}
+
 object Database {
 
-  private def getDdls(sqlFiles: List[String]) = for {
-    sqlFile <- sqlFiles
-    evolutionContent = Source.fromFile(s"conf/evolutions/finance/$sqlFile").getLines.mkString("\n")
-    splitEvolutionContent = evolutionContent.split("# --- !Ups")
-    upsDowns = splitEvolutionContent(1).split("# --- !Downs")
-  } yield (upsDowns(1), upsDowns(0))
+  type Evolution = (String, String)
+
+  private def getDdls(sqlFileNumber:Int = 1, ddls: List[Evolution] = List()): List[Evolution] = {
+    val evolutionContent = Try(Source.fromFile(s"conf/evolutions/finance/${sqlFileNumber}.sql").getLines.mkString("\n"))
+    evolutionContent match {
+      case Success(evolutionStr) => {
+        val upsDowns = evolutionStr.split("# --- !Ups")(1).split("# --- !Downs")
+        getDdls(sqlFileNumber + 1, (upsDowns(1), upsDowns(0)) :: ddls)
+      }
+
+      case Failure(ex) => ddls.reverse
+    }
+  }
 
   private def executeDbStatements(statements: List[String]) = {
     DB.withConnection("finance") { implicit connection =>
@@ -23,7 +32,7 @@ object Database {
   }
 
   def recreate() = {
-    val ddls = getDdls(List("1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql"))
+    val ddls = getDdls()
 
     val dropDdls = (ddls map {
       _._1
