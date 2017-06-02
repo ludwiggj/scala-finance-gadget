@@ -32,8 +32,8 @@ trait Tables {
 
   // Funds table
   class Funds(_tableTag: Tag) extends Table[FundsRow](_tableTag, "FUNDS") {
-    val id: Column[Long] = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-    val name: Column[String] = column[String]("NAME", O.Length(254, varying = true))
+    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+    val name = column[String]("NAME", O.Length(254, varying = true))
 
     def * = (id, name) <> (FundsRow.tupled, FundsRow.unapply)
 
@@ -55,9 +55,9 @@ trait Tables {
 
   // Prices table
   class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
-    val fundId: Column[Long] = column[Long]("FUND_ID")
-    val date: Column[Date] = column[Date]("PRICE_DATE")
-    val price: Column[BigDecimal] = column[BigDecimal]("PRICE")
+    val fundId = column[Long]("FUND_ID")
+    val date = column[Date]("PRICE_DATE")
+    val price = column[BigDecimal]("PRICE")
 
     def * = (fundId, date, price) <> (PricesRow.tupled, PricesRow.unapply)
 
@@ -87,29 +87,27 @@ trait Tables {
                               userId: Long,
                               date: Date,
                               description: TransactionType,
-                              amountIn: BigDecimal = "0.0000",
-                              amountOut: BigDecimal = "0.0000",
+                              amountIn: Option[BigDecimal] = None,
+                              amountOut: Option[BigDecimal] = None,
                               priceDate: Date,
                               units: BigDecimal
                             )
 
   // Transactions table
   class Transactions(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
-    val fundId: Column[Long] = column[Long]("FUND_ID")
-    val userId: Column[Long] = column[Long]("USER_ID")
-    val date: Column[Date] = column[Date]("TRANSACTION_DATE")
-    val description: Column[TransactionType] = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))
-    val amountIn: Column[BigDecimal] = column[BigDecimal]("AMOUNT_IN", O.Default("0.0000"))
-    val amountOut: Column[BigDecimal] = column[BigDecimal]("AMOUNT_OUT", O.Default("0.0000"))
-    val priceDate: Column[Date] = column[Date]("PRICE_DATE")
-    val units: Column[BigDecimal] = column[BigDecimal]("UNITS")
+    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+    val fundId = column[Long]("FUND_ID")
+    val userId = column[Long]("USER_ID")
+    val date = column[Date]("TRANSACTION_DATE")
+    val description = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))
+    val amountIn = column[Option[BigDecimal]]("AMOUNT_IN")
+    val amountOut = column[Option[BigDecimal]]("AMOUNT_OUT")
+    val priceDate = column[Date]("PRICE_DATE")
+    val units = column[BigDecimal]("UNITS")
 
     def * = (
       fundId, userId, date, description, amountIn, amountOut, priceDate, units
     ) <> (TransactionsRow.tupled, TransactionsRow.unapply)
-
-    // Primary key
-    val pk = primaryKey("TRANSACTIONS_PK", (fundId, userId, date, description, amountIn, amountOut, priceDate, units))
 
     // Foreign keys
     lazy val fundsFk = foreignKey(
@@ -140,9 +138,9 @@ trait Tables {
 
   // Users Table
   class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
-    val id: Column[Long] = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-    val name: Column[String] = column[String]("NAME", O.Length(254, varying = true))
-    val password: Column[Option[String]] = column[Option[String]]("PASSWORD", O.Length(254, varying = true), O.Default(None))
+    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+    val name = column[String]("NAME", O.Length(254, varying = true))
+    val password = column[Option[String]]("PASSWORD", O.Length(254, varying = true), O.Default(None))
 
     def * = (id, name, password) <> (UsersRow.tupled, UsersRow.unapply)
 

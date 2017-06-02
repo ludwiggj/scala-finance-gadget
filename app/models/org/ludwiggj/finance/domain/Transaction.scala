@@ -63,11 +63,16 @@ case class Transaction(val userName: String,
 
 object Transaction {
 
-  implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
+  private implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
 
-  private implicit def parseNumberOption(candidateNumber: String): Option[BigDecimal] = {
-    val filteredNumber = stripNonFPDigits(candidateNumber)
-    if (filteredNumber.size == 0) None else Some(stringToBigDecimal(filteredNumber))
+  private implicit def stringToBigDecimalOption(candidateNumber: String): Option[BigDecimal] = {
+    // Force implicit conversion here
+    val decimal: Try[BigDecimal] = Try(candidateNumber)
+
+    decimal match {
+      case Success(value) => Some(value)
+      case Failure(ex) => None
+    }
   }
 
   def apply(userName: String, row: String): Transaction = {
@@ -87,8 +92,6 @@ object Transaction {
     val txPattern(fundName, date, description, in, out, priceDate, priceInPence, units, _) =
       stripAllWhitespaceExceptSpace(row)
 
-    import models.org.ludwiggj.finance.domain.stringToBigDecimal
-
     val priceInPounds = Try(stringToBigDecimal(priceInPence) / 100) match {
       case Success(price) => price
       case Failure(ex: NumberFormatException) => BigDecimal(0)
@@ -104,15 +107,6 @@ object Transaction {
 
   // Database interactions
   def db = Database.forDataSource(DB.getDataSource("finance"))
-
-  // TODO - The following 2 implicits shouldn't be needed...
-  implicit def bigDecimalToOption(value: BigDecimal) = {
-    if (value == 0) None else Some(value)
-  }
-
-  implicit def optionToBigDecimal(value: Option[BigDecimal]): BigDecimal = {
-    if (value.isDefined) value.get else 0
-  }
 
   def insert(transaction: Transaction) {
 
@@ -215,8 +209,6 @@ object Transaction {
   private def getTransactionsUntil(dateOfInterest: Date,
                                    userFilter: (Transactions, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
 
-    def amountOption(amount: BigDecimal) = if (amount == 0.0) None else Some(amount)
-
     val candidates = db.withSession {
       implicit session =>
         (for {
@@ -239,8 +231,8 @@ object Transaction {
         (userName, fundName, fundId, priceRow, tx) <- rows
       } yield
         Transaction(
-          userName, tx.date, tx.description, amountOption(tx.amountIn),
-          amountOption(tx.amountOut), Price(fundName, priceRow.date, priceRow.price), tx.units
+          userName, tx.date, tx.description, tx.amountIn, tx.amountOut,
+          Price(fundName, priceRow.date, priceRow.price), tx.units
         )
 
       (txs, latestPrice)
