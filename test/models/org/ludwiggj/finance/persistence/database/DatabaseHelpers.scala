@@ -1,5 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
+import models.org.ludwiggj.finance.stringToLocalDate
 import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.domain.TransactionType._

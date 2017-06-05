@@ -1,6 +1,7 @@
 package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.data.TestPrices
+import models.org.ludwiggj.finance.stringToLocalDate
 import org.scalatest.{FunSuite, Matchers}
 
 class PriceSuite extends FunSuite with Matchers with TestPrices {

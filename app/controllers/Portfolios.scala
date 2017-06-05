@@ -1,30 +1,28 @@
 package controllers
 
-import models.org.ludwiggj.finance.dateTimeToDate
-import models.org.ludwiggj.finance.domain.FinanceDate.sqlDateToFinanceDate
-import models.org.ludwiggj.finance.domain.{FinanceDate, PortfolioList, Transaction}
-import models.org.ludwiggj.finance.web.User
-import java.sql.Date
-import java.util
 import javax.inject.Inject
-import org.joda.time.DateTime
-import play.api.mvc._
+
+import models.org.ludwiggj.finance.LocalDateOrdering
+import models.org.ludwiggj.finance.domain.{PortfolioList, Transaction}
+import models.org.ludwiggj.finance.web.User
+import org.joda.time.LocalDate
 import play.api.cache._
-import scala.concurrent.duration._
+import play.api.mvc._
 import scala.collection.immutable.SortedMap
+import scala.concurrent.duration._
 
 class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
 
   def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
 
-  private def getPortfolioDataOnDate(username: String, date: Date): PortfolioList = {
+  private def getPortfolioDataOnDate(username: String, date: LocalDate): PortfolioList = {
     println(s"getPortfolioDataOnDate: $username-portfolio-$date")
     cache.getOrElse[PortfolioList](s"$username-portfolio-$date", 5.minutes) {
       if (User.isAdmin(username)) PortfolioList.get(date) else PortfolioList.get(date, username)
     }
   }
 
-  def onDate(date: Date) = {
+  def onDate(date: LocalDate) = {
     IsAuthenticated { username =>
       implicit request =>
         val portfolios = getPortfolioDataOnDate(username, date)
@@ -36,26 +34,28 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
     IsAuthenticated { username =>
       implicit request =>
         println(s"all: $username-allInvestmentDates")
-        val allInvestmentDates = cache.getOrElse[List[FinanceDate]](s"$username-allInvestmentDates", 5.minutes) {
-          Transaction.getRegularInvestmentDates().map(sqlDateToFinanceDate)
+        val allInvestmentDates = cache.getOrElse[List[LocalDate]](s"$username-allInvestmentDates", 5.minutes) {
+          Transaction.getRegularInvestmentDates()
         }
 
         def investmentDates(yearOffset: Int) = {
-          val now = new DateTime()
-          val beforeDate: util.Date = now.minusYears(yearOffset)
-          val afterDate: util.Date = now.minusYears(yearOffset + 1)
+          val now = new LocalDate()
+          val beforeDate = now.minusYears(yearOffset)
+          val afterDate = now.minusYears(yearOffset + 1)
+
+          import LocalDateOrdering._
 
           allInvestmentDates.filter { d =>
-            d.after(afterDate) && d.before(beforeDate)
+            d < beforeDate && d > afterDate
           }
         }
 
-        def getPortfolios(investmentDates: List[FinanceDate]): Map[FinanceDate, PortfolioList] = {
-          def investmentDatesSince(date: FinanceDate): List[FinanceDate] = {
+        def getPortfolios(investmentDates: List[LocalDate]): Map[LocalDate, PortfolioList] = {
+          def investmentDatesSince(date: LocalDate): List[LocalDate] = {
             if (User.isAdmin(username))
-              Transaction.getDatesSince(date).map(sqlDateToFinanceDate)
+              Transaction.getDatesSince(date)
             else
-              Transaction.getDatesSince(date, username).map(sqlDateToFinanceDate)
+              Transaction.getDatesSince(date, username)
           }
 
           val allDates = investmentDatesSince(allInvestmentDates.head) ++ investmentDates
@@ -66,8 +66,7 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
             (date, thePortfolios)
           }))
 
-          implicit val Ord = implicitly[Ordering[FinanceDate]]
-          SortedMap(portfolios: _*)(Ord.reverse)
+          SortedMap(portfolios: _*)(LocalDateOrdering.reverse)
         }
 
         def adjacentYearOffsets() = {

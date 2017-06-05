@@ -1,27 +1,30 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.dateTimeToSqlDate
-import models.org.ludwiggj.finance.persistence.database.Tables
-import models.org.ludwiggj.finance.persistence.database.Tables._
-import Fund.fundNameToFundsRow
-import FinanceDate.sqlDateToFinanceDate
 import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
+import models.org.ludwiggj.finance.persistence.database.Tables
+import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
+import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
+
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
-case class Price(val fundName: FundName, val date: FinanceDate, val inPounds: BigDecimal) extends PersistableToFile {
+case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) extends PersistableToFile {
 
   override def toString =
-    s"Price [name: $fundName, date: $date, price: £$inPounds]"
+    s"Price [name: $fundName, date: ${FormattableLocalDate(date)}, price: £$inPounds]"
 
-  def toFileFormat = s"$fundName$separator$date$separator$inPounds"
+  def toFileFormat = s"$fundName$separator${FormattableLocalDate(date)}$separator$inPounds"
 }
 
 object Price {
+  import models.org.ludwiggj.finance.{localDateToSqlDate, sqlDateToLocalDate, stringToLocalDate}
+  import models.org.ludwiggj.finance.LocalDateOrdering._
+
   def apply(row: Array[String]): Price = {
     Price(row(0), row(1), row(2))
   }
@@ -80,8 +83,8 @@ object Price {
     }
   }
 
-  private def pricesOn(priceDate: FinanceDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
-    val priceSqlDate: Date = priceDate.date
+  private def pricesOn(priceDate: LocalDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
+    val priceSqlDate: Date = priceDate
 
     db.withSession {
       implicit session =>
@@ -93,17 +96,18 @@ object Price {
     Prices.withFunds
   }
 
-  def get(fundName: FundName, priceDate: FinanceDate): Option[Price] = {
+  def get(fundName: FundName, priceDate: LocalDate): Option[Price] = {
     pricesOn(priceDate).withFundsNamed(fundName).headOption
   }
 
   private val dateDifference = SimpleFunction.binary[Date, Date, Int]("DATEDIFF")
 
-  private def latestPriceDates(dateOfInterest: Date) = {
+  private def latestPriceDates(dateOfInterest: LocalDate) = {
+    val theDateOfInterest: Date = dateOfInterest
     db.withSession {
       implicit session =>
         Prices
-          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
+          .filter { p => ((dateDifference(p.date, theDateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
             (fundId, group.map(_.date).max)
@@ -112,7 +116,7 @@ object Price {
     }
   }
 
-  def latestPrices(dateOfInterest: Date): Map[Long, Price] = {
+  def latestPrices(dateOfInterest: LocalDate): Map[Long, Price] = {
 
     def latestPrices: Map[Long, Price] = {
       val pricesList = db.withSession {
@@ -134,8 +138,10 @@ object Price {
     }
 
     def adjustLatestPricesForFundChanges(latestPrices: Map[Long, Price]): Map[Long, Price] = {
+      val theDateOfInterest: LocalDate = dateOfInterest
+
       val fundChangeMap = (for {
-        fc <- FundChange.getFundChangesUpUntil(dateOfInterest.plusDays(1))
+        fc <- FundChange.getFundChangesUpUntil(theDateOfInterest.plusDays(1))
         fundIds <- fc.getFundIds
       } yield (fundIds)).toMap
 

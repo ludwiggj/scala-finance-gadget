@@ -1,7 +1,6 @@
 package models.org.ludwiggj.finance.web
 
 import models.org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
-import org.junit.Ignore
 import org.scalatest.{FunSuite, Matchers}
 
 class LoginFormIntegrationTest extends FunSuite with Matchers {

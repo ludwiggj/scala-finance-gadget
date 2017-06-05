@@ -1,8 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{FinanceDate, Fund, FundName, Price}
+import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.Tables.FundsRow
-import models.org.ludwiggj.finance.stringToSqlDate
+import models.org.ludwiggj.finance.stringToLocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
@@ -44,7 +44,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       "increase by one in length if add new unique price" in {
         TwoPrices.loadData()
 
-        val newPrice = Price("holding1", FinanceDate("21/05/2014"), 2.12)
+        val newPrice = Price("holding1", "21/05/2014", 2.12)
         Price.insert(newPrice)
         Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"), newPrice)
       }
@@ -75,7 +75,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return the latest price for each fund" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("20/6/2014") must equal(
+      Price.latestPrices("20/06/2014") must equal(
         Map(1L -> price("kappa140523"), 2L -> price("nike140621"))
       )
     }
@@ -83,7 +83,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a price if it is zero" in {
       MultiplePricesForSingleFund.loadData()
 
-      Price.latestPrices("16/5/2014") must equal(
+      Price.latestPrices("16/05/2014") must equal(
         Map(1L -> price("kappa140512"))
       )
     }
@@ -91,7 +91,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a price if it is a two or more days too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("19/6/2014") must equal(
+      Price.latestPrices("19/06/2014") must equal(
         Map(1L -> price("kappa140523"), 2L -> price("nike140620"))
       )
     }
@@ -99,7 +99,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a fund if its earliest price is too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("21/5/2014") must equal(
+      Price.latestPrices("21/05/2014") must equal(
         Map(1L -> price("kappa140520"))
       )
     }
@@ -107,7 +107,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit prices from name change fund if date of interest is more than one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      Price.latestPrices("22/5/2014") must equal(
+      Price.latestPrices("22/05/2014") must equal(
         Map(1L -> price("kappa140523"))
       )
     }
@@ -117,7 +117,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
 
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
-      Price.latestPrices("23/5/2014") must equal(
+      Price.latestPrices("23/05/2014") must equal(
         Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
       )
     }
@@ -126,7 +126,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
-      Price.latestPrices("24/5/2014") must equal(
+      Price.latestPrices("24/05/2014") must equal(
         Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
       )
     }

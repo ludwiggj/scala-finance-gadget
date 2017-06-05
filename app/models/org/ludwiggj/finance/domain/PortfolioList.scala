@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.domain
 
-import java.sql.Date
+import org.joda.time.LocalDate
 import scala.language.implicitConversions
 
 case class PortfolioList(private val portfolios: List[Portfolio]) {
@@ -16,7 +16,7 @@ object PortfolioList {
     new PortfolioList(portfolios)
   }
 
-  def get(dateOfInterest: Date): PortfolioList = {
+  def get(dateOfInterest: LocalDate): PortfolioList = {
 
     val transactions = Transaction.getTransactionsUntil(dateOfInterest)
 
@@ -29,7 +29,7 @@ object PortfolioList {
     }
   }
 
-  def get(dateOfInterest: Date, userName: String): PortfolioList = {
+  def get(dateOfInterest: LocalDate, userName: String): PortfolioList = {
 
     val transactions = Transaction.getTransactionsUntil(dateOfInterest, userName)
 

@@ -1,6 +1,7 @@
-@import models.org.ludwiggj.finance.domain.{CashDelta, FinanceDate, Portfolio, PortfolioList}
+@import models.org.ludwiggj.finance.domain.{CashDelta, FormattableLocalDate, Portfolio, PortfolioList}
+@import _root_.org.joda.time.LocalDate
 
-@(data: scala.collection.immutable.Map[FinanceDate, PortfolioList], previousYear: Option[Int], nextYear: Option[Int])
+@(data: scala.collection.immutable.Map[LocalDate, PortfolioList], previousYear: Option[Int], nextYear: Option[Int])
 <html>
 <head>
     <style type="text/css" media="screen">
@@ -66,7 +67,7 @@
     @data.map { case (investmentDate, portfolioList) =>
     <tr>
         <td>
-            <a href="@controllers.routes.Portfolios.onDate(investmentDate)">@investmentDate</a>
+            <a href="@controllers.routes.Portfolios.onDate(investmentDate)">@(FormattableLocalDate(investmentDate))</a>
         </td>
 
         @for(portfolio <- portfolioList.iterator) {

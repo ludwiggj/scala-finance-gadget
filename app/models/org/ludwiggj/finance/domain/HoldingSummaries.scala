@@ -2,9 +2,10 @@ package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.domain.FundChange.getFundChangesUpUntil
 import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFund
+import org.joda.time.LocalDate
 
 //TODO - rename to HoldingSummaryList
-case class HoldingSummaries(val holdings: List[HoldingSummary]) {
+case class HoldingSummaries(holdings: List[HoldingSummary]) {
   def amountIn = holdings.map(_.amountIn).sum
 
   def total = holdings.map(_.total).sum
@@ -18,7 +19,7 @@ case class HoldingSummaries(val holdings: List[HoldingSummary]) {
 
 object HoldingSummaries {
 
-  def apply(transactions: TransactionsPerUserAndFund, userName: String, dateOfInterest: FinanceDate): HoldingSummaries = {
+  def apply(transactions: TransactionsPerUserAndFund, userName: String, dateOfInterest: LocalDate): HoldingSummaries = {
 
     def adjustHoldings(holdings: List[HoldingSummary], fundChange: FundChange): List[HoldingSummary] = {
 

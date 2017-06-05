@@ -2,9 +2,9 @@ package models.org.ludwiggj.finance.domain
 
 import TransactionType.{InvestmentLumpSum, InvestmentRegular, UnitShareConversionIn, UnitShareConversionOut}
 
-case class HoldingSummary(val amountIn: BigDecimal, val unitsIn: BigDecimal,
+case class HoldingSummary(amountIn: BigDecimal, unitsIn: BigDecimal,
                           private val unitsOutOption: Option[BigDecimal],
-                          val price: Price) extends Ordered[HoldingSummary] {
+                          price: Price) extends Ordered[HoldingSummary] {
   val zero = BigDecimal(0)
 
   val unitsOut = unitsOutOption.getOrElse(zero)

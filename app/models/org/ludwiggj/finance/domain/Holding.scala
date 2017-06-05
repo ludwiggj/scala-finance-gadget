@@ -3,7 +3,7 @@ package models.org.ludwiggj.finance.domain
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import scala.language.implicitConversions
 
-case class Holding(val userName: String, val price: Price, val units: BigDecimal) extends PersistableToFile {
+case class Holding(userName: String, price: Price, units: BigDecimal) extends PersistableToFile {
   def value = (units * price.inPounds).setScale(2, BigDecimal.RoundingMode.HALF_UP)
 
   def priceInPounds = price.inPounds
@@ -13,10 +13,10 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
   def name = price.fundName
 
   override def toString =
-    s"Financial Holding [userName: ${userName}, name: ${price.fundName}, units: $units, date: ${price.date}, " +
+    s"Financial Holding [userName: ${userName}, name: ${price.fundName}, units: $units, date: ${FormattableLocalDate(price.date)}, " +
       s"price: £${price.inPounds}, value: £$value]"
 
-  def toFileFormat = s"${price.fundName}$separator$units$separator${price.date}$separator${price.inPounds}" +
+  def toFileFormat = s"${price.fundName}$separator$units$separator${FormattableLocalDate(price.date)}$separator${price.inPounds}" +
     s"$separator$value"
 
   def canEqual(h: Holding) = (userName == h.userName) && (name == h.name) && (priceDate == h.priceDate)
@@ -40,6 +40,8 @@ case class Holding(val userName: String, val price: Price, val units: BigDecimal
 
 object Holding {
 
+  import models.org.ludwiggj.finance.stringToLocalDate
+
   def apply(userName: String, row: String): Holding = {
     val holdingPattern = (
       """.*?<span.*?>([^<]+)</span>""" +
@@ -54,8 +56,6 @@ object Holding {
     val priceInPounds: BigDecimal = priceInPence / 100;
     Holding(userName, Price(fundName, date, priceInPounds), units)
   }
-
-  import FinanceDate.stringToFinanceDate
 
   def apply(userName: String, row: Array[String]): Holding = {
     Holding(userName, Price(row(0), row(2), row(3)), row(1))

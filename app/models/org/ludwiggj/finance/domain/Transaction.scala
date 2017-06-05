@@ -7,6 +7,7 @@ import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
+import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
 import scala.collection.immutable.ListMap
@@ -14,13 +15,13 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.{Failure, Success, Try}
 
-case class Transaction(val userName: String,
-                       val date: FinanceDate,
-                       val description: TransactionType,
-                       val in: Option[BigDecimal],
-                       val out: Option[BigDecimal],
-                       val price: Price,
-                       val units: BigDecimal) extends PersistableToFile {
+case class Transaction(userName: String,
+                       date: LocalDate,
+                       description: TransactionType,
+                       in: Option[BigDecimal],
+                       out: Option[BigDecimal],
+                       price: Price,
+                       units: BigDecimal) extends PersistableToFile {
 
   val fundName = price.fundName
 
@@ -29,12 +30,12 @@ case class Transaction(val userName: String,
   val priceInPounds = price.inPounds
 
   override def toString =
-    s"Tx [userName: ${userName}, holding: ${price.fundName}, date: $date, description: $description, in: $in, out: $out, " +
-      s"price date: ${price.date}, price: ${price.inPounds}, units: $units]"
+    s"Tx [userName: ${userName}, holding: ${price.fundName}, date: ${FormattableLocalDate(date)}, description: $description, in: $in, out: $out, " +
+      s"price date: ${FormattableLocalDate(price.date)}, price: ${price.inPounds}, units: $units]"
 
-  def toFileFormat = s"${price.fundName}$separator$date$separator$description" +
+  def toFileFormat = s"${price.fundName}$separator${FormattableLocalDate(date)}$separator$description" +
     s"$separator${in.getOrElse("")}$separator${out.getOrElse("")}" +
-    s"$separator${price.date}$separator${price.inPounds}$separator$units"
+    s"$separator${FormattableLocalDate(price.date)}$separator${price.inPounds}$separator$units"
 
   def canEqual(t: Transaction) = (fundName == t.fundName) && (userName == t.userName) && (date == t.date) &&
     (description == t.description) && (in == t.in) && (out == t.out) && (priceDate == t.priceDate) &&
@@ -62,6 +63,8 @@ case class Transaction(val userName: String,
 }
 
 object Transaction {
+
+  import models.org.ludwiggj.finance.{localDateToSqlDate, sqlDateToLocalDate, stringToLocalDate}
 
   private implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
 
@@ -164,7 +167,7 @@ object Transaction {
     }
   }
 
-  private def getDates(transactionFilter: (Transactions) => Column[Boolean]): List[Date] = {
+  private def getDates(transactionFilter: (Transactions) => Column[Boolean]): List[LocalDate] = {
     db.withSession {
       implicit session =>
         Transactions
@@ -173,11 +176,11 @@ object Transaction {
           }
           .map {
             _.date
-          }.sorted.list.distinct.reverse
+          }.sorted.list.map(sqlDateToLocalDate(_)).distinct.reverse
     }
   }
 
-  def getRegularInvestmentDates(): List[Date] = {
+  def getRegularInvestmentDates(): List[LocalDate] = {
     def transactionFilter(t: Transactions) = {
       t.description === InvestmentRegular
     }
@@ -185,35 +188,37 @@ object Transaction {
     getDates(transactionFilter _)
   }
 
-  def getDatesSince(dateOfInterest: Date): List[Date] = {
+  def getDatesSince(dateOfInterest: LocalDate): List[LocalDate] = {
     def transactionFilter(t: Transactions) = {
-      t.date > dateOfInterest
+      t.date > localDateToSqlDate(dateOfInterest)
     }
 
     getDates(transactionFilter _)
   }
 
-  def getDatesSince(dateOfInterest: Date, userName: String): List[Date] = {
+  def getDatesSince(dateOfInterest: LocalDate, userName: String): List[LocalDate] = {
     db.withSession {
       implicit session =>
         Transactions.innerJoin(Users).on(_.userId === _.id)
           .filter { case (_, u) => u.name === userName }
           .map { case (t, _) => t.date }
           .filter {
-            _ > dateOfInterest
+            _ > localDateToSqlDate(dateOfInterest)
           }
-          .sorted.list.distinct.reverse
+          .sorted.list.map(sqlDateToLocalDate((_))).distinct.reverse
     }
   }
 
-  private def getTransactionsUntil(dateOfInterest: Date,
+  private def getTransactionsUntil(dateOfInterest: LocalDate,
                                    userFilter: (Transactions, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
 
+    import models.org.ludwiggj.finance.localDateToSqlDate
+    val theDateOfInterest: Date = dateOfInterest
     val candidates = db.withSession {
       implicit session =>
         (for {
           t <- Transactions.filter {
-            _.date <= dateOfInterest
+            _.date <= theDateOfInterest
           }
           f <- Funds if f.id === t.fundId
           u <- Users if userFilter(t, u)
@@ -240,7 +245,7 @@ object Transaction {
     )
   }
 
-  def getTransactionsUntil(dateOfInterest: Date): TransactionsPerUserAndFund = {
+  def getTransactionsUntil(dateOfInterest: LocalDate): TransactionsPerUserAndFund = {
     def userFilter(t: Transactions, u: Users) = {
       u.id === t.userId
     }
@@ -248,7 +253,7 @@ object Transaction {
     getTransactionsUntil(dateOfInterest, userFilter _)
   }
 
-  def getTransactionsUntil(dateOfInterest: Date, userName: String): TransactionsPerUserAndFund = {
+  def getTransactionsUntil(dateOfInterest: LocalDate, userName: String): TransactionsPerUserAndFund = {
     def userFilter(t: Transactions, u: Users) = {
       u.id === t.userId && u.name === userName
     }
