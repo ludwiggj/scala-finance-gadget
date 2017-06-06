@@ -1,6 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import java.sql.Date
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.persistence.database.Tables
@@ -22,8 +21,8 @@ case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) exte
 }
 
 object Price {
-  import models.org.ludwiggj.finance.{localDateToSqlDate, sqlDateToLocalDate, stringToLocalDate}
   import models.org.ludwiggj.finance.LocalDateOrdering._
+  import models.org.ludwiggj.finance.stringToLocalDate
 
   def apply(row: Array[String]): Price = {
     Price(row(0), row(1), row(2))
@@ -84,11 +83,9 @@ object Price {
   }
 
   private def pricesOn(priceDate: LocalDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
-    val priceSqlDate: Date = priceDate
-
     db.withSession {
       implicit session =>
-        Prices filter (_.date === priceSqlDate)
+        Prices filter (_.date === priceDate)
     }
   }
 
@@ -100,14 +97,13 @@ object Price {
     pricesOn(priceDate).withFundsNamed(fundName).headOption
   }
 
-  private val dateDifference = SimpleFunction.binary[Date, Date, Int]("DATEDIFF")
+  private val dateDifference = SimpleFunction.binary[LocalDate, LocalDate, Int]("DATEDIFF")
 
   private def latestPriceDates(dateOfInterest: LocalDate) = {
-    val theDateOfInterest: Date = dateOfInterest
     db.withSession {
       implicit session =>
         Prices
-          .filter { p => ((dateDifference(p.date, theDateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
+          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
             (fundId, group.map(_.date).max)

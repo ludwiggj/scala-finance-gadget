@@ -1,7 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import java.sql.Date
-
 import models.org.ludwiggj.finance.domain.TransactionType.{InvestmentRegular, TransactionType}
 import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
@@ -10,6 +8,7 @@ import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
+
 import scala.collection.immutable.ListMap
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
@@ -64,7 +63,7 @@ case class Transaction(userName: String,
 
 object Transaction {
 
-  import models.org.ludwiggj.finance.{localDateToSqlDate, sqlDateToLocalDate, stringToLocalDate}
+  import models.org.ludwiggj.finance.stringToLocalDate
 
   private implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
 
@@ -176,7 +175,7 @@ object Transaction {
           }
           .map {
             _.date
-          }.sorted.list.map(sqlDateToLocalDate(_)).distinct.reverse
+          }.sorted.list.distinct.reverse
     }
   }
 
@@ -190,7 +189,7 @@ object Transaction {
 
   def getDatesSince(dateOfInterest: LocalDate): List[LocalDate] = {
     def transactionFilter(t: Transactions) = {
-      t.date > localDateToSqlDate(dateOfInterest)
+      t.date > dateOfInterest
     }
 
     getDates(transactionFilter _)
@@ -203,22 +202,20 @@ object Transaction {
           .filter { case (_, u) => u.name === userName }
           .map { case (t, _) => t.date }
           .filter {
-            _ > localDateToSqlDate(dateOfInterest)
+            _ > dateOfInterest
           }
-          .sorted.list.map(sqlDateToLocalDate((_))).distinct.reverse
+          .sorted.list.distinct.reverse
     }
   }
 
   private def getTransactionsUntil(dateOfInterest: LocalDate,
                                    userFilter: (Transactions, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
 
-    import models.org.ludwiggj.finance.localDateToSqlDate
-    val theDateOfInterest: Date = dateOfInterest
     val candidates = db.withSession {
       implicit session =>
         (for {
           t <- Transactions.filter {
-            _.date <= theDateOfInterest
+            _.date <= dateOfInterest
           }
           f <- Funds if f.id === t.fundId
           u <- Users if userFilter(t, u)

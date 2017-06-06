@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import java.sql.Date
+import java.sql.Timestamp
 
 import models.org.ludwiggj.finance.domain.TransactionType.TransactionType
+import org.joda.time.LocalDate
 
 object Tables extends {
   val profile = scala.slick.driver.MySQLDriver
@@ -19,6 +20,12 @@ trait Tables {
 
   /** DDL for all tables. Call .create to execute. */
   lazy val ddl = Funds.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
+
+  // Map joda LocalDate into sql Timestamp
+  implicit val jodaDateTimeType = MappedColumnType.base[LocalDate, Timestamp](
+    ld => new Timestamp(ld.toDateTimeAtStartOfDay.getMillis),
+    ts => new LocalDate(ts.getTime)
+  )
 
   // ---------------
   // FUNDS
@@ -49,14 +56,14 @@ trait Tables {
   // Entity class storing rows of table Prices
   case class PricesRow(
                         fundId: Long,
-                        date: Date,
+                        date: LocalDate,
                         price: BigDecimal
                       )
 
   // Prices table
   class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
     val fundId = column[Long]("FUND_ID")
-    val date = column[Date]("PRICE_DATE")
+    val date = column[LocalDate]("PRICE_DATE")
     val price = column[BigDecimal]("PRICE")
 
     def * = (fundId, date, price) <> (PricesRow.tupled, PricesRow.unapply)
@@ -85,11 +92,11 @@ trait Tables {
   case class TransactionsRow(
                               fundId: Long,
                               userId: Long,
-                              date: Date,
+                              date: LocalDate,
                               description: TransactionType,
                               amountIn: Option[BigDecimal] = None,
                               amountOut: Option[BigDecimal] = None,
-                              priceDate: Date,
+                              priceDate: LocalDate,
                               units: BigDecimal
                             )
 
@@ -98,11 +105,11 @@ trait Tables {
     val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[Long]("FUND_ID")
     val userId = column[Long]("USER_ID")
-    val date = column[Date]("TRANSACTION_DATE")
+    val date = column[LocalDate]("TRANSACTION_DATE")
     val description = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))
     val amountIn = column[Option[BigDecimal]]("AMOUNT_IN")
     val amountOut = column[Option[BigDecimal]]("AMOUNT_OUT")
-    val priceDate = column[Date]("PRICE_DATE")
+    val priceDate = column[LocalDate]("PRICE_DATE")
     val units = column[BigDecimal]("UNITS")
 
     def * = (

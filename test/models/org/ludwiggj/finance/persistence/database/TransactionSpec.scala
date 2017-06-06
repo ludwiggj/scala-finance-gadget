@@ -1,10 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import java.sql.Date
-
 import models.org.ludwiggj.finance.domain.{Fund, Price, Transaction, User}
 import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, UsersRow}
-import models.org.ludwiggj.finance.stringToSqlDate
 import models.org.ludwiggj.finance.stringToLocalDate
 import org.joda.time.LocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
