@@ -4,12 +4,20 @@ import java.sql.Timestamp
 
 import org.joda.time.LocalDate
 
+import scala.slick.lifted.MappedTo
+
+object PKs {
+  final case class PK[A](value: Long) extends AnyVal with MappedTo[Long]
+}
+
 object Tables extends {
   val profile = scala.slick.driver.MySQLDriver
 } with Tables
 
 // Slick data model trait for extension, choice of backend or usage in the cake pattern.
 trait Tables {
+  import PKs.PK
+
   val profile: scala.slick.driver.JdbcProfile
 
   import profile.simple._
@@ -32,13 +40,13 @@ trait Tables {
 
   // Entity class storing rows of table Funds
   case class FundsRow(
-                       id: Long,
+                       id: PK[FundTable],
                        name: String
                      )
 
   // Funds table
-  class Funds(_tableTag: Tag) extends Table[FundsRow](_tableTag, "FUNDS") {
-    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+  class FundTable(_tableTag: Tag) extends Table[FundsRow](_tableTag, "FUNDS") {
+    val id = column[PK[FundTable]]("ID", O.AutoInc, O.PrimaryKey)
     val name = column[String]("NAME", O.Length(254, varying = true))
 
     def * = (id, name) <> (FundsRow.tupled, FundsRow.unapply)
@@ -46,7 +54,7 @@ trait Tables {
     val index1 = index("NAME", name, unique = true)
   }
 
-  lazy val Funds = new TableQuery(tag => new Funds(tag))
+  lazy val Funds = new TableQuery(tag => new FundTable(tag))
 
   // ---------------
   // PRICES
@@ -54,14 +62,14 @@ trait Tables {
 
   // Entity class storing rows of table Prices
   case class PricesRow(
-                        fundId: Long,
+                        fundId: PK[FundTable],
                         date: LocalDate,
                         price: BigDecimal
                       )
 
   // Prices table
   class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
-    val fundId = column[Long]("FUND_ID")
+    val fundId = column[PK[FundTable]]("FUND_ID")
     val date = column[LocalDate]("PRICE_DATE")
     val price = column[BigDecimal]("PRICE")
 
@@ -89,7 +97,7 @@ trait Tables {
 
   // Entity class storing rows of table Transactions
   case class TransactionsRow(
-                              fundId: Long,
+                              fundId: PK[FundTable],
                               userId: Long,
                               date: LocalDate,
                               description: TransactionType,
@@ -102,7 +110,7 @@ trait Tables {
   // Transactions table
   class Transactions(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
     val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-    val fundId = column[Long]("FUND_ID")
+    val fundId = column[PK[FundTable]]("FUND_ID")
     val userId = column[Long]("USER_ID")
     val date = column[LocalDate]("TRANSACTION_DATE")
     val description = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))

@@ -1,12 +1,15 @@
 package models.org.ludwiggj.finance.domain
 
 import com.typesafe.config.{Config, ConfigFactory}
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import models.org.ludwiggj.finance.persistence.database.Tables.FundTable
 import org.joda.time.LocalDate
+
 import scala.collection.JavaConversions._
 
 case class FundChange(oldFundName: FundName, newFundName: FundName, fromDate: LocalDate) {
 
-  def getFundIds: Option[(Long, Long)] = {
+  def getFundIds: Option[(PK[FundTable], PK[FundTable])] = {
     for {
       oldFundId <- Fund.getId(oldFundName)
       newFundId <- Fund.getId(newFundName)

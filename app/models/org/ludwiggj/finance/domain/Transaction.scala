@@ -1,6 +1,7 @@
 package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.domain.User.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
@@ -115,7 +116,7 @@ object Transaction {
       implicit session =>
 
         if (!get().contains(transaction)) {
-          def insert(fundId: Long, userId: Long) {
+          def insert(fundId: PK[FundTable], userId: Long) {
             Transactions += TransactionsRow(
               fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
               transaction.priceDate, transaction.units

@@ -1,7 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
-import models.org.ludwiggj.finance.persistence.database.Tables.FundsRow
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, FundsRow}
 import models.org.ludwiggj.finance.stringToLocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
@@ -76,7 +77,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("20/06/2014") must equal(
-        Map(1L -> price("kappa140523"), 2L -> price("nike140621"))
+        Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140621"))
       )
     }
 
@@ -84,7 +85,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFund.loadData()
 
       Price.latestPrices("16/05/2014") must equal(
-        Map(1L -> price("kappa140512"))
+        Map(PK[FundTable](1L) -> price("kappa140512"))
       )
     }
 
@@ -92,7 +93,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("19/06/2014") must equal(
-        Map(1L -> price("kappa140523"), 2L -> price("nike140620"))
+        Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140620"))
       )
     }
 
@@ -100,7 +101,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForTwoFunds.loadData()
 
       Price.latestPrices("21/05/2014") must equal(
-        Map(1L -> price("kappa140520"))
+        Map(PK[FundTable](1L) -> price("kappa140520"))
       )
     }
 
@@ -108,7 +109,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
       Price.latestPrices("22/05/2014") must equal(
-        Map(1L -> price("kappa140523"))
+        Map(PK[FundTable](1L) -> price("kappa140523"))
       )
     }
 
@@ -118,7 +119,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
       Price.latestPrices("23/05/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
+        Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
       )
     }
 
@@ -127,7 +128,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
 
       Price.latestPrices("24/05/2014") must equal(
-        Map(1L -> expectedUpdatedPrice, 2L -> price("kappaII140524"))
+        Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
       )
     }
   }

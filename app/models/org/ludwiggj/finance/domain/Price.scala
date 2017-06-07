@@ -23,12 +23,13 @@ case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) exte
 object Price {
   import models.org.ludwiggj.finance.LocalDateOrdering._
   import models.org.ludwiggj.finance.stringToLocalDate
+  import models.org.ludwiggj.finance.persistence.database.PKs.PK
 
   def apply(row: Array[String]): Price = {
     Price(row(0), row(1), row(2))
   }
 
-  implicit def fundIdAndPriceToPricesRow(fundIdAndPrice: (Long, Price)) = {
+  implicit def fundIdAndPriceToPricesRow(fundIdAndPrice: (PK[FundTable], Price)) = {
     val (fundId, price) = fundIdAndPrice
     PricesRow(fundId, price.date, price.inPounds)
   }
@@ -39,7 +40,7 @@ object Price {
     def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName.name))
   }
 
-  implicit def asListOfPrices(q: Query[(Prices, Funds), (PricesRow, FundsRow), Seq]): List[Price] = {
+  implicit def asListOfPrices(q: Query[(Prices, FundTable), (PricesRow, FundsRow), Seq]): List[Price] = {
     db.withSession {
       implicit session =>
         q.list map {
@@ -112,9 +113,9 @@ object Price {
     }
   }
 
-  def latestPrices(dateOfInterest: LocalDate): Map[Long, Price] = {
+  def latestPrices(dateOfInterest: LocalDate): Map[PK[FundTable], Price] = {
 
-    def latestPrices: Map[Long, Price] = {
+    def latestPrices: Map[PK[FundTable], Price] = {
       val pricesList = db.withSession {
         implicit session =>
           (for {
@@ -125,7 +126,7 @@ object Price {
             ).list
       }
 
-      pricesList.foldLeft(Map[Long, Price]()) {
+      pricesList.foldLeft(Map[PK[FundTable], Price]()) {
         (m, priceInfo) => {
           val (fundId, fundName, lastPriceDate, price) = priceInfo
           m + (fundId -> Price(fundName, lastPriceDate.get, price))
@@ -133,7 +134,7 @@ object Price {
       }
     }
 
-    def adjustLatestPricesForFundChanges(latestPrices: Map[Long, Price]): Map[Long, Price] = {
+    def adjustLatestPricesForFundChanges(latestPrices: Map[PK[FundTable], Price]): Map[PK[FundTable], Price] = {
       val theDateOfInterest: LocalDate = dateOfInterest
 
       val fundChangeMap = (for {

@@ -32,7 +32,7 @@ object DatabaseReload extends App {
   def deleteAllRows() = {
     lazy val db = Database.forDataSource(DB.getDataSource("finance"))
     val users: TableQuery[Users] = TableQuery[Users]
-    val funds: TableQuery[Funds] = TableQuery[Funds]
+    val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[Prices] = TableQuery[Prices]
     val transactions: TableQuery[Transactions] = TableQuery[Transactions]
 

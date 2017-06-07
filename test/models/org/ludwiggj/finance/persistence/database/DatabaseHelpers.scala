@@ -1,10 +1,10 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.stringToLocalDate
-import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
-import models.org.ludwiggj.finance.domain.TransactionType._
-import models.org.ludwiggj.finance.persistence.database.Tables.UsersRow
+import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, UsersRow}
+import models.org.ludwiggj.finance.stringToLocalDate
 
 trait DatabaseHelpers {
   // Prices
@@ -60,7 +60,7 @@ trait DatabaseHelpers {
 
   object SingleFund extends Schema {
     val fundName: FundName = "Capitalists Dream"
-    var fundId = 0L
+    var fundId = PK[FundTable](0L)
 
     override def loadData() = {
       fundId = Fund.insert(fundName)
