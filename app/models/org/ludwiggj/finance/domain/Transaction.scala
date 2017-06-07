@@ -166,7 +166,7 @@ object Transaction {
     }
   }
 
-  private def getDates(transactionFilter: (Transactions) => Column[Boolean]): List[LocalDate] = {
+  private def getDates(transactionFilter: (TransactionTable) => Column[Boolean]): List[LocalDate] = {
     db.withSession {
       implicit session =>
         Transactions
@@ -180,7 +180,7 @@ object Transaction {
   }
 
   def getRegularInvestmentDates(): List[LocalDate] = {
-    def transactionFilter(t: Transactions) = {
+    def transactionFilter(t: TransactionTable) = {
       t.description === (InvestmentRegular: TransactionType)
     }
 
@@ -188,7 +188,7 @@ object Transaction {
   }
 
   def getDatesSince(dateOfInterest: LocalDate): List[LocalDate] = {
-    def transactionFilter(t: Transactions) = {
+    def transactionFilter(t: TransactionTable) = {
       t.date > dateOfInterest
     }
 
@@ -209,7 +209,7 @@ object Transaction {
   }
 
   private def getTransactionsUntil(dateOfInterest: LocalDate,
-                                   userFilter: (Transactions, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
+                                   userFilter: (TransactionTable, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
 
     val candidates = db.withSession {
       implicit session =>
@@ -243,7 +243,7 @@ object Transaction {
   }
 
   def getTransactionsUntil(dateOfInterest: LocalDate): TransactionsPerUserAndFund = {
-    def userFilter(t: Transactions, u: Users) = {
+    def userFilter(t: TransactionTable, u: Users) = {
       u.id === t.userId
     }
 
@@ -251,7 +251,7 @@ object Transaction {
   }
 
   def getTransactionsUntil(dateOfInterest: LocalDate, userName: String): TransactionsPerUserAndFund = {
-    def userFilter(t: Transactions, u: Users) = {
+    def userFilter(t: TransactionTable, u: Users) = {
       u.id === t.userId && u.name === userName
     }
 

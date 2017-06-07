@@ -108,8 +108,8 @@ trait Tables {
                             )
 
   // Transactions table
-  class Transactions(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
-    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+  class TransactionTable(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
+    val id = column[PK[TransactionTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
     val userId = column[Long]("USER_ID")
     val date = column[LocalDate]("TRANSACTION_DATE")
@@ -137,7 +137,7 @@ trait Tables {
     )(r => r.id, onUpdate = ForeignKeyAction.NoAction, onDelete = ForeignKeyAction.NoAction)
   }
 
-  lazy val Transactions = new TableQuery(tag => new Transactions(tag))
+  lazy val Transactions = new TableQuery(tag => new TransactionTable(tag))
 
   // ---------------
   // USERS

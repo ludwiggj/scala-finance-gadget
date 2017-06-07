@@ -34,7 +34,7 @@ object DatabaseReload extends App {
     val users: TableQuery[Users] = TableQuery[Users]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[Prices] = TableQuery[Prices]
-    val transactions: TableQuery[Transactions] = TableQuery[Transactions]
+    val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
 
 
     db.withSession {
