@@ -1,6 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.domain.TransactionType.{InvestmentRegular, TransactionType}
 import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
@@ -65,7 +64,7 @@ object Transaction {
 
   import models.org.ludwiggj.finance.stringToLocalDate
 
-  private implicit def stringToTransactionType(description: String) = TransactionType.withName(description)
+  import TransactionType.fromString
 
   private implicit def stringToBigDecimalOption(candidateNumber: String): Option[BigDecimal] = {
     // Force implicit conversion here
@@ -181,7 +180,7 @@ object Transaction {
 
   def getRegularInvestmentDates(): List[LocalDate] = {
     def transactionFilter(t: Transactions) = {
-      t.description === InvestmentRegular
+      t.description === (InvestmentRegular: TransactionType)
     }
 
     getDates(transactionFilter _)

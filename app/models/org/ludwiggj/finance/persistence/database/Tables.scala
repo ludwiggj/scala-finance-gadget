@@ -2,7 +2,6 @@ package models.org.ludwiggj.finance.persistence.database
 
 import java.sql.Timestamp
 
-import models.org.ludwiggj.finance.domain.TransactionType.TransactionType
 import org.joda.time.LocalDate
 
 object Tables extends {
@@ -84,8 +83,8 @@ trait Tables {
   // ---------------
 
   implicit val transactionTypeMapper = MappedColumnType.base[TransactionType, String](
-    e => e.toString,
-    s => TransactionType.withName(s)
+    tt => tt.name,
+    s => TransactionType.fromString(s)
   )
 
   // Entity class storing rows of table Transactions
