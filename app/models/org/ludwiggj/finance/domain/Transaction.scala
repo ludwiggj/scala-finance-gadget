@@ -117,7 +117,7 @@ object Transaction {
 
         if (!get().contains(transaction)) {
           def insert(fundId: PK[FundTable], userId: PK[UserTable]) {
-            Transactions += TransactionsRow(
+            Transactions += TransactionRow(
               fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
               transaction.priceDate, transaction.units
             )
@@ -153,12 +153,12 @@ object Transaction {
             (
               (
                 (
-                  TransactionsRow(_, _, date, description, amountIn, amountOut, priceDate, units),
-                  PricesRow(_, _, price)
+                  TransactionRow(_, _, date, description, amountIn, amountOut, priceDate, units),
+                  PriceRow(_, _, price)
                   ),
-                FundsRow(_, fundName)
+                FundRow(_, fundName)
                 ),
-              UsersRow(_, userName, _)
+              UserRow(_, userName, _)
               )
           =>
             Transaction(userName, date, description, amountIn, amountOut, Price(fundName, priceDate, price), units)

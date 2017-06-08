@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, FundsRow}
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, FundRow}
 import models.org.ludwiggj.finance.stringToLocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
@@ -64,7 +64,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
 
       Price.insert(price)
 
-      inside(Fund.get(newFundName).get) { case FundsRow(_, name) =>
+      inside(Fund.get(newFundName).get) { case FundRow(_, name) =>
         name must equal(newFundName.name)
       }
 

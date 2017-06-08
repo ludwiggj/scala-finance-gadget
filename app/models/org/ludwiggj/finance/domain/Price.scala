@@ -31,20 +31,20 @@ object Price {
 
   implicit def fundIdAndPriceToPricesRow(fundIdAndPrice: (PK[FundTable], Price)) = {
     val (fundId, price) = fundIdAndPrice
-    PricesRow(fundId, price.date, price.inPounds)
+    PriceRow(fundId, price.date, price.inPounds)
   }
 
-  implicit class PriceExtension(q: Query[Prices, PricesRow, Seq]) {
+  implicit class PriceExtension(q: Query[PriceTable, PriceRow, Seq]) {
     def withFunds = q.join(Funds).on(_.fundId === _.id)
 
     def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName.name))
   }
 
-  implicit def asListOfPrices(q: Query[(Prices, FundTable), (PricesRow, FundsRow), Seq]): List[Price] = {
+  implicit def asListOfPrices(q: Query[(PriceTable, FundTable), (PriceRow, FundRow), Seq]): List[Price] = {
     db.withSession {
       implicit session =>
         q.list map {
-          case ((PricesRow(_, priceDate, price), FundsRow(_, fundName))) => Price(fundName, priceDate, price)
+          case ((PriceRow(_, priceDate, price), FundRow(_, fundName))) => Price(fundName, priceDate, price)
         }
     }
   }
@@ -53,7 +53,7 @@ object Price {
 
   def insert(price: Price): Unit = {
 
-    def insert(priceRow: PricesRow) = {
+    def insert(priceRow: PriceRow) = {
       db.withSession {
         implicit session =>
 
@@ -83,7 +83,7 @@ object Price {
     }
   }
 
-  private def pricesOn(priceDate: LocalDate): Query[Tables.Prices, Tables.PricesRow, Seq] = {
+  private def pricesOn(priceDate: LocalDate): Query[Tables.PriceTable, Tables.PriceRow, Seq] = {
     db.withSession {
       implicit session =>
         Prices filter (_.date === priceDate)

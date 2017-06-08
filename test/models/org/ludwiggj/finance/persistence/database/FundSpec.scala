@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import Tables.{FundTable, FundsRow}
+import Tables.{FundTable, FundRow}
 import models.org.ludwiggj.finance.domain.{Fund, FundName}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
@@ -27,7 +27,7 @@ class FundSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
       SingleFund.loadData()
 
       Fund.get(SingleFund.fundName) mustBe Some(
-        FundsRow(SingleFund.fundId, SingleFund.fundName)
+        FundRow(SingleFund.fundId, SingleFund.fundName)
       )
     }
   }

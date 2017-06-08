@@ -34,7 +34,7 @@ object DatabaseReload extends App {
     lazy val db = Database.forDataSource(DB.getDataSource("finance"))
     val users: TableQuery[UserTable] = TableQuery[UserTable]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
-    val prices: TableQuery[Prices] = TableQuery[Prices]
+    val prices: TableQuery[PriceTable] = TableQuery[PriceTable]
     val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
 
 
@@ -48,9 +48,9 @@ object DatabaseReload extends App {
   }
 
   def reloadUserAccounts() = {
-    User.insert(UsersRow(PK[UserTable](0L), "Admin", Some("Admin")))
-    User.insert(UsersRow(PK[UserTable](0L), "Me", Some("Me")))
-    User.insert(UsersRow(PK[UserTable](0L), "Spouse", Some("Spouse")))
+    User.insert(UserRow(PK[UserTable](0L), "Admin", Some("Admin")))
+    User.insert(UserRow(PK[UserTable](0L), "Me", Some("Me")))
+    User.insert(UserRow(PK[UserTable](0L), "Spouse", Some("Spouse")))
   }
 
   def reloadTransactions() = {

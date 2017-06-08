@@ -24,7 +24,7 @@ trait Tables {
 
   import profile.simple._
 
-  // Graeme, added to handle BigDecimal bug
+  // TODO - Remove? Graeme, added to handle BigDecimal bug
   import models.org.ludwiggj.finance.domain._
 
   /** DDL for all tables. Call .create to execute. */
@@ -40,18 +40,16 @@ trait Tables {
   // FUNDS
   // ---------------
 
-  // Entity class storing rows of table Funds
-  case class FundsRow(
+  case class FundRow(
                        id: PK[FundTable],
                        name: String
                      )
 
-  // Funds table
-  class FundTable(_tableTag: Tag) extends Table[FundsRow](_tableTag, "FUNDS") {
+  class FundTable(_tableTag: Tag) extends Table[FundRow](_tableTag, "FUNDS") {
     val id = column[PK[FundTable]]("ID", O.AutoInc, O.PrimaryKey)
     val name = column[String]("NAME", O.Length(254, varying = true))
 
-    def * = (id, name) <> (FundsRow.tupled, FundsRow.unapply)
+    def * = (id, name) <> (FundRow.tupled, FundRow.unapply)
 
     val index1 = index("NAME", name, unique = true)
   }
@@ -62,20 +60,18 @@ trait Tables {
   // PRICES
   // ---------------
 
-  // Entity class storing rows of table Prices
-  case class PricesRow(
+  case class PriceRow(
                         fundId: PK[FundTable],
                         date: LocalDate,
                         price: BigDecimal
                       )
 
-  // Prices table
-  class Prices(_tableTag: Tag) extends Table[PricesRow](_tableTag, "PRICES") {
+  class PriceTable(_tableTag: Tag) extends Table[PriceRow](_tableTag, "PRICES") {
     val fundId = column[PK[FundTable]]("FUND_ID")
     val date = column[LocalDate]("PRICE_DATE")
     val price = column[BigDecimal]("PRICE")
 
-    def * = (fundId, date, price) <> (PricesRow.tupled, PricesRow.unapply)
+    def * = (fundId, date, price) <> (PriceRow.tupled, PriceRow.unapply)
 
     // Primary key
     val pk = primaryKey("PRICES_PK", (fundId, date))
@@ -86,7 +82,7 @@ trait Tables {
     )(r => r.id, onUpdate = ForeignKeyAction.NoAction, onDelete = ForeignKeyAction.NoAction)
   }
 
-  lazy val Prices = new TableQuery(tag => new Prices(tag))
+  lazy val Prices = new TableQuery(tag => new PriceTable(tag))
 
   // ---------------
   // TRANSACTIONS
@@ -97,8 +93,7 @@ trait Tables {
     s => TransactionType.fromString(s)
   )
 
-  // Entity class storing rows of table Transactions
-  case class TransactionsRow(
+  case class TransactionRow(
                               fundId: PK[FundTable],
                               userId: PK[UserTable],
                               date: LocalDate,
@@ -109,8 +104,7 @@ trait Tables {
                               units: BigDecimal
                             )
 
-  // Transactions table
-  class TransactionTable(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
+  class TransactionTable(_tableTag: Tag) extends Table[TransactionRow](_tableTag, "TRANSACTIONS") {
     val id = column[PK[TransactionTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
     val userId = column[PK[UserTable]]("USER_ID")
@@ -123,7 +117,7 @@ trait Tables {
 
     def * = (
       fundId, userId, date, description, amountIn, amountOut, priceDate, units
-    ) <> (TransactionsRow.tupled, TransactionsRow.unapply)
+    ) <> (TransactionRow.tupled, TransactionRow.unapply)
 
     // Foreign keys
     lazy val fundsFk = foreignKey(
@@ -145,20 +139,18 @@ trait Tables {
   // USERS
   // ---------------
 
-  // Entity class storing rows of table Users
-  case class UsersRow(
+  case class UserRow(
                        id: PK[UserTable],
                        name: String,
                        password: Option[String] = None
                      )
 
-  // Users Table
-  class UserTable(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
+  class UserTable(_tableTag: Tag) extends Table[UserRow](_tableTag, "USERS") {
     val id = column[PK[UserTable]]("ID", O.AutoInc, O.PrimaryKey)
     val name = column[String]("NAME", O.Length(254, varying = true))
     val password = column[Option[String]]("PASSWORD", O.Length(254, varying = true), O.Default(None))
 
-    def * = (id, name, password) <> (UsersRow.tupled, UsersRow.unapply)
+    def * = (id, name, password) <> (UserRow.tupled, UserRow.unapply)
 
     val index1 = index("NAME", name, unique = true)
   }

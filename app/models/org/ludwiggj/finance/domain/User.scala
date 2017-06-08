@@ -9,11 +9,11 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
 object User {
-  implicit def stringToUsersRow(name: String) = UsersRow(PK[UserTable](0L), name)
+  implicit def stringToUsersRow(name: String) = UserRow(PK[UserTable](0L), name)
 
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
-  def get(userName: String): Option[UsersRow] = {
+  def get(userName: String): Option[UserRow] = {
     db.withSession {
       implicit session =>
 
@@ -26,18 +26,18 @@ object User {
     }
   }
 
-  def insert(user: UsersRow) = {
+  def insert(user: UserRow) = {
     db.withSession {
       implicit session =>
         (Users returning Users.map(_.id)) += user
     }
   }
 
-  def getOrInsert(user: UsersRow): PK[UserTable] = {
+  def getOrInsert(user: UserRow): PK[UserTable] = {
     db.withSession {
       implicit session =>
         get(user.name) match {
-          case Some(aUser: UsersRow) => aUser.id
+          case Some(aUser: UserRow) => aUser.id
           case _ => insert(user)
         }
     }

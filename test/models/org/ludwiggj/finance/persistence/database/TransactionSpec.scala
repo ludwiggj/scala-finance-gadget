@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.{Fund, Price, Transaction, User}
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundsRow, UsersRow}
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundRow, UserRow}
 import models.org.ludwiggj.finance.stringToLocalDate
 import org.joda.time.LocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
@@ -30,11 +30,11 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       Transaction.insert(txUserA("kappa140520"))
 
       inside(User.get(userA).get) {
-        case UsersRow(_, name, _) => name must equal(userA)
+        case UserRow(_, name, _) => name must equal(userA)
       }
 
       inside(Fund.get(kappaFundName).get) {
-        case FundsRow(_, name) => name must equal(kappaFundName.name)
+        case FundRow(_, name) => name must equal(kappaFundName.name)
       }
 
       Price.get(kappaFundName, kappaPriceDate) mustBe Some(price("kappa140520"))
