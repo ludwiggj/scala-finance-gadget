@@ -7,7 +7,9 @@ import org.joda.time.LocalDate
 import scala.slick.lifted.MappedTo
 
 object PKs {
-  final case class PK[A](value: Long) extends AnyVal with MappedTo[Long]
+  final case class PK[A](value: Long) extends AnyVal with MappedTo[Long] with Ordered[PK[A]] {
+    def compare(that: PK[A]): Int = value.compare(that.value)
+  }
 }
 
 object Tables extends {
@@ -98,7 +100,7 @@ trait Tables {
   // Entity class storing rows of table Transactions
   case class TransactionsRow(
                               fundId: PK[FundTable],
-                              userId: Long,
+                              userId: PK[UserTable],
                               date: LocalDate,
                               description: TransactionType,
                               amountIn: Option[BigDecimal] = None,
@@ -111,7 +113,7 @@ trait Tables {
   class TransactionTable(_tableTag: Tag) extends Table[TransactionsRow](_tableTag, "TRANSACTIONS") {
     val id = column[PK[TransactionTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
-    val userId = column[Long]("USER_ID")
+    val userId = column[PK[UserTable]]("USER_ID")
     val date = column[LocalDate]("TRANSACTION_DATE")
     val description = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))
     val amountIn = column[Option[BigDecimal]]("AMOUNT_IN")
@@ -145,14 +147,14 @@ trait Tables {
 
   // Entity class storing rows of table Users
   case class UsersRow(
-                       id: Long,
+                       id: PK[UserTable],
                        name: String,
                        password: Option[String] = None
                      )
 
   // Users Table
-  class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
-    val id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
+  class UserTable(_tableTag: Tag) extends Table[UsersRow](_tableTag, "USERS") {
+    val id = column[PK[UserTable]]("ID", O.AutoInc, O.PrimaryKey)
     val name = column[String]("NAME", O.Length(254, varying = true))
     val password = column[Option[String]]("PASSWORD", O.Length(254, varying = true), O.Default(None))
 
@@ -161,5 +163,5 @@ trait Tables {
     val index1 = index("NAME", name, unique = true)
   }
 
-  lazy val Users = new TableQuery(tag => new Users(tag))
+  lazy val Users = new TableQuery(tag => new UserTable(tag))
 }

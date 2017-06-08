@@ -1,5 +1,6 @@
 package models.org.ludwiggj.finance.domain
 
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import play.api.Play.current
 import play.api.db.DB
@@ -8,7 +9,7 @@ import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
 object User {
-  implicit def stringToUsersRow(name: String) = UsersRow(0L, name)
+  implicit def stringToUsersRow(name: String) = UsersRow(PK[UserTable](0L), name)
 
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
@@ -32,7 +33,7 @@ object User {
     }
   }
 
-  def getOrInsert(user: UsersRow): Long = {
+  def getOrInsert(user: UsersRow): PK[UserTable] = {
     db.withSession {
       implicit session =>
         get(user.name) match {

@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import Tables.FundsRow
+import Tables.{FundTable, FundsRow}
 import models.org.ludwiggj.finance.domain.{Fund, FundName}
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
@@ -35,7 +36,7 @@ class FundSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
     "insert fund if it is not present" in {
       EmptySchema.loadData()
 
-      Fund.getOrInsert(nonExistentFund).value must be > 0L
+      Fund.getOrInsert(nonExistentFund) must be > PK[FundTable](0L)
     }
 
     "return existing fund id if fund is present" in {

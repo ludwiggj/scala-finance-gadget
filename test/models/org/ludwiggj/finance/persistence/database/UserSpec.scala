@@ -1,10 +1,11 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import Tables.UsersRow
 import models.org.ludwiggj.finance.domain.User
 import models.org.ludwiggj.finance.domain.User.stringToUsersRow
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
+import  models.org.ludwiggj.finance.persistence.database.Tables.UserTable
 
 @DoNotDiscover
 class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
@@ -33,7 +34,7 @@ class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Bef
     "insert user if it is not present" in {
       EmptySchema.loadData()
 
-      User.getOrInsert("bob") must be > 0L
+      User.getOrInsert("bob") must be > PK[UserTable](0L)
     }
 
     "return existing user id if user is present" in {

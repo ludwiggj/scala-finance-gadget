@@ -3,7 +3,7 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, UsersRow}
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, UserTable, UsersRow}
 import models.org.ludwiggj.finance.stringToLocalDate
 
 trait DatabaseHelpers {
@@ -50,8 +50,8 @@ trait DatabaseHelpers {
   }
 
   object SingleUser extends Schema {
-    var userId = 0L
-    val ted = UsersRow(0L, "Father_Ted", Some("Penitent_Man"))
+    var userId = PK[UserTable](0L)
+    val ted = UsersRow(PK[UserTable](0L), "Father_Ted", Some("Penitent_Man"))
 
     override def loadData() = {
       userId = User.insert(ted)

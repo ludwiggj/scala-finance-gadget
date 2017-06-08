@@ -3,6 +3,7 @@ package utils
 import java.io.{File, FilenameFilter}
 
 import models.org.ludwiggj.finance.domain.{Price, Transaction, User}
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
 import play.api.{Configuration, Environment, Play}
@@ -31,7 +32,7 @@ object DatabaseReload extends App {
 
   def deleteAllRows() = {
     lazy val db = Database.forDataSource(DB.getDataSource("finance"))
-    val users: TableQuery[Users] = TableQuery[Users]
+    val users: TableQuery[UserTable] = TableQuery[UserTable]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[Prices] = TableQuery[Prices]
     val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
@@ -47,9 +48,9 @@ object DatabaseReload extends App {
   }
 
   def reloadUserAccounts() = {
-    User.insert(UsersRow(0, "Admin", Some("Admin")))
-    User.insert(UsersRow(0, "Me", Some("Me")))
-    User.insert(UsersRow(0, "Spouse", Some("Spouse")))
+    User.insert(UsersRow(PK[UserTable](0L), "Admin", Some("Admin")))
+    User.insert(UsersRow(PK[UserTable](0L), "Me", Some("Me")))
+    User.insert(UsersRow(PK[UserTable](0L), "Spouse", Some("Spouse")))
   }
 
   def reloadTransactions() = {

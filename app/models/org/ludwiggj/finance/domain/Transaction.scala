@@ -116,7 +116,7 @@ object Transaction {
       implicit session =>
 
         if (!get().contains(transaction)) {
-          def insert(fundId: PK[FundTable], userId: Long) {
+          def insert(fundId: PK[FundTable], userId: PK[UserTable]) {
             Transactions += TransactionsRow(
               fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
               transaction.priceDate, transaction.units
@@ -209,7 +209,7 @@ object Transaction {
   }
 
   private def getTransactionsUntil(dateOfInterest: LocalDate,
-                                   userFilter: (TransactionTable, Users) => Column[Boolean]): TransactionsPerUserAndFund = {
+                                   userFilter: (TransactionTable, UserTable) => Column[Boolean]): TransactionsPerUserAndFund = {
 
     val candidates = db.withSession {
       implicit session =>
@@ -243,7 +243,7 @@ object Transaction {
   }
 
   def getTransactionsUntil(dateOfInterest: LocalDate): TransactionsPerUserAndFund = {
-    def userFilter(t: TransactionTable, u: Users) = {
+    def userFilter(t: TransactionTable, u: UserTable) = {
       u.id === t.userId
     }
 
@@ -251,7 +251,7 @@ object Transaction {
   }
 
   def getTransactionsUntil(dateOfInterest: LocalDate, userName: String): TransactionsPerUserAndFund = {
-    def userFilter(t: TransactionTable, u: Users) = {
+    def userFilter(t: TransactionTable, u: UserTable) = {
       u.id === t.userId && u.name === userName
     }
 
