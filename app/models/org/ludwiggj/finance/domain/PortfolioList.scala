@@ -25,7 +25,7 @@ object PortfolioList {
     }.toList.distinct.sorted
 
     userNames map { userName =>
-      Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest))
+      Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest))
     }
   }
 
@@ -33,6 +33,6 @@ object PortfolioList {
 
     val transactions = Transaction.getTransactionsUntil(dateOfInterest, userName)
 
-    List(Portfolio(userName, dateOfInterest, HoldingSummaries(transactions, userName, dateOfInterest)))
+    List(Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest)))
   }
 }

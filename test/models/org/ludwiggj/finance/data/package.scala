@@ -107,7 +107,7 @@ package object data {
     )
   }
 
-  trait TestHoldingSummaries extends TestTransactions {
+  trait TestHoldingSummaryList extends TestTransactions {
     private val txMap: Map[String, TransactionsPerUserAndFund] = Map(
       "aberdeen140901" -> Map(
         (userA, price("aberdeen140625").fundName) -> (aberdeenTxs, price("aberdeen140625")),
@@ -119,10 +119,10 @@ package object data {
       )
     )
 
-    val holdingSummaries: Map[String, HoldingSummaries] = Map(
-      "aberdeen140915" -> HoldingSummaries(txMap("aberdeen140901"), userA, "15/09/2014"),
-      "aberdeen140930" -> HoldingSummaries(txMap("aberdeen141001"), userA, "30/09/2014"),
-      "aberdeen141001" -> HoldingSummaries(txMap("aberdeen141001"), userA, "01/10/2014")
+    val holdingSummaryList: Map[String, HoldingSummaryList] = Map(
+      "aberdeen140915" -> HoldingSummaryList(txMap("aberdeen140901"), userA, "15/09/2014"),
+      "aberdeen140930" -> HoldingSummaryList(txMap("aberdeen141001"), userA, "30/09/2014"),
+      "aberdeen141001" -> HoldingSummaryList(txMap("aberdeen141001"), userA, "01/10/2014")
     )
   }
 }
