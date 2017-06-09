@@ -19,7 +19,7 @@ object Fund {
 
         def getFundByName() =
           Funds.filter {
-            _.name === fundName.name
+            _.name === fundName
           }
 
         getFundByName().firstOption

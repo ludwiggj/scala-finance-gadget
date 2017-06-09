@@ -37,7 +37,7 @@ object Price {
   implicit class PriceExtension(q: Query[PriceTable, PriceRow, Seq]) {
     def withFunds = q.join(Funds).on(_.fundId === _.id)
 
-    def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName.name))
+    def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName))
   }
 
   implicit def asListOfPrices(q: Query[(PriceTable, FundTable), (PriceRow, FundRow), Seq]): List[Price] = {

@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Fund, Price, Transaction, User}
+import models.org.ludwiggj.finance.domain.{Fund, FundName, Price, Transaction, User}
 import models.org.ludwiggj.finance.persistence.database.Tables.{FundRow, UserRow}
 import models.org.ludwiggj.finance.stringToLocalDate
 import org.joda.time.LocalDate
@@ -34,7 +34,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       }
 
       inside(Fund.get(kappaFundName).get) {
-        case FundRow(_, name) => name must equal(kappaFundName.name)
+        case FundRow(_, name) => name must equal(kappaFundName)
       }
 
       Price.get(kappaFundName, kappaPriceDate) mustBe Some(price("kappa140520"))
@@ -110,15 +110,15 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("22/06/2014")
 
       transactionMap must contain(
-        (userA, "Kappa") -> (Seq(txUserA("kappa140520")), price("kappa140520"))
+        (userA, FundName("Kappa")) -> (Seq(txUserA("kappa140520")), price("kappa140520"))
       )
 
       transactionMap must contain(
-        ("User B", "Nike") -> (Seq(txUserB("nike140622")), price("nike140622"))
+        ("User B", FundName("Nike")) -> (Seq(txUserB("nike140622")), price("nike140622"))
       )
 
       transactionMap must contain(
-        (userA, "Nike") -> (Seq(txUserA("nike140620"), txUserA("nike140621")), price("nike140622"))
+        (userA, FundName("Nike")) -> (Seq(txUserA("nike140620"), txUserA("nike140621")), price("nike140622"))
       )
 
       transactionMap.size must equal(3)
@@ -130,11 +130,11 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("20/06/2014")
 
       transactionMap must contain(
-        (userA, "Kappa") -> (Seq(txUserA("kappa140520")), price("kappa140520"))
+        (userA, FundName("Kappa")) -> (Seq(txUserA("kappa140520")), price("kappa140520"))
       )
 
       transactionMap must contain(
-        (userA, "Nike") -> (Seq(txUserA("nike140620")), price("nike140621"))
+        (userA, FundName("Nike")) -> (Seq(txUserA("nike140620")), price("nike140621"))
       )
 
       transactionMap.size must equal(2)
@@ -146,7 +146,7 @@ class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp w
       val transactionMap: TransactionsPerUserAndFund = Transaction.getTransactionsUntil("22/06/2014", "User B")
 
       transactionMap must contain(
-        ("User B", "Nike") -> (Seq(txUserB("nike140622")), price("nike140622"))
+        ("User B", FundName("Nike")) -> (Seq(txUserB("nike140622")), price("nike140622"))
       )
 
       transactionMap.size must equal(1)

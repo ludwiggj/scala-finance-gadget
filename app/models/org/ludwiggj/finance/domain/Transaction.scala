@@ -8,7 +8,6 @@ import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
-
 import scala.collection.immutable.ListMap
 import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
@@ -208,24 +207,32 @@ object Transaction {
     }
   }
 
-  private def getTransactionsUntil(dateOfInterest: LocalDate,
-                                   userFilter: (TransactionTable, UserTable) => Column[Boolean]): TransactionsPerUserAndFund = {
+  private def getTransactionsUntil(dateOfInterest: LocalDate, userFilter: (TransactionTable, UserTable)
+    => Column[Boolean]): TransactionsPerUserAndFund = {
 
-    val candidates = db.withSession {
-      implicit session =>
-        (for {
-          t <- Transactions.filter {
-            _.date <= dateOfInterest
-          }
-          f <- Funds if f.id === t.fundId
-          u <- Users if userFilter(t, u)
-          p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-        } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+    def getTransactionCandidates(): TransactionCandidates = {
+      db.withSession {
+        implicit session =>
+          (for {
+            t <- Transactions.filter {
+              _.date <= dateOfInterest
+            }
+            f <- Funds if f.id === t.fundId
+            u <- Users if userFilter(t, u)
+            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
+          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
+      }
     }
 
-    val sortedCandidates = ListMap(candidates.toSeq.sortBy(k => k._1): _*)
+    // Following import used to avoid 'diverging implicit expansion for type scala.math.Ordering' error
+    // as per https://issues.scala-lang.org/browse/SI-8541
+    import Ordering.Tuple2
 
-    sortedCandidates.mapValues(rows => {
+    val txCandidates = getTransactionCandidates.toSeq.sortBy(userNameFundName => userNameFundName._1)
+
+    val sortedTxCandidates = ListMap(txCandidates: _*)
+
+    sortedTxCandidates.mapValues(rows => {
       val fundId = rows.head._3
       val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
 

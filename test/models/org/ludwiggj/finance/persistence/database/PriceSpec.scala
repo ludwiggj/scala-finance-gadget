@@ -65,7 +65,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
       Price.insert(price)
 
       inside(Fund.get(newFundName).get) { case FundRow(_, name) =>
-        name must equal(newFundName.name)
+        name must equal(newFundName)
       }
 
       Price.get(newFundName, capitalistsDreamFundPriceDate) mustBe Some(price)

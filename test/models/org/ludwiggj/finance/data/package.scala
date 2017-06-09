@@ -110,12 +110,12 @@ package object data {
   trait TestHoldingSummaries extends TestTransactions {
     private val txMap: Map[String, TransactionsPerUserAndFund] = Map(
       "aberdeen140901" -> Map(
-        (userA, price("aberdeen140625").fundName.name) -> (aberdeenTxs, price("aberdeen140625")),
-        (userA, price("aberdeenB140901").fundName.name) -> (aberdeenBTxs, price("aberdeenB140901"))
+        (userA, price("aberdeen140625").fundName) -> (aberdeenTxs, price("aberdeen140625")),
+        (userA, price("aberdeenB140901").fundName) -> (aberdeenBTxs, price("aberdeenB140901"))
       ),
       "aberdeen141001" -> Map(
-        (userA, price("aberdeen141001").fundName.name) -> (tx("aberdeen141001") :: aberdeenTxs, price("aberdeen141001")),
-        (userA, price("aberdeenB141001").fundName.name) -> (tx("aberdeenB141001") :: aberdeenBTxs, price("aberdeenB141001"))
+        (userA, price("aberdeen141001").fundName) -> (tx("aberdeen141001") :: aberdeenTxs, price("aberdeen141001")),
+        (userA, price("aberdeenB141001").fundName) -> (tx("aberdeenB141001") :: aberdeenBTxs, price("aberdeenB141001"))
       )
     )
 

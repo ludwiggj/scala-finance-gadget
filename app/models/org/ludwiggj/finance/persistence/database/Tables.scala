@@ -7,9 +7,11 @@ import org.joda.time.LocalDate
 import scala.slick.lifted.MappedTo
 
 object PKs {
+
   final case class PK[A](value: Long) extends AnyVal with MappedTo[Long] with Ordered[PK[A]] {
     def compare(that: PK[A]): Int = value.compare(that.value)
   }
+
 }
 
 object Tables extends {
@@ -18,6 +20,7 @@ object Tables extends {
 
 // Slick data model trait for extension, choice of backend or usage in the cake pattern.
 trait Tables {
+
   import PKs.PK
 
   val profile: scala.slick.driver.JdbcProfile
@@ -40,14 +43,19 @@ trait Tables {
   // FUNDS
   // ---------------
 
+  implicit val fundNameMapper = MappedColumnType.base[FundName, String](
+    fn => fn,
+    s => FundName(s)
+  )
+
   case class FundRow(
-                       id: PK[FundTable],
-                       name: String
-                     )
+                      id: PK[FundTable],
+                      name: FundName
+                    )
 
   class FundTable(_tableTag: Tag) extends Table[FundRow](_tableTag, "FUNDS") {
     val id = column[PK[FundTable]]("ID", O.AutoInc, O.PrimaryKey)
-    val name = column[String]("NAME", O.Length(254, varying = true))
+    val name = column[FundName]("NAME", O.Length(254, varying = true))
 
     def * = (id, name) <> (FundRow.tupled, FundRow.unapply)
 
@@ -61,10 +69,10 @@ trait Tables {
   // ---------------
 
   case class PriceRow(
-                        fundId: PK[FundTable],
-                        date: LocalDate,
-                        price: BigDecimal
-                      )
+                       fundId: PK[FundTable],
+                       date: LocalDate,
+                       price: BigDecimal
+                     )
 
   class PriceTable(_tableTag: Tag) extends Table[PriceRow](_tableTag, "PRICES") {
     val fundId = column[PK[FundTable]]("FUND_ID")
@@ -94,15 +102,15 @@ trait Tables {
   )
 
   case class TransactionRow(
-                              fundId: PK[FundTable],
-                              userId: PK[UserTable],
-                              date: LocalDate,
-                              description: TransactionType,
-                              amountIn: Option[BigDecimal] = None,
-                              amountOut: Option[BigDecimal] = None,
-                              priceDate: LocalDate,
-                              units: BigDecimal
-                            )
+                             fundId: PK[FundTable],
+                             userId: PK[UserTable],
+                             date: LocalDate,
+                             description: TransactionType,
+                             amountIn: Option[BigDecimal] = None,
+                             amountOut: Option[BigDecimal] = None,
+                             priceDate: LocalDate,
+                             units: BigDecimal
+                           )
 
   class TransactionTable(_tableTag: Tag) extends Table[TransactionRow](_tableTag, "TRANSACTIONS") {
     val id = column[PK[TransactionTable]]("ID", O.AutoInc, O.PrimaryKey)
@@ -140,10 +148,10 @@ trait Tables {
   // ---------------
 
   case class UserRow(
-                       id: PK[UserTable],
-                       name: String,
-                       password: Option[String] = None
-                     )
+                      id: PK[UserTable],
+                      name: String,
+                      password: Option[String] = None
+                    )
 
   class UserTable(_tableTag: Tag) extends Table[UserRow](_tableTag, "USERS") {
     val id = column[PK[UserTable]]("ID", O.AutoInc, O.PrimaryKey)
