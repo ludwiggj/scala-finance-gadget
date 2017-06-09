@@ -7,8 +7,8 @@ import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, Price
 import scala.language.implicitConversions
 
 package object database {
-  // TODO - Improve types, too many Strings here!!!
-  type UserAndFund = (String, FundName)
-  type TransactionsPerUserAndFund = Map[UserAndFund, (Seq[Transaction], Price)]
-  type TransactionCandidates = Map[UserAndFund, Seq[(String, FundName, PK[FundTable], PriceRow, TransactionRow)]]
+  type UserName = String
+  type UserAndFundTuple = (UserName, FundName)
+  type TransactionsPerUserAndFund = Map[UserAndFundTuple, (Seq[Transaction], Price)]
+  type TransactionCandidates = Map[UserAndFundTuple, Seq[(UserName, FundName, PK[FundTable], PriceRow, TransactionRow)]]
 }
