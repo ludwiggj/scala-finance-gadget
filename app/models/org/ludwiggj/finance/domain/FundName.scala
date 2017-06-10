@@ -1,7 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import scala.language.implicitConversions
-
 class FundName private(val name: String) extends Ordered[FundName] {
   def canEqual(f: FundName) = (name == f.name)
 
@@ -30,8 +28,4 @@ object FundName {
   def apply(inputName: String) = {
     new FundName(inputName.replaceAll("&amp;", "&").replaceAll("\\^", "").trim)
   }
-
-  implicit def fundNameToString(fundName: FundName) = fundName.name
-
-  implicit def stringToFundName(name: String) = FundName(name)
 }

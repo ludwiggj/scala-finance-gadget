@@ -19,12 +19,12 @@ case class FundChange(oldFundName: FundName, newFundName: FundName, fromDate: Lo
 
 object FundChange {
 
-  import models.org.ludwiggj.finance.stringToLocalDate
+  import models.org.ludwiggj.finance.aLocalDate
 
   def apply(config: Config) = new FundChange(
-    config.getString("oldFundName"),
-    config.getString("newFundName"),
-    config.getString("fromDate")
+    FundName(config.getString("oldFundName")),
+    FundName(config.getString("newFundName")),
+    aLocalDate(config.getString("fromDate"))
   )
 
   def getFundChangesUpUntil(dateOfInterest: LocalDate): List[FundChange] = {

@@ -2,6 +2,8 @@ package models.org.ludwiggj.finance.persistence.database
 
 import java.sql.Timestamp
 
+import models.org.ludwiggj.finance.domain.TransactionType.aTransactionType
+import models.org.ludwiggj.finance.domain.{FundName, TransactionType}
 import org.joda.time.LocalDate
 
 import scala.slick.lifted.MappedTo
@@ -27,9 +29,6 @@ trait Tables {
 
   import profile.simple._
 
-  // TODO - Remove? Graeme, added to handle BigDecimal bug
-  import models.org.ludwiggj.finance.domain._
-
   /** DDL for all tables. Call .create to execute. */
   lazy val ddl = Funds.ddl ++ Prices.ddl ++ Transactions.ddl ++ Users.ddl
 
@@ -44,7 +43,7 @@ trait Tables {
   // ---------------
 
   implicit val fundNameMapper = MappedColumnType.base[FundName, String](
-    fn => fn,
+    fn => fn.name,
     s => FundName(s)
   )
 
@@ -98,7 +97,7 @@ trait Tables {
 
   implicit val transactionTypeMapper = MappedColumnType.base[TransactionType, String](
     tt => tt.name,
-    s => TransactionType.fromString(s)
+    s => aTransactionType(s)
   )
 
   case class TransactionRow(

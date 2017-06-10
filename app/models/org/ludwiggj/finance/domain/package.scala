@@ -1,11 +1,9 @@
 package models.org.ludwiggj.finance
 
-import scala.language.implicitConversions
-
 package object domain {
   val separator = '|'
 
-  implicit def stringToBigDecimal(candidateNumber: String): BigDecimal = {
+  def aBigDecimal(candidateNumber: String): BigDecimal = {
     BigDecimal(stripNonFPDigits(candidateNumber))
   }
 

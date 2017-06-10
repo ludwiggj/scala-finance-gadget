@@ -1,16 +1,14 @@
 package models.org.ludwiggj.finance.domain
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
-import models.org.ludwiggj.finance.persistence.database.Tables
-import models.org.ludwiggj.finance.persistence.database.Tables._
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundRow, FundTable, PriceRow, PriceTable, _}
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
 
-import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.lifted.BaseJoinQuery
 
 case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) extends PersistableToFile {
 
@@ -21,45 +19,37 @@ case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) exte
 }
 
 object Price {
+
   import models.org.ludwiggj.finance.LocalDateOrdering._
-  import models.org.ludwiggj.finance.stringToLocalDate
+  import models.org.ludwiggj.finance.aLocalDate
   import models.org.ludwiggj.finance.persistence.database.PKs.PK
 
   def apply(row: Array[String]): Price = {
-    Price(row(0), row(1), row(2))
+    val fundName = row(0)
+    val priceDate = row(1)
+    val priceInPounds = aBigDecimal(row(2))
+
+    Price(fundName, priceDate, priceInPounds)
   }
 
-  implicit def fundIdAndPriceToPricesRow(fundIdAndPrice: (PK[FundTable], Price)) = {
-    val (fundId, price) = fundIdAndPrice
-    PriceRow(fundId, price.date, price.inPounds)
-  }
+  def apply(fundNameStr: String, priceDateStr: String, priceInPounds: BigDecimal): Price = {
+    val fundName = FundName(fundNameStr)
+    val priceDate = aLocalDate(priceDateStr)
 
-  implicit class PriceExtension(q: Query[PriceTable, PriceRow, Seq]) {
-    def withFunds = q.join(Funds).on(_.fundId === _.id)
-
-    def withFundsNamed(fundName: FundName) = q.join(Funds).on((p, f) => (p.fundId === f.id) && (f.name === fundName))
-  }
-
-  implicit def asListOfPrices(q: Query[(PriceTable, FundTable), (PriceRow, FundRow), Seq]): List[Price] = {
-    db.withSession {
-      implicit session =>
-        q.list map {
-          case ((PriceRow(_, priceDate, price), FundRow(_, fundName))) => Price(fundName, priceDate, price)
-        }
-    }
+    Price(fundName, priceDate, priceInPounds)
   }
 
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
   def insert(price: Price): Unit = {
 
-    def insert(priceRow: PriceRow) = {
+    def insert(fundId: PK[FundTable]) = {
       db.withSession {
         implicit session =>
 
           def insert() = {
             try {
-              Prices += priceRow
+              Prices += PriceRow(fundId, price.date, price.inPounds)
             } catch {
               case ex: MySQLIntegrityConstraintViolationException =>
                 println(s"Price: ${ex.getMessage} New price [$price]")
@@ -74,7 +64,7 @@ object Price {
     }
 
     val fundId = Fund.getOrInsert(price.fundName)
-    insert((fundId, price))
+    insert(fundId)
   }
 
   def insert(prices: List[Price]): Unit = {
@@ -83,19 +73,37 @@ object Price {
     }
   }
 
-  private def pricesOn(priceDate: LocalDate): Query[Tables.PriceTable, Tables.PriceRow, Seq] = {
+  private def pricesOn(priceDate: LocalDate): Query[PriceTable, PriceRow, Seq] = {
     db.withSession {
       implicit session =>
         Prices filter (_.date === priceDate)
     }
   }
 
+  type PriceFundQuery = BaseJoinQuery[PriceTable, FundTable, PriceRow, FundRow, Seq]
+  type PriceFundQueryFilter = (PriceTable, FundTable) => Column[Boolean]
+
+  private def getPriceList(priceFundQuery: PriceFundQuery, filter: PriceFundQueryFilter): List[Price] = {
+    db.withSession {
+      implicit session =>
+        priceFundQuery.on((p, f) => filter(p, f)).list map {
+          case ((PriceRow(_, priceDate, price), FundRow(_, fundName))) => Price(fundName, priceDate, price)
+        }
+    }
+  }
+
   def get(): List[Price] = {
-    Prices.withFunds
+    getPriceList(
+      Prices.join(Funds),
+      (p, f) => p.fundId === f.id
+    )
   }
 
   def get(fundName: FundName, priceDate: LocalDate): Option[Price] = {
-    pricesOn(priceDate).withFundsNamed(fundName).headOption
+    getPriceList(
+      pricesOn(priceDate).join(Funds),
+      (p, f) => (p.fundId === f.id) && (f.name === fundName)
+    ).headOption
   }
 
   private val dateDifference = SimpleFunction.binary[LocalDate, LocalDate, Int]("DATEDIFF")

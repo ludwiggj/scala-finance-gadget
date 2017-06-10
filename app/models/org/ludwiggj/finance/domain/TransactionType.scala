@@ -1,7 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import scala.language.implicitConversions
-
 sealed trait TransactionType {
   def name: String
 
@@ -50,7 +48,7 @@ case object Unspecified extends TransactionType {
 }
 
 object TransactionType {
-  implicit def fromString(value: String): TransactionType = {
+  def aTransactionType(value: String): TransactionType = {
     Vector(
       InvestmentRegular, InvestmentLumpSum, DividendReinvestment, SaleForRegularPayment,
       UnitShareConversionIn, UnitShareConversionOut, TaxReclaimReinvestment, SwitchIn, SwitchOut

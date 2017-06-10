@@ -3,7 +3,7 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, FundRow}
-import models.org.ludwiggj.finance.stringToLocalDate
+import models.org.ludwiggj.finance.aLocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
@@ -18,7 +18,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return empty if price is not present" in {
       EmptySchema.loadData()
 
-      Price.get("fund that is not present", "20/05/2014") must equal(None)
+      Price.get(FundName("fund that is not present"), aLocalDate("20/05/2014")) must equal(None)
     }
 
     "return existing price if it is present" in {
@@ -55,11 +55,11 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "insert fund if it is not present" in {
       EmptySchema.loadData()
 
-      val newFundName: FundName = "NewFund"
+      val newFundName = FundName("NewFund")
 
       Fund.get(newFundName) mustBe None
 
-      val capitalistsDreamFundPriceDate = "20/05/2014"
+      val capitalistsDreamFundPriceDate = aLocalDate("20/05/2014")
       val price = Price(newFundName, capitalistsDreamFundPriceDate, 1.2)
 
       Price.insert(price)
@@ -76,7 +76,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return the latest price for each fund" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("20/06/2014") must equal(
+      Price.latestPrices(aLocalDate("20/06/2014")) must equal(
         Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140621"))
       )
     }
@@ -84,7 +84,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a price if it is zero" in {
       MultiplePricesForSingleFund.loadData()
 
-      Price.latestPrices("16/05/2014") must equal(
+      Price.latestPrices(aLocalDate("16/05/2014")) must equal(
         Map(PK[FundTable](1L) -> price("kappa140512"))
       )
     }
@@ -92,7 +92,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a price if it is a two or more days too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("19/06/2014") must equal(
+      Price.latestPrices(aLocalDate("19/06/2014")) must equal(
         Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140620"))
       )
     }
@@ -100,7 +100,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit a fund if its earliest price is too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices("21/05/2014") must equal(
+      Price.latestPrices(aLocalDate("21/05/2014")) must equal(
         Map(PK[FundTable](1L) -> price("kappa140520"))
       )
     }
@@ -108,7 +108,7 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "omit prices from name change fund if date of interest is more than one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      Price.latestPrices("22/05/2014") must equal(
+      Price.latestPrices(aLocalDate("22/05/2014")) must equal(
         Map(PK[FundTable](1L) -> price("kappa140523"))
       )
     }
@@ -116,18 +116,18 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "include prices from name change fund if date of interest is one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
+      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-      Price.latestPrices("23/05/2014") must equal(
+      Price.latestPrices(aLocalDate("23/05/2014")) must equal(
         Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
       )
     }
 
     "include prices from name change fund if date of interest is the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
-      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = "Kappa")
+      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-      Price.latestPrices("24/05/2014") must equal(
+      Price.latestPrices(aLocalDate("24/05/2014")) must equal(
         Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
       )
     }

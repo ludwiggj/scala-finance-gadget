@@ -1,7 +1,6 @@
 package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
-import scala.language.implicitConversions
 
 case class Holding(userName: String, price: Price, units: BigDecimal) extends PersistableToFile {
   def value = (units * price.inPounds).setScale(2, BigDecimal.RoundingMode.HALF_UP)
@@ -40,8 +39,6 @@ case class Holding(userName: String, price: Price, units: BigDecimal) extends Pe
 
 object Holding {
 
-  import models.org.ludwiggj.finance.stringToLocalDate
-
   def apply(userName: String, row: String): Holding = {
     val holdingPattern = (
       """.*?<span.*?>([^<]+)</span>""" +
@@ -53,11 +50,17 @@ object Holding {
       ).r
 
     val holdingPattern(fundName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
-    val priceInPounds: BigDecimal = priceInPence / 100;
-    Holding(userName, Price(fundName, date, priceInPounds), units)
+    val priceInPounds = s"${aBigDecimal(priceInPence) / 100}"
+
+    Holding(userName, Array(fundName, units, date, priceInPounds))
   }
 
   def apply(userName: String, row: Array[String]): Holding = {
-    Holding(userName, Price(row(0), row(2), row(3)), row(1))
+    val fundName = row(0)
+    val date = row(2)
+    val inPounds = aBigDecimal(row(3))
+    val units = aBigDecimal(row(1))
+
+    Holding(userName, Price(fundName, date, inPounds), units)
   }
 }

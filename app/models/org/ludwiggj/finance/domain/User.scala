@@ -4,42 +4,35 @@ import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import play.api.Play.current
 import play.api.db.DB
-
-import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
 object User {
-  implicit def stringToUsersRow(name: String) = UserRow(PK[UserTable](0L), name)
-
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
-  def get(userName: String): Option[UserRow] = {
+  def get(username: String): Option[UserRow] = {
     db.withSession {
       implicit session =>
 
         def getUserByName() =
           Users.filter {
-            _.name === userName
+            _.name === username
           }
 
         getUserByName().firstOption
     }
   }
 
-  def insert(user: UserRow) = {
+  def insert(username: String, password: Option[String] = None) = {
     db.withSession {
       implicit session =>
-        (Users returning Users.map(_.id)) += user
+        (Users returning Users.map(_.id)) += UserRow(PK[UserTable](0L), username, password)
     }
   }
 
-  def getOrInsert(user: UserRow): PK[UserTable] = {
-    db.withSession {
-      implicit session =>
-        get(user.name) match {
-          case Some(aUser: UserRow) => aUser.id
-          case _ => insert(user)
-        }
+  def getOrInsert(username: String): PK[UserTable] = {
+    get(username) match {
+      case Some(aUser: UserRow) => aUser.id
+      case _ => insert(username)
     }
   }
 

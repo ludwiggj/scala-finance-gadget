@@ -4,12 +4,9 @@ import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import play.api.Play.current
 import play.api.db.DB
-import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 
 object Fund {
-
-  implicit def fundNameToFundsRow(fundName: FundName) = FundRow(PK[FundTable](0L), fundName)
 
   lazy val db = Database.forDataSource(DB.getDataSource("finance"))
 
@@ -30,20 +27,17 @@ object Fund {
     get(fundName).map(_.id)
   }
 
-  def insert(fund: FundRow) = {
+  def insert(fundName: FundName) = {
     db.withSession {
       implicit session =>
-        (Funds returning Funds.map(_.id)) += fund
+        (Funds returning Funds.map(_.id)) += FundRow(PK[FundTable](0L), fundName)
     }
   }
 
-  def getOrInsert(fund: FundRow): PK[FundTable] = {
-    db.withSession {
-      implicit session =>
-        get(fund.name) match {
-          case Some(aFund: FundRow) => aFund.id
-          case _ => insert(fund)
-        }
+  def getOrInsert(fundName: FundName): PK[FundTable] = {
+    get(fundName) match {
+      case Some(aFund: FundRow) => aFund.id
+      case _ => insert(fundName)
     }
   }
 }

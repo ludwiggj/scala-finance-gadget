@@ -1,10 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.Fund.fundNameToFundsRow
 import models.org.ludwiggj.finance.domain.{Fund, Transaction, User, _}
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, UserTable, UserRow}
-import models.org.ludwiggj.finance.stringToLocalDate
+import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, UserTable}
 
 trait DatabaseHelpers {
   // Prices
@@ -51,15 +49,16 @@ trait DatabaseHelpers {
 
   object SingleUser extends Schema {
     var userId = PK[UserTable](0L)
-    val ted = UserRow(PK[UserTable](0L), "Father_Ted", Some("Penitent_Man"))
+    val username = "Father_Ted"
+    val password = Some("Penitent_Man")
 
     override def loadData() = {
-      userId = User.insert(ted)
+      userId = User.insert(username, password)
     }
   }
 
   object SingleFund extends Schema {
-    val fundName: FundName = "Capitalists Dream"
+    val fundName = FundName("Capitalists Dream")
     var fundId = PK[FundTable](0L)
 
     override def loadData() = {

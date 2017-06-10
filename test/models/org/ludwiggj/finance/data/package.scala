@@ -1,8 +1,7 @@
 package models.org.ludwiggj.finance
 
-import domain._
-import domain.TransactionType._
-import persistence.database.TransactionsPerUserAndFund
+import models.org.ludwiggj.finance.domain._
+import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFund
 
 package object data {
   val userA = "User A"
@@ -31,7 +30,7 @@ package object data {
       "fcStewardship140502" -> Transaction(
         userA, price("fcStewardship140502").date, DividendReinvestment, Some(17.39), None, price("fcStewardship140502"), 13.1246),
       "aberdeenConversionOut151106" -> Transaction(
-        userA, "06/11/2015", UnitShareConversionOut, None, None, price("aberdeen151104"), 22.7723)
+        userA, aLocalDate("06/11/2015"), UnitShareConversionOut, None, None, price("aberdeen151104"), 22.7723)
     )
 
     val txsMultipleFunds = List(
@@ -85,7 +84,7 @@ package object data {
       "aberdeen140502" -> Price("Aberdeen Ethical World Equity A Fund Inc", "02/05/2014", 1.4123),
       "henderson140520" -> Price("Henderson Global Care UK Income A Fund Inc", "20/05/2014", 1.1620),
       "schroder140520" -> Price("Schroder Gbl Property Income Maximiser Z Fund Inc", "20/05/2014", 0.4808),
-      "^schroder140520" -> Price(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ", "20/05/2014", "0.4808")
+      "^schroder140520" -> Price(" ^Schroder Gbl Property Income Maximiser Z Fund Inc ", "20/05/2014", 0.4808)
     )
 
     val holding: Map[String, Holding] = Map(
@@ -120,9 +119,9 @@ package object data {
     )
 
     val holdingSummaryList: Map[String, HoldingSummaryList] = Map(
-      "aberdeen140915" -> HoldingSummaryList(txMap("aberdeen140901"), userA, "15/09/2014"),
-      "aberdeen140930" -> HoldingSummaryList(txMap("aberdeen141001"), userA, "30/09/2014"),
-      "aberdeen141001" -> HoldingSummaryList(txMap("aberdeen141001"), userA, "01/10/2014")
+      "aberdeen140915" -> HoldingSummaryList(txMap("aberdeen140901"), userA, aLocalDate("15/09/2014")),
+      "aberdeen140930" -> HoldingSummaryList(txMap("aberdeen141001"), userA, aLocalDate("30/09/2014")),
+      "aberdeen141001" -> HoldingSummaryList(txMap("aberdeen141001"), userA, aLocalDate("01/10/2014"))
     )
   }
 }

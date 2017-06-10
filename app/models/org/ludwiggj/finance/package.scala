@@ -8,7 +8,7 @@ import scala.language.implicitConversions
 package object finance {
   val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
 
-  implicit def stringToLocalDate(stringyDate: String): LocalDate = {
+  def aLocalDate(stringyDate: String): LocalDate = {
     val DateRegex = s"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*".r
 
     stringyDate match {

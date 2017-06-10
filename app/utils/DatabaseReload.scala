@@ -48,9 +48,9 @@ object DatabaseReload extends App {
   }
 
   def reloadUserAccounts() = {
-    User.insert(UserRow(PK[UserTable](0L), "Admin", Some("Admin")))
-    User.insert(UserRow(PK[UserTable](0L), "Me", Some("Me")))
-    User.insert(UserRow(PK[UserTable](0L), "Spouse", Some("Spouse")))
+    User.insert("Admin", Some("Admin"))
+    User.insert("Me", Some("Me"))
+    User.insert("Spouse", Some("Spouse"))
   }
 
   def reloadTransactions() = {

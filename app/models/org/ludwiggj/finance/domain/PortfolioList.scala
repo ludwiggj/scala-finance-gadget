@@ -1,7 +1,6 @@
 package models.org.ludwiggj.finance.domain
 
 import org.joda.time.LocalDate
-import scala.language.implicitConversions
 
 case class PortfolioList(private val portfolios: List[Portfolio]) {
   val delta = portfolios.foldRight(CashDelta())(
@@ -12,10 +11,6 @@ case class PortfolioList(private val portfolios: List[Portfolio]) {
 }
 
 object PortfolioList {
-  implicit def listOfPortfoliosToPortfolioList(portfolios: List[Portfolio]) = {
-    new PortfolioList(portfolios)
-  }
-
   def get(dateOfInterest: LocalDate): PortfolioList = {
 
     val transactions = Transaction.getTransactionsUntil(dateOfInterest)
@@ -24,15 +19,19 @@ object PortfolioList {
       _._1
     }.toList.distinct.sorted
 
-    userNames map { userName =>
+    val portfolios = userNames map { userName =>
       Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest))
     }
+
+    new PortfolioList(portfolios)
   }
 
   def get(dateOfInterest: LocalDate, userName: String): PortfolioList = {
 
     val transactions = Transaction.getTransactionsUntil(dateOfInterest, userName)
 
-    List(Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest)))
+    new PortfolioList(
+      List(Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest)))
+    )
   }
 }

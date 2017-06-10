@@ -1,6 +1,5 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.domain.User.stringToUsersRow
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.database._
@@ -9,7 +8,6 @@ import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
 import scala.collection.immutable.ListMap
-import scala.language.implicitConversions
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.{Failure, Success, Try}
 
@@ -62,13 +60,12 @@ case class Transaction(userName: String,
 
 object Transaction {
 
-  import models.org.ludwiggj.finance.stringToLocalDate
+  import models.org.ludwiggj.finance.aLocalDate
 
-  import TransactionType.fromString
+  import TransactionType.aTransactionType
 
-  private implicit def stringToBigDecimalOption(candidateNumber: String): Option[BigDecimal] = {
-    // Force implicit conversion here
-    val decimal: Try[BigDecimal] = Try(candidateNumber)
+  private def aBigDecimalOption(candidateNumber: String): Option[BigDecimal] = {
+    val decimal = Try(aBigDecimal(candidateNumber))
 
     decimal match {
       case Success(value) => Some(value)
@@ -93,17 +90,26 @@ object Transaction {
     val txPattern(fundName, date, description, in, out, priceDate, priceInPence, units, _) =
       stripAllWhitespaceExceptSpace(row)
 
-    val priceInPounds = Try(stringToBigDecimal(priceInPence) / 100) match {
-      case Success(price) => price
-      case Failure(ex: NumberFormatException) => BigDecimal(0)
+    val priceInPounds = Try(aBigDecimal(priceInPence) / 100) match {
+      case Success(price) => s"$price"
+      case Failure(ex: NumberFormatException) => "0"
       case Failure(ex) => throw ex
     }
 
-    Transaction(userName, date, description.trim, in, out, Price(fundName, priceDate, priceInPounds), units)
+    Transaction(userName, Array(fundName, date, description.trim, in, out, priceDate, priceInPounds, units))
   }
 
   def apply(userName: String, row: Array[String]): Transaction = {
-    Transaction(userName, row(1), row(2), row(3), row(4), Price(row(0), row(5), row(6)), row(7))
+    val fundName = FundName(row(0))
+    val date = aLocalDate(row(1))
+    val description = aTransactionType(row(2))
+    val in = aBigDecimalOption(row(3))
+    val out = aBigDecimalOption(row(4))
+    val priceDate = aLocalDate(row(5))
+    val priceInPounds = aBigDecimal(row(6))
+    val units = aBigDecimal(row(7))
+
+    Transaction(userName, date, description, in, out, Price(fundName, priceDate, priceInPounds), units)
   }
 
   // Database interactions

@@ -1,7 +1,7 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.domain.PortfolioList
-import models.org.ludwiggj.finance.stringToLocalDate
+import models.org.ludwiggj.finance.aLocalDate
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 import scala.math.BigDecimal.RoundingMode
@@ -18,7 +18,7 @@ class PortfolioListSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp
 
   "portfolio list" should {
     "be based on all transactions up to and including date for both users" in {
-      val portfolioList = PortfolioList.get("22/06/2014")
+      val portfolioList = PortfolioList.get(aLocalDate("22/06/2014"))
 
       portfolioList.iterator.size must equal(2)
 
@@ -41,7 +41,7 @@ class PortfolioListSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp
 
     "be based on all transactions up to and including date for specific users" in {
       // Price will be latest price up to and including 25/6/14 i.e. 3.24 on 25/6/14
-      val portfolioList = PortfolioList.get("24/06/2014", "User B")
+      val portfolioList = PortfolioList.get(aLocalDate("24/06/2014"), "User B")
 
       portfolioList.iterator.size must equal(1)
 
