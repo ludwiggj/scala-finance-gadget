@@ -17,8 +17,8 @@ However, I also want to view additional information, such as:
 Previously I did this manually via a spreadsheet. This project automates the process, scraping the information from the
 web site, storing the information in a database and presenting it via a Play application.
 
-The [portfolio page](financePortfolioOnDate.png) is an example of the financial information which can be viewed via the
-Play webapp.
+The ![portfolio page](financePortfolioOnDate.png?raw=true "Portfolio Page") is an example of the financial information
+which can be viewed via the Play webapp.
 
 # Architecture #
 
@@ -70,11 +70,11 @@ Once downloaded, you can run the tests from the command line:
 
 ## WebSite Holding Scraper ##
 
-The **WebSiteHoldingScraper** retrieves details of the web site user accounts from a typesafe config file. (The config
-file is not stored in github for obvious reasons).
+The [WebSiteHoldingScraper](app/utils/WebSiteHoldingScraper.scala) retrieves details of the web site user accounts from
+a typesafe config file. (The config file is not stored in github for obvious reasons).
 
-The scraper logs in to the investment management web site as each user, and retrieves the current holdings of the user.
-The format of the holdings is:
+The scraper logs in to the investment management web site as each user, and retrieves details of the user's current
+holdings. If the config file lists multiple accounts then each one is processed in parallel via Futures. The format of the holdings is:
 
 | Holding                                  | Units/Shares | Price date | Price(p) | Value(GBP)|
 | :--------------------------------------- |-------------:| ----------:| --------:| ---------:|
@@ -87,33 +87,30 @@ The scraper parses the holding information and persists it to the the MySql data
 **holdings_YY_MM_DD_\<userName\>.txt**
 
 where **userName** is a user-defined name to represent the user. Thus the file represents the holdings for a particular
-user on a particular date. 
-
-If the config file lists multiple accounts then each one is processed in parallel via Futures.
+user on a particular date.
 
 Currently the WebSite Holding Scraper is triggered manually.
 
 ## WebSite Transaction Scraper ##
 
-The **WebSiteTransactionScraper** is similar to the **WebSiteHoldingScraper**, except that it scrapes and persists the
-latest transactions for each user.
+The [WebSiteTransactionScraper](app/utils/WebSiteTransactionScraper.scala) is similar to the **WebSiteHoldingScraper**,
+except that it scrapes and persists the latest transactions for each user. Again, the config file can list details of
+multiple accounts; in this case the scraper will log in to the web site separately using each account. This is done in
+parallel via Futures.
 
 The format of the scraped transaction data is shown below:
 
-| Holding                                       | Date       | Description              | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
-| :-------------------------------------------- | ----------:| :------------------------| --------:| ---------:| ----------:| --------:| ------------:| ----------------:|
-| ^ M&G Feeder of Property Portfolio I Fund Acc | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
-| F&C Responsible UK Income 1 Fund Inc          | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |	
+| Holding       | Date       | Description              | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
+| :------------ | :--------- | :----------------------- | :------- | :-------- | ---------- | --------:| ------------:| ---------------- |
+| M&G Feeder    | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
+| F&C UK Income | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |	
 
 The transaction flat files are stored in the **data** directory. The format of a transactions flat file name is:
  
 **txs_YY_MM_DD_\<userName\>.txt**
 
 where **userName** is a user-defined name to represent the user. Thus the file represents the recent transactions for a
-particular user up to and including the specified date. 
-
-Again, the config file can list details of multiple accounts; in this case the scraper will log in to the web site
-separately using each account. This is done in parallel via Futures.
+particular user up to and including the specified date.
 
 Currently the WebSite Transaction Scraper is triggered manually.
 
