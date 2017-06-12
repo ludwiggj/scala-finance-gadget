@@ -3,37 +3,35 @@ financeGadget
 
 # Background #
 
-This is a personal project written in Scala, and is intended to help manage share investments.
+This is a personal project written in Scala to view my share investment portfolio.
  
-I can log in to my existing investment management web site at any time, and view the current value of my portfolio, as
-well as the last 3 months' worth of transactions.
+I can log in to my existing financial web site at any time, and view the current value of my portfolio, as well as the
+last 3 months' worth of transactions.
 
-However, I also want to view the history of my portfolio; for example:
+However, I also want to view additional information, such as:
 
 * how much I have invested
 * how my investment has grown (or decreased) over time
 * which investment funds are performing badly
 
-Previously I have achieved this by copying data from the investment management website into a spreadsheet and then
-manipulating the data. This project is intended to automate that process, and help me to develop my Scala skills at the
-same time.
+Previously I did this manually via a spreadsheet. This project automates the process, scraping the information from the
+web site, storing the information in a database and presenting it via a Play application.
 
-This [portfolio report](examplePortfolioReport.txt) is an example of a report I am now generating to provide additional
-analysis of my portfolio.
+The [portfolio page](financePortfolioOnDate.png) is an example of the financial information which can be viewed via the
+Play webapp.
 
 # Architecture #
 
 The system consists of several components:
 
-* **Web site scrapers** to log in to the investment management platform, retrieve (scrape) the investment data from the 
-web site and persist it into local file storage (flat files) and a MySql database.
+* **Web site scrapers** which log in to the investment management platform, scrape the investment data from the web site
+and persist it into a MySql database. The data is also persisted into local file storage (flat files) as a backup.
 
-* A **database facade**.
+* A **database persistence layer** based on Slick.
  
-* A **reports component**, which runs queries against the MySql database and displays the results as a number of different
- reports.
+* A **play webapp** which retrieves the information from the database and displays it to the user.
  
-* A **database reloader**, which parses scraped investment data from flat files and reloads it into the Mysql database.
+* A **database reloader**, which can be used to reload the information from the flat files into the Mysql database.
 
 The components are described in more detail below.
 
@@ -46,11 +44,11 @@ The components are described in more detail below.
 * [SSoup](https://github.com/filosganga/ssoup "SSoup"), a Scala wrapper around the [JSoup](http://jsoup.org "JSoup")
 Java library for parsing HTML. This is used to parse the HTML scraped from the investment management platform.
 
-* Slick 2.1.0, to create the database facade.
+* Slick 2.1.0, to create the database persistence layer.
 
 * Typesafe config, to store details of the accounts used to access the investment management platform.
 
-* Play 2.4.0, to provide a web front end (work in progress).
+* Play 2.4.0, to provide the web front end.
 
 * ScalaTest 2.2.1.
 
@@ -64,7 +62,7 @@ Pre-requisites:
 
 The code for is available from the [financeGadget git repo](https://github.com/ludwiggj/financeGadget.git).
 
-Once downloaded, you can run the tests from the command line via the command:
+Once downloaded, you can run the tests from the command line:
 
 **activator clean test**
 
@@ -72,21 +70,19 @@ Once downloaded, you can run the tests from the command line via the command:
 
 ## WebSite Holding Scraper ##
 
-The **WebSiteHoldingScraper** executable first retrieves details of the web site user accounts from a configuration
-file, which uses the typesafe config format. (The config file is not stored in github for obvious reasons).
+The **WebSiteHoldingScraper** retrieves details of the web site user accounts from a typesafe config file. (The config
+file is not stored in github for obvious reasons).
 
-The config file can contain details of multiple user accounts. The scraper logs in to the investment management web site
-as each user, and retrieves the current holdings of the user. The format of the holdings is:
+The scraper logs in to the investment management web site as each user, and retrieves the current holdings of the user.
+The format of the holdings is:
 
 | Holding                                  | Units/Shares | Price date | Price(p) | Value(GBP)|
 | :--------------------------------------- |-------------:| ----------:| --------:| ---------:|
 | Aberdeen Ethical World Equity A Fund Inc | 1,912.0785   | 09/10/2015 | 132.1200 | 2,526.24  |
 | EdenTree Amity European A Fund Inc       | 2,468.3505   | 09/10/2015 | 199.5000 | 4,924.36  |
 
-The scraper obtains the above data from the web site, parses it and then persists it to the local flat files (in the 
-**reports** directory), as well as the MySql database.
-
-The format of a holdings flat file name is:
+The scraper parses the holding information and persists it to the the MySql database, and also local flat files in the 
+**holdings** directory. The format of a holdings flat file name is:
  
 **holdings_YY_MM_DD_\<userName\>.txt**
 
@@ -95,10 +91,12 @@ user on a particular date.
 
 If the config file lists multiple accounts then each one is processed in parallel via Futures.
 
+Currently the WebSite Holding Scraper is triggered manually.
+
 ## WebSite Transaction Scraper ##
 
-The **WebSiteTransactionScraper** executable is similar to the **WebSiteHoldingScraper**, except that it scrapes and
-persists the latest transactions for each user.
+The **WebSiteTransactionScraper** is similar to the **WebSiteHoldingScraper**, except that it scrapes and persists the
+latest transactions for each user.
 
 The format of the scraped transaction data is shown below:
 
@@ -107,7 +105,7 @@ The format of the scraped transaction data is shown below:
 | ^ M&G Feeder of Property Portfolio I Fund Acc | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
 | F&C Responsible UK Income 1 Fund Inc          | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |	
 
-The transaction flat files are again stored in the **reports** directory. The format of a transactions flat file name is:
+The transaction flat files are stored in the **data** directory. The format of a transactions flat file name is:
  
 **txs_YY_MM_DD_\<userName\>.txt**
 
@@ -117,30 +115,42 @@ particular user up to and including the specified date.
 Again, the config file can list details of multiple accounts; in this case the scraper will log in to the web site
 separately using each account. This is done in parallel via Futures.
 
+Currently the WebSite Transaction Scraper is triggered manually.
+
 ## MySql ##
 
 MySql is used to store the data scraped by the previously described components. The [schema](financeERD.png) shows that
-the database has been normalised, with common occurring entities (users, prices and funds) stored in separate tables. 
+the database has been normalised, with common occurring entities (users, prices, transactions and funds) stored in
+separate tables. 
 
 The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versioning of
 database schema changes.
 
-## Database Facade ##
+## Database Persistence Layer ##
 
-This is implemented via slick, see the classes in the **models.org.ludwiggj.finance.persistence.database** package.
+This is implemented via slick. See the
+[Tables definition](app/models/org/ludwiggj/finance/persistence/database/Tables.scala) and the corresponding
+[domain classes](app/models/org/ludwiggj/finance/domain).
 
-## Reports ##
+## Play Web Application ##
 
-The reports component retrieves investment data via the database facade. The data is initially returned as row case
-classes (which have been generated automatically by Slick). The data is then converted into "higher value" domain
-representations, such as **HoldingSummary** (the current value of shares held in a single fund by a user, including
-gain/loss information) and **Portfolio** (all of the funds held by a user on a particular date, including gain/loss
-information across the whole portfolio).
+The application requires the user to log in, either as an administrator or him/herself. Following a successful login,
+the user is shown an [investment summary page](financePortfolioDateList.png). This shows a list of **investment dates**,
+and the total value of the user's portfolio on each date. The investment date is the regular monthly date on which the
+user's money is used to buy new shares in one or more funds. Thus the summary shows how each user's portfolio has built
+up over time. 
 
-There are a number of report executables which retrieve and display this information. For example,
-**ShowPortfoliosFromTransactions** generates a [portfolio report](examplePortfolioReport.txt), which shows the value of
- each user's portfolio on each **investment date** (the regular monthly date on which the investor's money is used to 
- buy new shares in one or more funds). Thus the report shows how each user's portfolio has built up over time. 
+The user can click on a specific date to view a [portfolio page](financePortfolioOnDate.png) which provides a detailed
+breakdown of the user's investments on that specific date.
+
+Note that a user can only view his/her own information, whereas an administrator can view the information across all
+users.
+
+The application retrieves the investment data via the persistence layer. It's converted into "higher value" domain
+representations, such as [HoldingSummary](app/models/org/ludwiggj/finance/domain/HoldingSummary.scala) (the current
+value of shares held in a single fund by a user, including gain/loss information) and
+[Portfolio](app/models/org/ludwiggj/finance/domain/Portfolio.scala) (all of the funds held by a user on a particular
+date, including gain/loss information across the whole portfolio).
 
 ## Scala tests ##
 
@@ -149,26 +159,10 @@ the MySql database, though in a separate database instance called **test**.
 
 ## Database Reloader ##
 
-The **Database Reloader** executable cleans out the MySql database, parses the flat files in the reports directory, and
-saves the resulting data into the Mysql database via the database facade.
+The **Database Reloader** executable cleans out the MySql database, parses the flat files, and saves the resulting data
+into the Mysql database via the persistence layer.
 
-This component is not as important as it once was, now that the integration tests are run against a separate database
+This component is not as important as it once was, as the integration tests are now run against a separate database
 instance, though it's still nice to know that the data can be reloaded into the database at any time.
 
-## Future Directions ##
-
-* Fully integrate the code with play, so that the existing reports can be displayed via a web front end. This should
-just be a case of returning the existing domain objects via the database facade, and displaying the resultant data via
-play templates. 
-
-* Automatically retrieve the financial data from the investment management web site, ideally just after the regular
-monthly **investment date**, perhaps via Akka.
-
-* Experimenting with the web front end to show additional reports e.g. price history of single fund, perhaps via a
- graphing component.
- 
-* Simplifying the use of futures in the scraper code via Scala Async.
- 
-* More coding improvements.
-
-Graeme Ludwig, 11/10/15.
+Graeme Ludwig, 12/06/17.
