@@ -17,8 +17,9 @@ However, I also want to view additional information, such as:
 Previously I did this manually via a spreadsheet. This project automates the process, scraping the information from the
 web site, storing the information in a database and presenting it via a Play application.
 
-The ![portfolio page](financePortfolioOnDate.png?raw=true "Portfolio Page") is an example of the financial information
-which can be viewed via the Play webapp.
+The portfolio page is an example of the financial information which can be viewed via the Play webapp:
+
+![portfolio page](images/financePortfolioOnDate.png?raw=true "Portfolio Page")
 
 # Architecture #
 
@@ -74,7 +75,8 @@ The [WebSiteHoldingScraper](app/utils/WebSiteHoldingScraper.scala) retrieves det
 a typesafe config file. (The config file is not stored in github for obvious reasons).
 
 The scraper logs in to the investment management web site as each user, and retrieves details of the user's current
-holdings. If the config file lists multiple accounts then each one is processed in parallel via Futures. The format of the holdings is:
+holdings. If the config file lists multiple accounts then each one is processed in parallel via Futures. The format of
+the holdings is:
 
 | Holding                                  | Units/Shares | Price date | Price(p) | Value(GBP)|
 | :--------------------------------------- |-------------:| ----------:| --------:| ---------:|
@@ -116,9 +118,10 @@ Currently the WebSite Transaction Scraper is triggered manually.
 
 ## MySql ##
 
-MySql is used to store the data scraped by the previously described components. The [schema](financeERD.png) shows that
-the database has been normalised, with common occurring entities (users, prices, transactions and funds) stored in
-separate tables. 
+MySql is used to store the data scraped by the previously described components. The schema is normalised; the key
+representations (users, prices, transactions and funds) are stored in separate tables:
+ 
+![schema](images/financeERD.png?raw=true "Schema")
 
 The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versioning of
 database schema changes.
@@ -132,13 +135,18 @@ This is implemented via slick. See the
 ## Play Web Application ##
 
 The application requires the user to log in, either as an administrator or him/herself. Following a successful login,
-the user is shown an [investment summary page](financePortfolioDateList.png). This shows a list of **investment dates**,
-and the total value of the user's portfolio on each date. The investment date is the regular monthly date on which the
-user's money is used to buy new shares in one or more funds. Thus the summary shows how each user's portfolio has built
-up over time. 
+the user is shown an investment summary page:
+ 
+![investment summary page](images/financePortfolioDateList.png?raw=true "Investment Summary page")
 
-The user can click on a specific date to view a [portfolio page](financePortfolioOnDate.png) which provides a detailed
-breakdown of the user's investments on that specific date.
+This shows a list of **investment dates**, and the total value of the user's portfolio on each date. The investment date
+is the regular monthly date on which the user's money is used to buy new shares in one or more funds. Thus the summary
+shows how each user's portfolio has built up over time.
+
+The user can click on a specific date to view a portfolio page, which shows a detailed breakdown of the user's
+investments on that specific date:
+
+![portfolio page](images/financePortfolioOnDate.png?raw=true "Portfolio Page")
 
 Note that a user can only view his/her own information, whereas an administrator can view the information across all
 users.
