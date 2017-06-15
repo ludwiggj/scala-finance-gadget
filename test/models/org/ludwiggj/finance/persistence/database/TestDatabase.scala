@@ -2,15 +2,20 @@ package models.org.ludwiggj.finance.persistence.database
 
 import scala.io.Source
 import play.api.db.DB
+
+//TODO - refactor out!
 import play.api.Play.current
 
+import scala.slick.lifted.TableQuery
 import scala.util.{Failure, Success, Try}
+import models.org.ludwiggj.finance.persistence.database.Tables.{UserTable, FundTable, PriceTable, TransactionTable}
+import scala.slick.driver.MySQLDriver.simple._
 
-object Database {
+object TestDatabase {
 
   type Evolution = (String, String)
 
-  private def getDdls(sqlFileNumber:Int = 1, ddls: List[Evolution] = List()): List[Evolution] = {
+  private def getDdls(sqlFileNumber: Int = 1, ddls: List[Evolution] = List()): List[Evolution] = {
     val evolutionContent = Try(Source.fromFile(s"conf/evolutions/finance/${sqlFileNumber}.sql").getLines.mkString("\n"))
     evolutionContent match {
       case Success(evolutionStr) => {
@@ -31,7 +36,7 @@ object Database {
     }
   }
 
-  def recreate() = {
+  def recreateSchema() = {
     val ddls = getDdls()
 
     val dropDdls = (ddls map {
@@ -43,5 +48,22 @@ object Database {
     }
 
     executeDbStatements(dropDdls ++ createDdls)
+  }
+
+  def deleteAllData() = {
+    lazy val db = Database.forDataSource(DB.getDataSource("finance"))
+    val users: TableQuery[UserTable] = TableQuery[UserTable]
+    val funds: TableQuery[FundTable] = TableQuery[FundTable]
+    val prices: TableQuery[PriceTable] = TableQuery[PriceTable]
+    val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
+
+
+    db.withSession {
+      implicit session =>
+        transactions.delete
+        prices.delete
+        funds.delete
+        users.delete
+    }
   }
 }

@@ -11,7 +11,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class TransactionSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
-    Database.recreate()
+    TestDatabase.deleteAllData()
   }
 
   private val userA = "User A"

@@ -2,6 +2,7 @@ package models.org.ludwiggj.finance.domain
 
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.Tables._
+//TODO - refactor out!
 import play.api.Play.current
 import play.api.db.DB
 import scala.slick.driver.MySQLDriver.simple._

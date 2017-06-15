@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import org.scalatest.Suites
+import org.scalatest.{BeforeAndAfter, Suites}
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.test.FakeApplication
 
@@ -11,8 +11,13 @@ class MasterSuite extends Suites(
   new PortfolioListSpec,
   new PriceSpec,
   new TransactionSpec
-) with OneAppPerSuite {
+) with OneAppPerSuite with BeforeAndAfter {
 
+  before {
+    TestDatabase.recreateSchema()
+  }
+
+  //TODO - get this from a conf file...
   def getConfig = Map(
     "db.finance.driver" -> "com.mysql.jdbc.Driver",
     "db.finance.url" -> "jdbc:mysql://localhost:3306/financeTest",

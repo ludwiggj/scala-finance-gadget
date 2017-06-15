@@ -1,9 +1,7 @@
 package utils
 
 import java.io.{File, FilenameFilter}
-
-import models.org.ludwiggj.finance.domain.{Price, Transaction, User}
-import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import models.org.ludwiggj.finance.domain.{Price, Transaction}
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
 import play.api.{Configuration, Environment, Play}
@@ -15,7 +13,7 @@ import scala.util.matching.Regex
 
 object DatabaseReload extends App {
 
-  def isAFileWithUserNameMatching(pattern: Regex) = new FilenameFilter {
+  private def isAFileWithUserNameMatching(pattern: Regex) = new FilenameFilter {
     override def accept(dir: File, name: String) = {
       name match {
         case pattern(_) => true
@@ -24,36 +22,29 @@ object DatabaseReload extends App {
     }
   }
 
-  def isAFileMatching(pattern: Regex) = new FilenameFilter {
+  private def isAFileMatching(pattern: Regex) = new FilenameFilter {
     override def accept(dir: File, name: String) = {
       pattern.findFirstIn(name).isDefined
     }
   }
 
-  def deleteAllRows() = {
+  private def deleteAllData() = {
     lazy val db = Database.forDataSource(DB.getDataSource("finance"))
     val users: TableQuery[UserTable] = TableQuery[UserTable]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[PriceTable] = TableQuery[PriceTable]
     val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
 
-
     db.withSession {
       implicit session =>
         transactions.delete
         prices.delete
         funds.delete
-        users.delete
+        users.filterNot(_.name inSet List("Admin", "Me", "Spouse")).delete
     }
   }
 
-  def reloadUserAccounts() = {
-    User.insert("Admin", Some("Admin"))
-    User.insert("Me", Some("Me"))
-    User.insert("Spouse", Some("Spouse"))
-  }
-
-  def reloadTransactions() = {
+  private def reloadTransactions() = {
     val transactionPattern =
       """txs.*_([a-zA-Z]+)\.txt""".r
     for (
@@ -68,7 +59,7 @@ object DatabaseReload extends App {
     }
   }
 
-  def reloadPrices() = {
+  private def reloadPrices() = {
     val pricePattern = """prices.*\.txt""".r
     for (
       aFile <- new File(dataHome).listFiles(isAFileMatching(pricePattern))
@@ -84,8 +75,7 @@ object DatabaseReload extends App {
 
   try {
     Play.start(application)
-    deleteAllRows()
-    reloadUserAccounts()
+    deleteAllData()
     reloadTransactions()
     reloadPrices()
   } finally {

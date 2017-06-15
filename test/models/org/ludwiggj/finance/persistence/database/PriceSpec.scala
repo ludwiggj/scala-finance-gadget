@@ -1,9 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
-import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import models.org.ludwiggj.finance.persistence.database.Tables.{FundTable, FundRow}
 import models.org.ludwiggj.finance.aLocalDate
+import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
+import models.org.ludwiggj.finance.persistence.database.Tables.FundRow
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 
@@ -11,7 +10,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
-    Database.recreate()
+    TestDatabase.deleteAllData()
   }
 
   "get a single price" should {
@@ -28,28 +27,28 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     }
   }
 
-    "get a list of prices" should {
-      "return the list" in {
-        TwoPrices.loadData()
+  "get a list of prices" should {
+    "return the list" in {
+      TwoPrices.loadData()
 
-        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
-      }
-
-      "be unchanged if attempt to add price for same date" in {
-        TwoPrices.loadData()
-
-        Price.insert(price("kappa140520").copy(inPounds = 2.12))
-        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
-      }
-
-      "increase by one in length if add new unique price" in {
-        TwoPrices.loadData()
-
-        val newPrice = Price("holding1", "21/05/2014", 2.12)
-        Price.insert(newPrice)
-        Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"), newPrice)
-      }
+      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
     }
+
+    "be unchanged if attempt to add price for same date" in {
+      TwoPrices.loadData()
+
+      Price.insert(price("kappa140520").copy(inPounds = 2.12))
+      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
+    }
+
+    "increase by one in length if add new unique price" in {
+      TwoPrices.loadData()
+
+      val newPrice = Price("holding1", "21/05/2014", 2.12)
+      Price.insert(newPrice)
+      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"), newPrice)
+    }
+  }
 
   "insert price" should {
     "insert fund if it is not present" in {
@@ -76,41 +75,37 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
     "return the latest price for each fund" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices(aLocalDate("20/06/2014")) must equal(
-        Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140621"))
-      )
+      Price.latestPrices(aLocalDate("20/06/2014")).values.toList must contain theSameElementsAs
+        List(price("kappa140523"), price("nike140621"))
     }
 
     "omit a price if it is zero" in {
       MultiplePricesForSingleFund.loadData()
 
-      Price.latestPrices(aLocalDate("16/05/2014")) must equal(
-        Map(PK[FundTable](1L) -> price("kappa140512"))
-      )
+      Price.latestPrices(aLocalDate("16/05/2014")).values.toList must contain theSameElementsAs
+        List(price("kappa140512"))
     }
 
     "omit a price if it is a two or more days too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices(aLocalDate("19/06/2014")) must equal(
-        Map(PK[FundTable](1L) -> price("kappa140523"), PK[FundTable](2L) -> price("nike140620"))
-      )
+      Price.latestPrices(aLocalDate("19/06/2014")).values.toList must contain theSameElementsAs
+        List(price("kappa140523"), price("nike140620"))
     }
 
     "omit a fund if its earliest price is too late" in {
       MultiplePricesForTwoFunds.loadData()
 
-      Price.latestPrices(aLocalDate("21/05/2014")) must equal(
-        Map(PK[FundTable](1L) -> price("kappa140520"))
-      )
+      Price.latestPrices(aLocalDate("21/05/2014")).values.toList must contain theSameElementsAs
+        List(price("kappa140520"))
+
     }
 
     "omit prices from name change fund if date of interest is more than one day before the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
 
-      Price.latestPrices(aLocalDate("22/05/2014")) must equal(
-        Map(PK[FundTable](1L) -> price("kappa140523"))
-      )
+      Price.latestPrices(aLocalDate("22/05/2014")).values.toList must contain theSameElementsAs
+        List(price("kappa140523"))
     }
 
     "include prices from name change fund if date of interest is one day before the fund change date" in {
@@ -118,18 +113,16 @@ class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with Be
 
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-      Price.latestPrices(aLocalDate("23/05/2014")) must equal(
-        Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
-      )
+      Price.latestPrices(aLocalDate("23/05/2014")).values.toList must contain theSameElementsAs
+        List(expectedUpdatedPrice, price("kappaII140524"))
     }
 
     "include prices from name change fund if date of interest is the fund change date" in {
       MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
       val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-      Price.latestPrices(aLocalDate("24/05/2014")) must equal(
-        Map(PK[FundTable](1L) -> expectedUpdatedPrice, PK[FundTable](2L) -> price("kappaII140524"))
-      )
+      Price.latestPrices(aLocalDate("24/05/2014")).values.toList must contain theSameElementsAs
+        List(expectedUpdatedPrice, price("kappaII140524"))
     }
   }
 }

@@ -1,7 +1,0 @@
-# --- !Ups
-
-DROP TABLE IF EXISTS HOLDINGS;
-
-# --- !Downs
-
-DROP TABLE IF EXISTS HOLDINGS;

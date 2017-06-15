@@ -1,6 +1,6 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import Tables.{FundTable, FundRow}
+import Tables.{FundRow, FundTable}
 import models.org.ludwiggj.finance.domain.{Fund, FundName}
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
@@ -10,7 +10,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class FundSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
 
   before {
-    Database.recreate()
+    TestDatabase.deleteAllData()
   }
 
   private val nonExistentFund = FundName("fundThatIsNotPresent")

@@ -1,6 +1,5 @@
 package utils
 
-
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import play.api.{Configuration, Environment, Play}
