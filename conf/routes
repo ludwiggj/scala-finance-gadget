@@ -1,5 +1,5 @@
 GET /                             controllers.Application.index
-GET /portfolios                   controllers.Portfolios.all(yearsAgo: Int ?= 0)
+GET /portfolios                   controllers.Portfolios.all(page: Int ?= 1)
 GET /portfolioDetails/:date       controllers.Portfolios.onDate(date: org.joda.time.LocalDate)
 
 # Authentication

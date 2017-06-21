@@ -114,7 +114,10 @@ object Transaction {
   }
 
   // Database interactions
-  def db = Database.forDataSource(DB.getDataSource("finance"))
+  def db = {
+    def dbName = current.configuration.underlying.getString("db_name")
+    Database.forDataSource(DB.getDataSource(dbName))
+  }
 
   def insert(transaction: Transaction) {
 

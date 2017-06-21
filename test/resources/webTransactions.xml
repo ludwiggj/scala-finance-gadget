@@ -7,7 +7,7 @@
     </script>
     <script type="text/javascript" src="/includes/servicelocator.js?v=V215.075.240">
     </script>
-    <link href="/Brand_B2C/Brand_CFINVESTORS/assets/cofundsstyles.css?v=V215.075.240" type="text/css" rel="stylesheet"/>
+    <link href="/Brand_B2C/Brand_CFINVESTORS/assets/acmestyles.css?v=V215.075.240" type="text/css" rel="stylesheet"/>
     <link rel="SHORTCUT ICON" href="/Brand_B2C/Brand_CFINVESTORS/favicon.ico"/>
     <link href="/stylesheets/CFINVESTORS_base_screen.css?v=V215.075.240" type="text/css" rel="stylesheet"/>
     <link href="/stylesheets/CFINVESTORS_base_print.css?v=V215.075.240" type="text/css" rel="stylesheet" media="print"/>
@@ -23,17 +23,17 @@
     </script>
     <title>
 
-	Cofunds is the UK's leading investment platform for advisers and other financial institutions
+	Acme is the UK's leading investment platform for advisers and other financial institutions
 
     </title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
     <meta name="keywords" content="fund supermarket, investment supermarket, independent fund supermarket,intermediaries, ISA, investment funds, fund consolidation, consolidated statements, online investments"/>
-    <meta name="description" content="Cofunds is the UK’s leading independent fundmarket offering an award-winning fund administration service. We provide intermediaries with the choice, convenience and control they need for outstanding client service."/>
-    <meta name="quicklink" content="www.cofunds.co.uk/Logon/Logon.aspx Advisers"/>
-    <meta name="quicklink" content="investors.cofunds.co.uk/Logon/Logon.aspx Investors"/>
-    <meta name="quicklink" content="institutional.cofunds.co.uk/Logon/Logon.aspx Institutional"/>
-    <meta name="quicklink" content="www.cofunds.co.uk/MediaCentre/Media_Centre_Press.aspx Media Centre"/>
-    <meta name="quicklink" content="www.cofunds.co.uk/JobOpportunities/Job_Index.aspx Careers"/>
+    <meta name="description" content="Acme is the UK’s leading independent fundmarket offering an award-winning fund administration service. We provide intermediaries with the choice, convenience and control they need for outstanding client service."/>
+    <meta name="quicklink" content="www.acme.co.uk/Logon/Logon.aspx Advisers"/>
+    <meta name="quicklink" content="investors.acme.co.uk/Logon/Logon.aspx Investors"/>
+    <meta name="quicklink" content="institutional.acme.co.uk/Logon/Logon.aspx Institutional"/>
+    <meta name="quicklink" content="www.acme.co.uk/MediaCentre/Media_Centre_Press.aspx Media Centre"/>
+    <meta name="quicklink" content="www.acme.co.uk/JobOpportunities/Job_Index.aspx Careers"/>
     <script type="text/javascript" src="/includes/common.js">
     </script>
     <script type="text/javascript" src="/includes/template.js">
@@ -247,8 +247,8 @@ return true;
                     </a>
                   </li>
                 </ul>
-                <!-- start resource '775bcd61-47f9-9a2a-199a-9e74e7e130d9' -->                <a title="go to home page" href="http://www.cofunds.co.uk/web/index.aspx" class="noHoverColor">
-                  <img alt="Cofunds home" src="/Assets/LogoCfunds.gif" border="0"/>
+                <!-- start resource '775bcd61-47f9-9a2a-199a-9e74e7e130d9' -->                <a title="go to home page" href="http://www.acme.co.uk/web/index.aspx" class="noHoverColor">
+                  <img alt="Acme home" src="/Assets/LogoCfunds.gif" border="0"/>
                 </a>
                 <!-- end resource '775bcd61-47f9-9a2a-199a-9e74e7e130d9' -->                <div class="idrInnerContent">
                   <span class="idrContentItem">
@@ -939,10 +939,10 @@ return true;
                                                                             All Products...
                                                                           </option>
                                                                           <option value="COF Maxi ISA|ISA|Maxi ISA|MAXI ISA">
-                                                                            Cofunds Investment ISA
+                                                                            Acme Investment ISA
                                                                           </option>
                                                                           <option value="COF Cash Account|Cash Account||CASH ACCOUNT">
-                                                                            Cofunds Cash Account
+                                                                            Acme Cash Account
                                                                           </option>
                                                                         </select>
                                                                       </td>
@@ -1126,7 +1126,7 @@ return true;
                                                                                   <tr>
                                                                                     <td>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblPortfolioName" class="SubHeadingAppsSubTotals">
-                                                                                        A999999A1F / Cofunds Investment ISA
+                                                                                        A999999A1F / Acme Investment ISA
                                                                                       </span>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl00_lblValuationDate" class="ContentMedium">
                                                                                         <!-- start resource '5591cf8c-47c0-0f9a-6ec7-55f93f0bd6ff' -->                                                                                        (as at 16/05/2014)
@@ -1335,7 +1335,7 @@ return true;
                                                                                   <tr>
                                                                                     <td>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblPortfolioName" class="SubHeadingAppsSubTotals">
-                                                                                        A999999A1F / Cofunds Cash Account
+                                                                                        A999999A1F / Acme Cash Account
                                                                                       </span>
                                                                                       <span id="ctl00_ctl00_ctl00_ctl00_ctl00_ContentPlaceHolder_BaseContentPlaceHolder_BaseContentPlaceHolder_MainContentPlaceHolder_MainContentPlaceHolder_dlPortfolios_ctl01_lblValuationDate" class="ContentMedium">
                                                                                         <!-- start resource '5591cf8c-47c0-0f9a-6ec7-55f93f0bd6ff' -->                                                                                        (as at 16/05/2014)
@@ -1495,7 +1495,7 @@ return true;
                                                                                       </span>
                                                                                     </td>
                                                                                     <td style="width:15%;">
-                                                                                      Cofunds Investment ISA
+                                                                                      Acme Investment ISA
                                                                                     </td>
                                                                                     <td style="width:15%;">
                                                                                       F&amp;C Stewardship Income 1 Fund Inc
@@ -1579,7 +1579,7 @@ return true;
                                                                                       </span>
                                                                                     </td>
                                                                                     <td style="width:15%;">
-                                                                                      Cofunds Investment ISA
+                                                                                      Acme Investment ISA
                                                                                     </td>
                                                                                     <td style="width:15%;">
                                                                                       F&amp;C Stewardship Income 1 Fund Inc
@@ -1816,14 +1816,14 @@ return true;
 //<![CDATA[
 
 	var _gaq = _gaq || [];
-	if (document.location.hostname == "www.cofunds.co.uk") {
+	if (document.location.hostname == "www.acme.co.uk") {
 	    _gaq.push(
             ['_setAccount', "UA-8172007-2"],
             ['_trackEvent', 'User agent', navigator.userAgent , , , true],
 	        ['_trackPageview']
         );
 	}
-	else if (document.location.hostname == "investors.cofunds.co.uk") {
+	else if (document.location.hostname == "investors.acme.co.uk") {
 	    _gaq.push(
             ['_setAccount', "UA-8172007-3"],
             ['_trackPageview']
@@ -1850,7 +1850,7 @@ return true;
                 <span class="idrTextStyle01">
                   ©
                 </span>
-                 Cofunds Ltd 2014
+                 Acme Ltd 2014
               </span>
               <!-- end resource '1d9ca33b-957d-4373-ad34-7b732ae54509' -->              <!-- start resource '10e915c7-decf-4448-a403-0dc97e666b2f' -->              <ul class="idrMenu01">
                 <li class="first">
@@ -1871,7 +1871,7 @@ return true;
               </ul>
               <!-- end resource '10e915c7-decf-4448-a403-0dc97e666b2f' -->              <!-- start resource 'fd1ef868-8d81-4ca6-a1a9-4461bd24836f' -->              <p>
 
-                Cofunds Limited is authorised and regulated by the Financial Conduct Authority
+                Acme Limited is authorised and regulated by the Financial Conduct Authority
                 FCA Registration No 194734.
               </p>
               <p class="idrTextStyle07">

@@ -1,7 +1,7 @@
 @import models.org.ludwiggj.finance.domain.{CashDelta, FormattableLocalDate, Portfolio, PortfolioList}
 @import _root_.org.joda.time.LocalDate
 
-@(data: scala.collection.immutable.Map[LocalDate, PortfolioList], previousYear: Option[Int], nextYear: Option[Int])
+@(data: scala.collection.immutable.Map[LocalDate, PortfolioList], previousPage: Option[Int], nextPage: Option[Int])
 <html>
 <head>
     <style type="text/css" media="screen">
@@ -31,12 +31,12 @@
     </style>
 </head>
 <body>
-@if(previousYear.isDefined) {
-  <a href="@controllers.routes.Portfolios.all(previousYear.get)"><- Previous</a>&nbsp&nbsp&nbsp
+@if(previousPage.isDefined) {
+  <a href="@controllers.routes.Portfolios.all(previousPage.get)"><- Previous</a>&nbsp&nbsp&nbsp
 }
 
-@if(nextYear.isDefined) {
-  <a href="@controllers.routes.Portfolios.all(nextYear.get)">Next -></a>&nbsp&nbsp&nbsp
+@if(nextPage.isDefined) {
+  <a href="@controllers.routes.Portfolios.all(nextPage.get)">Next -></a>&nbsp&nbsp&nbsp
 }
 
 <a href="@controllers.routes.Application.logout">Logout</a>

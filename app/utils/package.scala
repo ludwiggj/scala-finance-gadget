@@ -1,5 +1,6 @@
 package object utils {
-  val dataHome = "data"
+  val pricesHome = "prices"
+  val transactionsHome = "transactions"
   val holdingsHome = "holdings"
 
   def time[R](name: String, block: => R): R = {

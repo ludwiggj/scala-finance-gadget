@@ -5,3 +5,7 @@ FLUSH PRIVILEGES;
 CREATE DATABASE IF NOT EXISTS financeTest;
 GRANT ALL PRIVILEGES ON financeTest.* TO 'financeTest'@'localhost' IDENTIFIED BY 'geckoTest';
 FLUSH PRIVILEGES;
+
+CREATE DATABASE IF NOT EXISTS financeDemo;
+GRANT ALL PRIVILEGES ON financeDemo.* TO 'financeDemo'@'localhost' IDENTIFIED BY 'geckoDemo';
+FLUSH PRIVILEGES;

@@ -17,7 +17,7 @@ import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSite
 
 object WebSiteHoldingScraper extends App {
 
-  private val config = WebSiteConfig("cofunds")
+  private val config = WebSiteConfig("acme")
   private val loginFormBuilder = aLoginForm().basedOnConfig(config)
   private val users = config.getUserList()
 
@@ -60,7 +60,7 @@ object WebSiteHoldingScraper extends App {
       }
 
       def persistPricesToFile(userReportName: String, prices: List[Price]): Unit = {
-        FilePersister(fileName = s"$dataHome/prices_${date}_${userReportName}.txt").write(prices)
+        FilePersister(fileName = s"$pricesHome/prices_${date}_${userReportName}.txt").write(prices)
       }
 
       for {

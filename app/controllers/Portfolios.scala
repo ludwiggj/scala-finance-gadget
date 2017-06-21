@@ -30,37 +30,32 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
     }
   }
 
-  def all(yearOffset: Int) = {
+  def all(page: Int) = {
     IsAuthenticated { username =>
       implicit request =>
-        println(s"all: $username-allInvestmentDates")
-        val allInvestmentDates = cache.getOrElse[List[LocalDate]](s"$username-allInvestmentDates", 5.minutes) {
-          Transaction.getRegularInvestmentDates()
+        def transactionDatesSince(date: LocalDate): List[LocalDate] = {
+          if (User.isAdmin(username))
+            Transaction.getDatesSince(date)
+          else
+            Transaction.getDatesSince(date, username)
         }
 
-        def investmentDates(yearOffset: Int) = {
-          val now = new LocalDate()
-          val beforeDate = now.minusYears(yearOffset)
-          val afterDate = now.minusYears(yearOffset + 1)
-
-          import LocalDateOrdering._
-
-          allInvestmentDates.filter { d =>
-            d < beforeDate && d > afterDate
+        val allPortfolioDates = cache.getOrElse[List[LocalDate]](s"$username-allPortfolioDates", 5.minutes) {
+          Transaction.getRegularInvestmentDates() match {
+            case dateList if (dateList.isEmpty) => dateList // TODO - should fetch all tx'es here?
+            case dateList => transactionDatesSince(dateList.head) ++ dateList
           }
         }
 
-        def getPortfolios(investmentDates: List[LocalDate]): Map[LocalDate, PortfolioList] = {
-          def investmentDatesSince(date: LocalDate): List[LocalDate] = {
-            if (User.isAdmin(username))
-              Transaction.getDatesSince(date)
-            else
-              Transaction.getDatesSince(date, username)
-          }
+        def portfolioDatesForPage(page: Int) = {
+          val noOfItemsPerPage = 12
 
-          val allDates = investmentDatesSince(allInvestmentDates.head) ++ investmentDates
+          allPortfolioDates.drop((page - 1) * noOfItemsPerPage).take(noOfItemsPerPage)
+        }
 
-          val portfolios = (allDates map (date => {
+        // TODO - This (and other methods in this class) are not tested
+        def getPortfolios(dates: List[LocalDate]): Map[LocalDate, PortfolioList] = {
+          val portfolios = (dates map (date => {
             val thePortfolios = getPortfolioDataOnDate(username, date)
 
             (date, thePortfolios)
@@ -69,29 +64,31 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
           SortedMap(portfolios: _*)(LocalDateOrdering.reverse)
         }
 
-        def adjacentYearOffsets() = {
-          def earlierDataIsAvailable(yearOffset: Int) = {
-            !investmentDates(yearOffset).isEmpty
+        def adjacentPages() = {
+          def earlierDataIsAvailable = {
+            !portfolioDatesForPage(page + 1).isEmpty
           }
 
-          val oneYearEarlier = yearOffset + 1
-          val previousYear = if (earlierDataIsAvailable(oneYearEarlier)) Some(oneYearEarlier) else None
+          val previousPage = if (earlierDataIsAvailable) Some(page + 1) else None
 
-          val oneYearLater = yearOffset - 1
-          val nextYear = if (oneYearLater >= 0) Some(oneYearLater) else None
+          val nextPage = if (page >= 2) Some(page - 1) else None
 
-          (previousYear, nextYear)
+          (previousPage, nextPage)
         }
 
         // Start here
-        val investmentDatesOfInterest = investmentDates(yearOffset)
+        val portfolioDates = portfolioDatesForPage(page)
 
-        if (investmentDatesOfInterest.isEmpty) {
-          BadRequest(s"This was a bad request: yearsAgo=$yearOffset")
+        if (portfolioDates.isEmpty) {
+          if (page == 1) {
+            BadRequest(s"You have no investments!")
+          } else {
+            BadRequest(s"No data for page [$page]")
+          }
         } else {
-          val portfolios = getPortfolios(investmentDatesOfInterest)
-          val (previousYear, nextYear) = adjacentYearOffsets()
-          Ok(views.html.portfolios.all(portfolios, previousYear, nextYear))
+          val portfolios = getPortfolios(portfolioDates)
+          val (previousPage, nextPage) = adjacentPages()
+          Ok(views.html.portfolios.all(portfolios, previousPage, nextPage))
         }
     }
   }

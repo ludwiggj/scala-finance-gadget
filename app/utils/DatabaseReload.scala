@@ -1,13 +1,13 @@
 package utils
 
 import java.io.{File, FilenameFilter}
+
 import models.org.ludwiggj.finance.domain.{Price, Transaction}
 import models.org.ludwiggj.finance.persistence.database.Tables._
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
 import play.api.{Configuration, Environment, Play}
 import play.api.db.DB
 import play.api.inject.guice.GuiceApplicationBuilder
-
 import scala.slick.driver.MySQLDriver.simple._
 import scala.util.matching.Regex
 
@@ -29,7 +29,8 @@ object DatabaseReload extends App {
   }
 
   private def deleteAllData() = {
-    lazy val db = Database.forDataSource(DB.getDataSource("finance"))
+    def dbName = Play.current.configuration.underlying.getString("db_name")
+    lazy val db = Database.forDataSource(DB.getDataSource(dbName))
     val users: TableQuery[UserTable] = TableQuery[UserTable]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[PriceTable] = TableQuery[PriceTable]
@@ -48,11 +49,11 @@ object DatabaseReload extends App {
     val transactionPattern =
       """txs.*_([a-zA-Z]+)\.txt""".r
     for (
-      aFile <- new File(dataHome).listFiles(isAFileWithUserNameMatching(transactionPattern))
+      aFile <- new File(transactionsHome).listFiles(isAFileWithUserNameMatching(transactionPattern))
     ) {
       val fileName = aFile.getName
       val transactionPattern(userName) = fileName
-      val transactions = FileTransactionFactory(userName, s"$dataHome/$fileName").getTransactions()
+      val transactions = FileTransactionFactory(userName, s"$transactionsHome/$fileName").getTransactions()
 
       println(s"Persisting transactions for user $userName, file $fileName")
       Transaction.insert(transactions)
@@ -62,11 +63,11 @@ object DatabaseReload extends App {
   private def reloadPrices() = {
     val pricePattern = """prices.*\.txt""".r
     for (
-      aFile <- new File(dataHome).listFiles(isAFileMatching(pricePattern))
+      aFile <- new File(pricesHome).listFiles(isAFileMatching(pricePattern))
     ) {
       val fileName = aFile.getName
       println(s"Persisting prices, file $fileName")
-      Price.insert(FilePriceFactory(s"$dataHome/$fileName").getPrices())
+      Price.insert(FilePriceFactory(s"$pricesHome/$fileName").getPrices())
     }
   }
 

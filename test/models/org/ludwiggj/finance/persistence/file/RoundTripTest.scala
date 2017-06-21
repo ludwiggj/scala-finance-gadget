@@ -5,9 +5,11 @@ import org.scalatest.{FunSuite, Matchers}
 
 class RoundTripTest extends FunSuite with Matchers {
 
+  val TEST_RESOURCES_DIR = "test/resources"
+
   test("transactions can be persisted and reconstituted") {
     new TestTransactionsMultipleFunds {
-      val txFile = "tx_round_trip_test.txt"
+      val txFile = s"${TEST_RESOURCES_DIR}/tx_round_trip_test.txt"
 
       println(s"About to persist transactions: $txsMultipleFunds")
 
@@ -24,7 +26,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
   test("holdings can be persisted and reconstituted") {
     new TestHoldings {
-      val holdingFile = "holdings_round_trip_test.txt"
+      val holdingFile = s"${TEST_RESOURCES_DIR}/holdings_round_trip_test.txt"
 
       println(s"About to persist transactions: $holdingsMultipleFunds")
 
@@ -40,7 +42,7 @@ class RoundTripTest extends FunSuite with Matchers {
 
   test("prices can be persisted and reconstituted") {
     new TestPrices {
-      val priceFile = "price_round_trip_test.txt"
+      val priceFile = s"${TEST_RESOURCES_DIR}/price_round_trip_test.txt"
 
       println(s"About to persist prices: $pricesMultipleFunds")
 

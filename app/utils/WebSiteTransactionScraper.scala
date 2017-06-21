@@ -17,7 +17,7 @@ import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSite
 
 object WebSiteTransactionScraper extends App {
 
-  private val config = WebSiteConfig("cofunds")
+  private val config = WebSiteConfig("acme")
   private val loginFormBuilder = aLoginForm().basedOnConfig(config)
   private val users = config.getUserList()
   private val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
@@ -55,7 +55,7 @@ object WebSiteTransactionScraper extends App {
     def processTransactions(listOfUserTransactions: List[(User, List[Transaction])]) = {
       def persistTransactionsToFile(user: User, transactions: List[Transaction]): Unit = {
         def generatePersistedTransactionsFileName(user: User): String = {
-          s"$dataHome/txs_${date}_${user.reportName}.txt"
+          s"$transactionsHome/txs_${date}_${user.reportName}.txt"
         }
 
         val persister = FilePersister(generatePersistedTransactionsFileName(user))

@@ -3,3 +3,6 @@ CREATE DATABASE finance;
 
 DROP DATABASE IF EXISTS financeTest;
 CREATE DATABASE financeTest;
+
+DROP DATABASE IF EXISTS financeDemo;
+CREATE DATABASE financeDemo;

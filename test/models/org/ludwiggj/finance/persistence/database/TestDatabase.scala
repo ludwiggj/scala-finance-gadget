@@ -28,7 +28,9 @@ object TestDatabase {
   }
 
   private def executeDbStatements(statements: List[String]) = {
-    DB.withConnection("finance") { implicit connection =>
+    def dbName = current.configuration.underlying.getString("db_name")
+
+    DB.withConnection(dbName) { implicit connection =>
 
       for (ddl <- statements) {
         connection.createStatement.execute(ddl)
@@ -51,12 +53,12 @@ object TestDatabase {
   }
 
   def deleteAllData() = {
-    lazy val db = Database.forDataSource(DB.getDataSource("finance"))
+    def dbName = current.configuration.underlying.getString("db_name")
+    lazy val db = Database.forDataSource(DB.getDataSource(dbName))
     val users: TableQuery[UserTable] = TableQuery[UserTable]
     val funds: TableQuery[FundTable] = TableQuery[FundTable]
     val prices: TableQuery[PriceTable] = TableQuery[PriceTable]
     val transactions: TableQuery[TransactionTable] = TableQuery[TransactionTable]
-
 
     db.withSession {
       implicit session =>

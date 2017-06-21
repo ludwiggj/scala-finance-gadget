@@ -11,5 +11,3 @@ cd ${PERSISTENCE_DB_HOME}
 
 exec scala "$0" "$@"
 !#
-// Say hello to the first argument
-println("Hi there!")

@@ -2,6 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import org.scalatest.{BeforeAndAfter, Suites}
 import org.scalatestplus.play.OneAppPerSuite
+import play.api.{Configuration, Environment}
 import play.api.test.FakeApplication
 
 // This is the "master" suite
@@ -17,14 +18,13 @@ class MasterSuite extends Suites(
     TestDatabase.recreateSchema()
   }
 
-  //TODO - get this from a conf file...
+  val additionalConfig = Configuration.load(Environment.simple(), Map("config.resource" -> "test.conf")).underlying
+
   def getConfig = Map(
-    "db.finance.driver" -> "com.mysql.jdbc.Driver",
-    "db.finance.url" -> "jdbc:mysql://localhost:3306/financeTest",
-    "db.finance.user" -> "financeTest",
-    "db.finance.password" -> "geckoTest",
-    "db.finance.maxConnectionAge" -> 0,
-    "db.finance.disableConnectionTracking" -> true
+    "db_name" -> additionalConfig.getString("db_name"),
+    "db.financeTest.url" -> additionalConfig.getString("db.financeTest.url"),
+    "db.financeTest.username" -> additionalConfig.getString("db.financeTest.username"),
+    "db.financeTest.password" -> additionalConfig.getString("db.financeTest.password")
   )
 
   // Override app if you need a FakeApplication with other than non-default parameters.

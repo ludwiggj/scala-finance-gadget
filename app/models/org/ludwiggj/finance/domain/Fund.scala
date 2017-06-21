@@ -9,7 +9,10 @@ import scala.slick.driver.MySQLDriver.simple._
 
 object Fund {
 
-  lazy val db = Database.forDataSource(DB.getDataSource("finance"))
+  lazy val db = {
+    def dbName = current.configuration.underlying.getString("db_name")
+    Database.forDataSource(DB.getDataSource(dbName))
+  }
 
   def get(fundName: FundName): Option[FundRow] = {
     db.withSession {
