@@ -10,7 +10,7 @@ import models.org.ludwiggj.finance.persistence.database.Tables.{UserTable, UserR
 class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
 
   before {
-    TestDatabase.deleteAllData()
+    TestDatabase.recreateSchema()
   }
 
   "get" should {

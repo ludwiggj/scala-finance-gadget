@@ -14,10 +14,6 @@ class MasterSuite extends Suites(
   new TransactionSpec
 ) with OneAppPerSuite with BeforeAndAfter {
 
-  before {
-    TestDatabase.recreateSchema()
-  }
-
   val additionalConfig = Configuration.load(Environment.simple(), Map("config.resource" -> "test.conf")).underlying
 
   def getConfig = Map(

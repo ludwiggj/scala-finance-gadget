@@ -12,7 +12,7 @@ class PortfolioListSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp
   val tolerance = BigDecimal(1e-3).bigDecimal
 
   before {
-    TestDatabase.deleteAllData()
+    TestDatabase.recreateSchema()
     MultipleTransactionsForTwoUsersAndTwoFunds.loadData()
   }
 

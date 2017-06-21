@@ -10,7 +10,7 @@ import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
-    TestDatabase.deleteAllData()
+    TestDatabase.recreateSchema()
   }
 
   "get a single price" should {
