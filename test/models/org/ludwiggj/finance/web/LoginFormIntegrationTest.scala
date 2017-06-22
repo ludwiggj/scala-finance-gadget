@@ -4,7 +4,7 @@ import models.org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
 import org.scalatest.{FunSuite, Ignore, Matchers}
 
 // TODO - These tests will only pass when live config is available (which is
-// TODO - obviously not shared via Git
+// TODO - obviously not shared via Git)
 @Ignore
 class LoginFormIntegrationTest extends FunSuite with Matchers {
 

@@ -116,6 +116,7 @@ object Transaction {
   // Database interactions
   def db = {
     def dbName = current.configuration.underlying.getString("db_name")
+
     Database.forDataSource(DB.getDataSource(dbName))
   }
 
@@ -151,26 +152,15 @@ object Transaction {
 
   def get(): List[Transaction] = {
     val txQuery = Transactions
-      .join(Prices).on((t, p) => t.fundId === p.fundId && t.priceDate === p.date)
-      .join(Funds).on((h_p, f) => h_p._1.fundId === f.id)
-      .join(Users).on((h_p_f, u) => h_p_f._1._1.userId === u.id)
+      .join(Prices).on { case (tx, price) => tx.fundId === price.fundId && tx.priceDate === price.date }
+      .join(Funds).on { case ((tx, _), fund) => tx.fundId === fund.id }
+      .join(Users).on { case (((tx, _), _), user) => tx.userId === user.id }
 
     db.withSession {
       implicit session =>
-        txQuery.list map {
-          case
-            (
-              (
-                (
-                  TransactionRow(_, _, date, description, amountIn, amountOut, priceDate, units),
-                  PriceRow(_, _, price)
-                  ),
-                FundRow(_, fundName)
-                ),
-              UserRow(_, userName, _)
-              )
-          =>
-            Transaction(userName, date, description, amountIn, amountOut, Price(fundName, priceDate, price), units)
+        txQuery.list map { case (((tx, price), fund), user) =>
+          Transaction(user.name, tx.date, tx.description, tx.amountIn, tx.amountOut,
+            Price(fund.name, tx.priceDate, price.price), tx.units)
         }
     }
   }
@@ -178,13 +168,11 @@ object Transaction {
   private def getDates(transactionFilter: (TransactionTable) => Column[Boolean]): List[LocalDate] = {
     db.withSession {
       implicit session =>
-        Transactions
-          .filter {
-            transactionFilter(_)
-          }
-          .map {
-            _.date
-          }.sorted.list.distinct.reverse
+        Transactions.filter {
+          transactionFilter(_)
+        }.map {
+          _.date
+        }.sorted.list.distinct.reverse
     }
   }
 
@@ -207,9 +195,9 @@ object Transaction {
   def getDatesSince(dateOfInterest: LocalDate, userName: String): List[LocalDate] = {
     db.withSession {
       implicit session =>
-        Transactions.innerJoin(Users).on(_.userId === _.id)
-          .filter { case (_, u) => u.name === userName }
-          .map { case (t, _) => t.date }
+        Transactions.join(Users).on(_.userId === _.id)
+          .filter { case (_, user) => user.name === userName }
+          .map { case (tx, _) => tx.date }
           .filter {
             _ > dateOfInterest
           }

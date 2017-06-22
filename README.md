@@ -42,34 +42,69 @@ The components are described in more detail below.
 
 # Getting and Building the Code #
 
-Install the following pre-requisites:
+1. Install the following pre-requisites:
 
-* [Play 2.4](https://www.playframework.com/documentation/2.4.x/Installing)
+   * [sbt 0.13.15](http://www.scala-sbt.org/0.13/docs/Setup.html)
+   * [MySql Community Server 5.6.x](https://dev.mysql.com/downloads/mysql/5.6.html#downloads)
 
-* [MySql 5.6.x](https://dev.mysql.com/downloads/mysql/)
+2. Start the mysql server (see [this page](http://osxdaily.com/2014/11/26/start-stop-mysql-commands-mac-os-x/)
+for further details):
 
-* [sbt 0.13.15](http://www.scala-sbt.org/0.13/docs/Setup.html)
+   ```sudo /usr/local/mysql/support-files/mysql.server start```
 
-Clone this repo:
+3. Check that you can log in:
+
+   ```/usr/local/mysql/bin/mysql```
+
+   You should be able to log in and get the mysql> prompt. Log out via 'exit'.
+
+4. Clone the ssoup repo, build it and publish the jar locally:
+
+   ```
+   git clone https://github.com/ludwiggj/ssoup.git
+   cd ssoup
+   sbt publishLocal
+   ```
+
+5. Clone this repo:
  
-```
-git clone https://github.com/ludwiggj/financeGadget.git
-cd financeGadget
-```
+   ```
+   git clone https://github.com/ludwiggj/financeGadget.git
+   cd financeGadget
+   ```
 
-Build the code and run the tests:
+6. Create the database schemas:
 
-```sbt clean test```
+   ```. ./conf/db/dbdeploy.sh```
+
+7. Create a user environment variable USER_HOME, and point it to your home directory. For example, on a Mac:
+
+   ```export USER_HOME=~ (Mac)```
+
+8. Build the code and run the tests:
+
+   ```sbt clean test```
+
+9. To stop the mysql server:
+
+   ```sudo /usr/local/mysql/support-files/mysql.server stop```
 
 # The Demo #
 
 ## Starting the Demo ##
 
-First start the web application:
+1. Start the mysql server:
 
-```sbt -Dconfig.file=conf/demo.conf run```
+   ```sudo /usr/local/mysql/support-files/mysql.server start```
+   
+2. Start the web application:
 
-and then open the [main page](http://localhost:9000).
+   ```sbt -Dconfig.file=conf/demo.conf run```
+
+3. Open the [finance gadget home page](http://localhost:9000).
+
+4. Once finished, stop the web application and the mysql database:
+   ```sudo /usr/local/mysql/support-files/mysql.server stop```
 
 ## Logging In ##
 
@@ -78,7 +113,7 @@ The application requires the user to log in. There are three available accounts:
 | Username | Password | Notes                                          |
 |    ---   |    ---   |  ---                                           |
 | MissA    | A        | Can view her own data only.                    |
-| Mister B | B        | Can view his own data only.                    |
+| MisterB  | B        | Can view his own data only.                    |
 | Admin    | Admin    | Can view investments of both MissA and MisterB | 
 
 ## Investment Summary Page ##
