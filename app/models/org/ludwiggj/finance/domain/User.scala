@@ -5,7 +5,7 @@ import models.org.ludwiggj.finance.persistence.database.Tables._
 //TODO - refactor out!
 import play.api.Play.current
 import play.api.db.DB
-import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.driver.H2Driver.simple._
 
 object User {
   lazy val db = {

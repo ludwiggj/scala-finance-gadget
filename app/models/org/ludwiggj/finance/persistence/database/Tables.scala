@@ -17,7 +17,7 @@ object PKs {
 }
 
 object Tables extends {
-  val profile = scala.slick.driver.MySQLDriver
+  val profile = scala.slick.driver.H2Driver
 } with Tables
 
 // Slick data model trait for extension, choice of backend or usage in the cake pattern.

@@ -8,7 +8,7 @@ import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTrans
 import play.api.{Configuration, Environment, Play}
 import play.api.db.DB
 import play.api.inject.guice.GuiceApplicationBuilder
-import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.driver.H2Driver.simple._
 import scala.util.matching.Regex
 
 object DatabaseReload extends App {

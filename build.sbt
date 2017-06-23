@@ -33,7 +33,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick-codegen" % "2.1.0",
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-  "org.hamcrest" % "hamcrest-all" % "1.3"
+  "org.hamcrest" % "hamcrest-all" % "1.3",
+  "com.h2database" % "h2" % "1.4.196"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

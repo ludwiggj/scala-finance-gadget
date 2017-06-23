@@ -8,7 +8,7 @@ import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
 
-import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.driver.H2Driver.simple._
 import scala.slick.lifted.BaseJoinQuery
 
 case class Price(fundName: FundName, date: LocalDate, inPounds: BigDecimal) extends PersistableToFile {
@@ -116,7 +116,8 @@ object Price {
     db.withSession {
       implicit session =>
         Prices
-          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
+//          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
+          .filter { p => (p.price =!= BigDecimal(0.0)) }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
             (fundId, group.map(_.date).max)

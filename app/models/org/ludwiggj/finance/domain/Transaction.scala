@@ -9,7 +9,7 @@ import org.joda.time.LocalDate
 import play.api.Play.current
 import play.api.db.DB
 import scala.collection.immutable.ListMap
-import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.driver.H2Driver.simple._
 import scala.util.{Failure, Success, Try}
 
 case class Transaction(userName: String,

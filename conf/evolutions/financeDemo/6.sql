@@ -1,6 +1,6 @@
 # --- !Ups
 
-INSERT IGNORE INTO FUNDS
+INSERT INTO FUNDS
    (NAME)
 VALUES
    ('H Bear Beer Emporium'),

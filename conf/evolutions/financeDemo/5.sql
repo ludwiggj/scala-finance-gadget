@@ -1,6 +1,6 @@
 # --- !Ups
 
-INSERT IGNORE INTO USERS
+INSERT INTO USERS
    (NAME, PASSWORD)
 VALUES
    ('Admin', 'Admin'),
