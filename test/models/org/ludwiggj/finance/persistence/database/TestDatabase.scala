@@ -27,9 +27,8 @@ object TestDatabase {
   }
 
   private def executeDbStatements(statements: List[String]) = {
-    def dbName = current.configuration.underlying.getString("db_name")
 
-    DB.withConnection(dbName) { implicit connection =>
+    DB.withConnection("db.financeTest") { implicit connection =>
 
       for (ddl <- statements) {
         connection.createStatement.execute(ddl)

@@ -1,65 +1,81 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.User
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
-import models.org.ludwiggj.finance.persistence.database.Tables.{UserTable, UserRow}
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 @DoNotDiscover
-class UserSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter {
+class UserSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter {
 
   before {
     TestDatabase.recreateSchema()
   }
 
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current)
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
+
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
+
+  object SingleUser {
+    val username = "Father_Ted"
+    val password = Some("Penitent_Man")
+
+    def insert() = {
+      exec(Users.insert(username, password))
+    }
+  }
+
   "get" should {
     "return empty if user is not present" in {
-      EmptySchema.loadData()
-
-      User.get("Burt Bacharach") must equal(None)
+      exec(Users.get("Burt Bacharach")) must equal(None)
     }
 
     "return existing user row if it is present" in {
-      SingleUser.loadData()
+      val userId = SingleUser.insert()
 
-      User.get(SingleUser.username) mustBe Some(
-        UserRow(SingleUser.userId, SingleUser.username, SingleUser.password)
+      exec(Users.get(SingleUser.username)) mustBe Some(
+        UserRow(userId, SingleUser.username, SingleUser.password)
       )
     }
   }
 
   "getOrInsert" should {
     "insert user if it is not present" in {
-      EmptySchema.loadData()
-
-      User.getOrInsert("bob") must be > PK[UserTable](0L)
+      exec(Users.getOrInsert("bob")) must be > PK[UserTable](0L)
     }
 
     "return existing user id if user is present" in {
-      SingleUser.loadData()
+      val userId = SingleUser.insert()
 
-      User.getOrInsert(SingleUser.username) must equal(SingleUser.userId)
+      exec(Users.getOrInsert(SingleUser.username)) must equal(userId)
     }
   }
 
   "authenticate" should {
     "return 0 if user is not present" in {
-      EmptySchema.loadData()
-
-      User.authenticate("dummy user", "blah") must equal(0)
+      exec(Users.authenticate("dummy user", "blah")) must equal(0)
     }
 
     "return 1 if user is present and password does not match" in {
-      SingleUser.loadData()
+      SingleUser.insert()
 
-      User.authenticate(SingleUser.username, "blah") must equal(0)
+      exec(Users.authenticate(SingleUser.username, "blah")) must equal(0)
     }
 
     "return 1 if user is present and password matches" in {
-      SingleUser.loadData()
+      SingleUser.insert()
 
-      User.authenticate(SingleUser.username, SingleUser.password.get) must equal(1)
+      exec(Users.authenticate(SingleUser.username, SingleUser.password.get)) must equal(1)
     }
   }
 }

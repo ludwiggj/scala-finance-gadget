@@ -5,6 +5,7 @@ import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import play.api.{Configuration, Environment, Play}
 import play.api.inject.guice.GuiceApplicationBuilder
 import java.util.concurrent.TimeoutException
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -12,10 +13,21 @@ import scala.language.postfixOps
 import scala.util.{Failure, Success}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.Transaction
+import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteTransactionFactory}
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
 
 object WebSiteTransactionScraper extends App {
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
+
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   private val config = WebSiteConfig("acme")
   private val loginFormBuilder = aLoginForm().basedOnConfig(config)
@@ -66,7 +78,7 @@ object WebSiteTransactionScraper extends App {
         (user, transactions) <- listOfUserTransactions
       } {
         persistTransactionsToFile(user, transactions)
-        Transaction.insert(transactions)
+        exec(Transactions.insert(transactions))
       }
     }
 

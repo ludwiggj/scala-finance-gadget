@@ -1,16 +1,7 @@
 package models.org.ludwiggj.finance.domain
 
-import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import models.org.ludwiggj.finance.persistence.database.Tables._
-import models.org.ludwiggj.finance.persistence.database._
 import models.org.ludwiggj.finance.persistence.file.PersistableToFile
 import org.joda.time.LocalDate
-//TODO - refactor out!
-import play.api.Play.current
-import play.api.db.DB
-import scala.collection.immutable.ListMap
-import scala.slick.driver.MySQLDriver.simple._
-import scala.util.{Failure, Success, Try}
 
 case class Transaction(userName: String,
                        date: LocalDate,
@@ -62,8 +53,8 @@ case class Transaction(userName: String,
 object Transaction {
 
   import models.org.ludwiggj.finance.aLocalDate
-
   import TransactionType.aTransactionType
+  import scala.util.{Failure, Success, Try}
 
   private def aBigDecimalOption(candidateNumber: String): Option[BigDecimal] = {
     val decimal = Try(aBigDecimal(candidateNumber))
@@ -111,155 +102,5 @@ object Transaction {
     val units = aBigDecimal(row(7))
 
     Transaction(userName, date, description, in, out, Price(fundName, priceDate, priceInPounds), units)
-  }
-
-  // Database interactions
-  def db = {
-    def dbName = current.configuration.underlying.getString("db_name")
-
-    Database.forDataSource(DB.getDataSource(dbName))
-  }
-
-  def insert(transaction: Transaction) {
-
-    db.withSession {
-      implicit session =>
-
-        if (!get().contains(transaction)) {
-          def insert(fundId: PK[FundTable], userId: PK[UserTable]) {
-            Transactions += TransactionRow(
-              fundId, userId, transaction.date, transaction.description, transaction.in, transaction.out,
-              transaction.priceDate, transaction.units
-            )
-          }
-
-          val userId = User.getOrInsert(transaction.userName)
-          Price.insert(transaction.price)
-
-          Fund.get(transaction.fundName) match {
-            case Some(fundsRow) => insert(fundsRow.id, userId)
-            case _ => println(s"Could not insert Transaction: fund ${transaction.fundName} not found")
-          }
-        }
-    }
-  }
-
-  def insert(transactions: List[Transaction]): Unit = {
-    for (transaction <- transactions) {
-      insert(transaction)
-    }
-  }
-
-  def get(): List[Transaction] = {
-    val txQuery = Transactions
-      .join(Prices).on { case (tx, price) => tx.fundId === price.fundId && tx.priceDate === price.date }
-      .join(Funds).on { case ((tx, _), fund) => tx.fundId === fund.id }
-      .join(Users).on { case (((tx, _), _), user) => tx.userId === user.id }
-
-    db.withSession {
-      implicit session =>
-        txQuery.list map { case (((tx, price), fund), user) =>
-          Transaction(user.name, tx.date, tx.description, tx.amountIn, tx.amountOut,
-            Price(fund.name, tx.priceDate, price.price), tx.units)
-        }
-    }
-  }
-
-  private def getDates(transactionFilter: (TransactionTable) => Column[Boolean]): List[LocalDate] = {
-    db.withSession {
-      implicit session =>
-        Transactions.filter {
-          transactionFilter(_)
-        }.map {
-          _.date
-        }.sorted.list.distinct.reverse
-    }
-  }
-
-  def getRegularInvestmentDates(): List[LocalDate] = {
-    def transactionFilter(t: TransactionTable) = {
-      t.description === (InvestmentRegular: TransactionType)
-    }
-
-    getDates(transactionFilter _)
-  }
-
-  def getDatesSince(dateOfInterest: LocalDate): List[LocalDate] = {
-    def transactionFilter(t: TransactionTable) = {
-      t.date > dateOfInterest
-    }
-
-    getDates(transactionFilter _)
-  }
-
-  def getDatesSince(dateOfInterest: LocalDate, userName: String): List[LocalDate] = {
-    db.withSession {
-      implicit session =>
-        Transactions.join(Users).on(_.userId === _.id)
-          .filter { case (_, user) => user.name === userName }
-          .map { case (tx, _) => tx.date }
-          .filter {
-            _ > dateOfInterest
-          }
-          .sorted.list.distinct.reverse
-    }
-  }
-
-  private def getTransactionsUntil(dateOfInterest: LocalDate, userFilter: (TransactionTable, UserTable)
-    => Column[Boolean]): TransactionsPerUserAndFund = {
-
-    def getTransactionCandidates(): TransactionCandidates = {
-      db.withSession {
-        implicit session =>
-          (for {
-            t <- Transactions.filter {
-              _.date <= dateOfInterest
-            }
-            f <- Funds if f.id === t.fundId
-            u <- Users if userFilter(t, u)
-            p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-          } yield (u.name, f.name, f.id, p, t)).run.groupBy(t => (t._1, t._2))
-      }
-    }
-
-    // Following import used to avoid 'diverging implicit expansion for type scala.math.Ordering' error
-    // as per https://issues.scala-lang.org/browse/SI-8541
-    import Ordering.Tuple2
-
-    val txCandidates = getTransactionCandidates.toSeq.sortBy(userNameFundName => userNameFundName._1)
-
-    val sortedTxCandidates = ListMap(txCandidates: _*)
-
-    sortedTxCandidates.mapValues(rows => {
-      val fundId = rows.head._3
-      val latestPrice = Price.latestPrices(dateOfInterest)(fundId)
-
-      val txs = for {
-        (userName, fundName, fundId, priceRow, tx) <- rows
-      } yield
-        Transaction(
-          userName, tx.date, tx.description, tx.amountIn, tx.amountOut,
-          Price(fundName, priceRow.date, priceRow.price), tx.units
-        )
-
-      (txs, latestPrice)
-    }
-    )
-  }
-
-  def getTransactionsUntil(dateOfInterest: LocalDate): TransactionsPerUserAndFund = {
-    def userFilter(t: TransactionTable, u: UserTable) = {
-      u.id === t.userId
-    }
-
-    getTransactionsUntil(dateOfInterest, userFilter _)
-  }
-
-  def getTransactionsUntil(dateOfInterest: LocalDate, userName: String): TransactionsPerUserAndFund = {
-    def userFilter(t: TransactionTable, u: UserTable) = {
-      u.id === t.userId && u.name === userName
-    }
-
-    getTransactionsUntil(dateOfInterest, userFilter _)
   }
 }

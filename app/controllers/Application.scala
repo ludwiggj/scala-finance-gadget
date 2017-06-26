@@ -1,15 +1,31 @@
 package controllers
 
-import models.org.ludwiggj.finance.domain.User
+import javax.inject.Inject
+
+import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
+import slick.driver.JdbcProfile
 
-class Application extends Controller {
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
+class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Controller {
 
   def index = Action {
     Redirect(routes.Portfolios.all())
   }
+
+  val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
+
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   lazy val loginForm = Form(
     Forms.tuple(
@@ -17,7 +33,7 @@ class Application extends Controller {
       "password" -> text) verifying("Invalid username or password", result => result match {
       case (username, password) => {
         println("username=" + username + " password=" + password);
-        val userList = User.authenticate(username, password)
+        val userList = exec(Users.authenticate(username, password))
         userList == 1
       }
       case _ => false

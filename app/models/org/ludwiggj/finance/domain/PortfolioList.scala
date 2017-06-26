@@ -1,6 +1,14 @@
 package models.org.ludwiggj.finance.domain
 
+import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import org.joda.time.LocalDate
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 case class PortfolioList(private val portfolios: List[Portfolio]) {
   val delta = portfolios.foldRight(CashDelta())(
@@ -11,9 +19,18 @@ case class PortfolioList(private val portfolios: List[Portfolio]) {
 }
 
 object PortfolioList {
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
+
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
+
   def get(dateOfInterest: LocalDate): PortfolioList = {
 
-    val transactions = Transaction.getTransactionsUntil(dateOfInterest)
+    val transactions = exec(Transactions.getTransactionsUntil(dateOfInterest))
 
     val userNames = transactions.keys.map {
       _._1
@@ -28,7 +45,7 @@ object PortfolioList {
 
   def get(dateOfInterest: LocalDate, userName: String): PortfolioList = {
 
-    val transactions = Transaction.getTransactionsUntil(dateOfInterest, userName)
+    val transactions = exec(Transactions.getTransactionsUntil(dateOfInterest, userName))
 
     new PortfolioList(
       List(Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest)))

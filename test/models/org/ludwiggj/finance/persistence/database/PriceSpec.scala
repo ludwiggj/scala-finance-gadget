@@ -1,128 +1,202 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.aLocalDate
-import models.org.ludwiggj.finance.domain.{Fund, FundName, Price}
-import models.org.ludwiggj.finance.persistence.database.Tables.FundRow
+import models.org.ludwiggj.finance.domain.{FundName, Price}
+import models.org.ludwiggj.finance.persistence.database.Fixtures.price
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+
+import scala.concurrent.duration._
+import scala.concurrent.Await
+import scala.language.postfixOps
 
 @DoNotDiscover
-class PriceSpec extends PlaySpec with DatabaseHelpers with ConfiguredApp with BeforeAndAfter with Inside {
+class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Inside {
 
   before {
     TestDatabase.recreateSchema()
   }
 
-  "get a single price" should {
-    "return empty if price is not present" in {
-      EmptySchema.loadData()
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current)
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
 
-      Price.get(FundName("fund that is not present"), aLocalDate("20/05/2014")) must equal(None)
-    }
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
-    "return existing price if it is present" in {
-      SinglePrice.loadData()
+  object SinglePrice {
+    val priceKappa = price("kappa140520")
 
-      Price.get(price("kappa140520").fundName, price("kappa140520").date) mustBe Some(price("kappa140520"))
+    def insert() = {
+      exec(Prices.insert(priceKappa))
     }
   }
 
-  "get a list of prices" should {
-    "return the list" in {
-      TwoPrices.loadData()
+  object MultiplePricesForSingleFund {
+    val priceKappa140512 = price("kappa140512")
 
-      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
+    def insert() = {
+      exec(Prices.insert(List(
+        priceKappa140512,
+        price("kappa140516"),
+        price("kappa140520"),
+        price("kappa140523")
+      )))
+    }
+  }
+
+  object MultiplePricesForSingleFundAndItsRenamedEquivalent {
+    val priceKappa140523 = price("kappa140523")
+    val priceKappaII140524 = price("kappaII140524")
+
+    def insert() = {
+      exec(Prices.insert(List(
+        price("kappa140512"),
+        price("kappa140516"),
+        price("kappa140520"),
+        priceKappa140523,
+        priceKappaII140524
+      )))
+    }
+  }
+
+  object MultiplePricesForTwoFunds {
+    val priceKappa140520 = price("kappa140520")
+    val priceKappa140523 = price("kappa140523")
+    val priceNike140620 = price("nike140620")
+    val priceNike140621 = price("nike140621")
+
+    private val prices = List(
+      priceKappa140520,
+      priceKappa140520,
+      priceNike140620,
+      priceNike140621,
+      price("nike140625")
+    )
+
+    def insert() = {
+      exec(Prices.insert(prices))
+    }
+  }
+
+  "get a single price" should {
+    "return empty if price is not present" in {
+      exec(Prices.get(FundName("fund that is not present"), aLocalDate("20/05/2014"))) must equal(None)
+    }
+
+    "return existing price if it is present" in {
+      import SinglePrice._
+
+      val priceId = SinglePrice.insert()
+      val priceFundName = priceKappa.fundName
+      val priceDate = priceKappa.date
+      val priceAmount = priceKappa.inPounds
+
+      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, priceDate, priceAmount))
     }
 
     "be unchanged if attempt to add price for same date" in {
-      TwoPrices.loadData()
+      import SinglePrice._
 
-      Price.insert(price("kappa140520").copy(inPounds = 2.12))
-      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"))
-    }
+      val priceId = SinglePrice.insert()
+      val priceFundName = priceKappa.fundName
+      val priceDate = priceKappa.date
+      val priceAmount = priceKappa.inPounds
 
-    "increase by one in length if add new unique price" in {
-      TwoPrices.loadData()
+      exec(Prices.insert(priceKappa.copy(inPounds = 2.12)))
 
-      val newPrice = Price("holding1", "21/05/2014", 2.12)
-      Price.insert(newPrice)
-      Price.get() must contain theSameElementsAs List(price("kappa140520"), price("nike140620"), newPrice)
+      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, priceDate, priceAmount))
     }
   }
 
   "insert price" should {
     "insert fund if it is not present" in {
-      EmptySchema.loadData()
-
       val newFundName = FundName("NewFund")
 
-      Fund.get(newFundName) mustBe None
+      exec(Funds.get(newFundName)) mustBe None
 
       val capitalistsDreamFundPriceDate = aLocalDate("20/05/2014")
       val price = Price(newFundName, capitalistsDreamFundPriceDate, 1.2)
 
-      Price.insert(price)
+      val priceId = exec(Prices.insert(price))
 
-      inside(Fund.get(newFundName).get) { case FundRow(_, name) =>
+      inside(exec(Funds.get(newFundName)).get) { case FundRow(_, name) =>
         name must equal(newFundName)
       }
 
-      Price.get(newFundName, capitalistsDreamFundPriceDate) mustBe Some(price)
+      exec(Prices.get(newFundName, capitalistsDreamFundPriceDate)) mustBe
+        Some(PriceRow(priceId, price.date, price.inPounds))
     }
   }
 
-  "latestPrices" should {
-    "return the latest price for each fund" in {
-      MultiplePricesForTwoFunds.loadData()
+  "latestPrices" when {
 
-      Price.latestPrices(aLocalDate("20/06/2014")).values.toList must contain theSameElementsAs
-        List(price("kappa140523"), price("nike140621"))
+    "there are multiple prices for two funds" should {
+      import MultiplePricesForTwoFunds._
+
+      "return the latest price for each fund" in {
+        MultiplePricesForTwoFunds.insert()
+
+        exec(Prices.latestPrices(aLocalDate("20/06/2014"))).values.toList must contain theSameElementsAs
+          List(priceKappa140523, priceNike140621)
+      }
+
+      "omit a price if it is a two or more days too late" in {
+        MultiplePricesForTwoFunds.insert()
+
+        exec(Prices.latestPrices(aLocalDate("19/06/2014"))).values.toList must contain theSameElementsAs
+          List(priceKappa140523, priceNike140620)
+      }
+
+      "omit a fund if its earliest price is too late" in {
+        MultiplePricesForTwoFunds.insert()
+
+        exec(Prices.latestPrices(aLocalDate("21/05/2014"))).values.toList must contain theSameElementsAs
+          List(priceKappa140520)
+      }
     }
 
-    "omit a price if it is zero" in {
-      MultiplePricesForSingleFund.loadData()
+    "there are multiple prices for a single fund" should {
+      import MultiplePricesForSingleFund._
 
-      Price.latestPrices(aLocalDate("16/05/2014")).values.toList must contain theSameElementsAs
-        List(price("kappa140512"))
+      "omit a price if it is zero" in {
+        MultiplePricesForSingleFund.insert()
+
+        exec(Prices.latestPrices(aLocalDate("16/05/2014"))).values.toList must contain theSameElementsAs
+          List(priceKappa140512)
+      }
     }
 
-    "omit a price if it is a two or more days too late" in {
-      MultiplePricesForTwoFunds.loadData()
+    "there are multiple prices for a single fund whose name has changed" should {
+      import MultiplePricesForSingleFundAndItsRenamedEquivalent._
 
-      Price.latestPrices(aLocalDate("19/06/2014")).values.toList must contain theSameElementsAs
-        List(price("kappa140523"), price("nike140620"))
-    }
+      "omit prices from name change fund if date of interest is more than one day before the fund change date" in {
+        MultiplePricesForSingleFundAndItsRenamedEquivalent.insert()
 
-    "omit a fund if its earliest price is too late" in {
-      MultiplePricesForTwoFunds.loadData()
+        exec(Prices.latestPrices(aLocalDate("22/05/2014"))).values.toList must contain theSameElementsAs
+          List(priceKappa140523)
+      }
 
-      Price.latestPrices(aLocalDate("21/05/2014")).values.toList must contain theSameElementsAs
-        List(price("kappa140520"))
+      "include prices from name change fund if date of interest is one day before the fund change date" in {
+        MultiplePricesForSingleFundAndItsRenamedEquivalent.insert()
 
-    }
+        val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-    "omit prices from name change fund if date of interest is more than one day before the fund change date" in {
-      MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
+        exec(Prices.latestPrices(aLocalDate("23/05/2014"))).values.toList must contain theSameElementsAs
+          List(expectedUpdatedPrice, priceKappaII140524)
+      }
 
-      Price.latestPrices(aLocalDate("22/05/2014")).values.toList must contain theSameElementsAs
-        List(price("kappa140523"))
-    }
+      "include prices from name change fund if date of interest is the fund change date" in {
+        MultiplePricesForSingleFundAndItsRenamedEquivalent.insert()
+        val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
-    "include prices from name change fund if date of interest is one day before the fund change date" in {
-      MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
-
-      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
-
-      Price.latestPrices(aLocalDate("23/05/2014")).values.toList must contain theSameElementsAs
-        List(expectedUpdatedPrice, price("kappaII140524"))
-    }
-
-    "include prices from name change fund if date of interest is the fund change date" in {
-      MultiplePricesForSingleFundAndItsRenamedEquivalent.loadData()
-      val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
-
-      Price.latestPrices(aLocalDate("24/05/2014")).values.toList must contain theSameElementsAs
-        List(expectedUpdatedPrice, price("kappaII140524"))
+        exec(Prices.latestPrices(aLocalDate("24/05/2014"))).values.toList must contain theSameElementsAs
+          List(expectedUpdatedPrice, priceKappaII140524)
+      }
     }
   }
 }

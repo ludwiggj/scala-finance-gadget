@@ -4,14 +4,28 @@ import javax.inject.Inject
 
 import models.org.ludwiggj.finance.LocalDateOrdering
 import models.org.ludwiggj.finance.domain.{PortfolioList, Transaction}
+import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.web.User
 import org.joda.time.LocalDate
 import play.api.cache._
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
-import scala.collection.immutable.SortedMap
-import scala.concurrent.duration._
+import slick.driver.JdbcProfile
 
-class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
+import scala.collection.immutable.SortedMap
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
+class Portfolios @Inject()(cache: CacheApi, dbConfigProvider: DatabaseConfigProvider) extends Controller with Secured {
+
+  val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val db = dbConfig.db
+  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  import databaseLayer._
+  import profile.api._
+
+  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
 
@@ -35,13 +49,13 @@ class Portfolios @Inject()(cache: CacheApi) extends Controller with Secured {
       implicit request =>
         def transactionDatesSince(date: LocalDate): List[LocalDate] = {
           if (User.isAdmin(username))
-            Transaction.getDatesSince(date)
+            exec(Transactions.getDatesSince(date))
           else
-            Transaction.getDatesSince(date, username)
+            exec(Transactions.getDatesSince(date, username))
         }
 
         val allPortfolioDates = cache.getOrElse[List[LocalDate]](s"$username-allPortfolioDates", 5.minutes) {
-          Transaction.getRegularInvestmentDates() match {
+          exec(Transactions.getRegularInvestmentDates()) match {
             case dateList if (dateList.isEmpty) => dateList // TODO - should fetch all tx'es here?
             case dateList => transactionDatesSince(dateList.head) ++ dateList
           }
