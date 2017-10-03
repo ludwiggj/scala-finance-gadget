@@ -5,22 +5,28 @@ import models.org.ludwiggj.finance.domain.{FundName, InvestmentRegular, Transact
 import models.org.ludwiggj.finance.persistence.database.Fixtures._
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.joda.time.LocalDate
-import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
-import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
-import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
+import org.scalatest.{BeforeAndAfter, Inside}
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.db.DBApi
+import play.api.db.evolutions.Evolutions
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 
 import scala.language.postfixOps
 
-@DoNotDiscover
-class TransactionSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Inside {
+class TransactionSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvider[JdbcProfile] with BeforeAndAfter with Inside {
+
+  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   before {
-    TestDatabase.recreateSchema()
+    val dbAPI = app.injector.instanceOf[DBApi]
+    val defaultDatabase = dbAPI.database("default")
+    Evolutions.cleanupEvolutions(defaultDatabase)
+    Evolutions.applyEvolutions(defaultDatabase)
   }
 
-  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current))
+  val databaseLayer = new DatabaseLayer(app.injector.instanceOf[DatabaseConfigProvider].get)
+
   import databaseLayer._
 
   object SingleTransaction {

@@ -148,7 +148,6 @@ trait Tables {
 
     import models.org.ludwiggj.finance.LocalDateOrdering._
 
-    // TODO - Price should have its own unique id (PK)?
     def insert(fundId: PK[FundTable], date: LocalDate, price: BigDecimal): DBIO[PK[PriceTable]] = {
       this returning this.map(_.id) += PriceRow(PK[PriceTable](0L), fundId, date, price)
     }
@@ -308,6 +307,22 @@ trait Tables {
 
   object Transactions extends TableQuery(new TransactionTable(_)) {
 
+    implicit class TransactionQueryFilterableOnAmount(txQuery: Query[TransactionTable, TransactionRow, Seq]) {
+      def withAmountIn(amountIn: Option[BigDecimal]) = {
+        amountIn match {
+          case Some(amount) => txQuery.filter(_.amountIn === amount)
+          case None => txQuery.filter(_.amountIn.isEmpty)
+        }
+      }
+
+      def withAmountOut(amountOut: Option[BigDecimal]) = {
+        amountOut match {
+          case Some(amount) => txQuery.filter(_.amountOut === amount)
+          case None => txQuery.filter(_.amountOut.isEmpty)
+        }
+      }
+    }
+
     def insert(fundId: PK[FundTable], userId: PK[UserTable], date: LocalDate, description: TransactionType,
                in: Option[BigDecimal], out: Option[BigDecimal], priceDate: LocalDate,
                units: BigDecimal): DBIO[PK[TransactionTable]] = {
@@ -347,15 +362,19 @@ trait Tables {
 
     def get(fundName: FundName, userName: String, date: LocalDate, description: TransactionType, in: Option[BigDecimal],
             out: Option[BigDecimal], priceDate: LocalDate, units: BigDecimal): DBIO[Option[TransactionRow]] = {
+
       val txQuery = Transactions
         .join(Funds).on { case (tx, fund) => tx.fundId === fund.id }
         .join(Users).on { case ((tx, _), user) => tx.userId === user.id }
         .filter { case ((tx, fund), user) =>
           fund.name === fundName && user.name === userName && tx.date === date && tx.description === description &&
-            tx.amountIn === in && tx.amountOut === out && tx.priceDate === priceDate && tx.units === units
-        }.map {
-        case ((tx, _), _) => tx
-      }
+            tx.priceDate === priceDate && tx.units === units
+        }
+        .map {
+          case ((tx, _), _) => tx
+        }
+        .withAmountIn(in)
+        .withAmountOut(out)
 
       txQuery.result.headOption
     }
