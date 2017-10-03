@@ -1,27 +1,32 @@
 package utils
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
-import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import play.api.{Configuration, Environment, Play}
-import play.api.inject.guice.GuiceApplicationBuilder
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
-import scala.language.postfixOps
-import scala.util.{Failure, Success}
+import com.gargoylesoftware.htmlunit.ElementNotFoundException
+import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.Transaction
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteTransactionFactory}
 import play.api.db.slick.DatabaseConfigProvider
-import slick.driver.JdbcProfile
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Configuration, Environment, Play}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
 
 object WebSiteTransactionScraper extends App {
 
-  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile](Play.current))
+  lazy val app = new GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
+    "config.resource" -> "application.conf"
+  ))).build()
+
+  val databaseLayer = new DatabaseLayer(app.injector.instanceOf[DatabaseConfigProvider].get)
+
   import databaseLayer._
 
   private val config = WebSiteConfig("acme")
@@ -100,14 +105,13 @@ object WebSiteTransactionScraper extends App {
     )
   }
 
-  // Start here
-  val appConfig = Configuration.load(Environment.simple(), Map("config.resource" -> "application.conf"))
-  implicit val application = new GuiceApplicationBuilder(configuration = appConfig).build()
-
   try {
-    Play.start(application)
+    Play.start(app)
     scrape()
   } finally {
-    Play.stop(application)
+    Play.stop(app)
+
+    // Kludge to force the app to terminate
+    System.exit(0)
   }
 }
