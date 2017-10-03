@@ -21,13 +21,8 @@ import slick.driver.JdbcProfile
 
 object WebSiteTransactionScraper extends App {
 
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile](Play.current))
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   private val config = WebSiteConfig("acme")
   private val loginFormBuilder = aLoginForm().basedOnConfig(config)

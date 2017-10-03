@@ -9,8 +9,6 @@ import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
-import scala.concurrent.duration._
-import scala.concurrent.Await
 import scala.language.postfixOps
 
 @DoNotDiscover
@@ -20,13 +18,8 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
     TestDatabase.recreateSchema()
   }
 
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current)
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current))
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   object SinglePrice {
     val priceKappa = price("kappa140520")

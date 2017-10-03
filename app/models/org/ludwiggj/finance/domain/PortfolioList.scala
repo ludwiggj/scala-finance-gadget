@@ -6,8 +6,6 @@ import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
 case class PortfolioList(private val portfolios: List[Portfolio]) {
@@ -20,13 +18,8 @@ case class PortfolioList(private val portfolios: List[Portfolio]) {
 
 object PortfolioList {
 
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile](Play.current))
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   def get(dateOfInterest: LocalDate): PortfolioList = {
 

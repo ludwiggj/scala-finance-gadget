@@ -9,23 +9,14 @@ import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
 import slick.driver.JdbcProfile
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.language.postfixOps
-
 class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Controller {
 
   def index = Action {
     Redirect(routes.Portfolios.all())
   }
 
-  val dbConfig = dbConfigProvider.get[JdbcProfile]
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(dbConfigProvider.get[JdbcProfile])
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   lazy val loginForm = Form(
     Forms.tuple(

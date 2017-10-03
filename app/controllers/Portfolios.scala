@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import models.org.ludwiggj.finance.LocalDateOrdering
-import models.org.ludwiggj.finance.domain.{PortfolioList, Transaction}
+import models.org.ludwiggj.finance.domain.PortfolioList
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.web.User
 import org.joda.time.LocalDate
@@ -13,19 +13,13 @@ import play.api.mvc._
 import slick.driver.JdbcProfile
 
 import scala.collection.immutable.SortedMap
-import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class Portfolios @Inject()(cache: CacheApi, dbConfigProvider: DatabaseConfigProvider) extends Controller with Secured {
 
-  val dbConfig = dbConfigProvider.get[JdbcProfile]
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(dbConfigProvider.get[JdbcProfile])
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
 

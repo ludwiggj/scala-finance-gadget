@@ -1,17 +1,13 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import javax.inject.Inject
-
 import models.org.ludwiggj.finance.domain.FundName
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
-import scala.concurrent.duration._
-import scala.concurrent.Await
 import scala.language.postfixOps
 
 @DoNotDiscover
@@ -19,18 +15,12 @@ class FundSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter {
 
   before {
     TestDatabase.recreateSchema()
-
   }
 
   private val nonExistentFund = FundName("fundThatIsNotPresent")
 
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current)
-  val db = dbConfig.db
-  val databaseLayer = new DatabaseLayer(dbConfig.driver)
+  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current))
   import databaseLayer._
-  import profile.api._
-
-  def exec[T](action: DBIO[T]): T = Await.result(db.run(action), 2 seconds)
 
   object SingleFund {
     val fundName = FundName("Capitalists Dream")

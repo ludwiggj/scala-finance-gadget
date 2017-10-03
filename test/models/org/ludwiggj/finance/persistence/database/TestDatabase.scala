@@ -1,11 +1,15 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import play.api.db.DB
+// TODO - error object DB is not a member of package play.api.db
+// import play.api.db.DB
 
 import scala.io.Source
 
 //TODO - refactor out!
 import play.api.Play.current
+
+// TODO - see DatabaseReload
+// import play.api.db.slick.DB
 
 import scala.util.{Failure, Success, Try}
 
@@ -28,12 +32,12 @@ object TestDatabase {
 
   private def executeDbStatements(statements: List[String]) = {
 
-    DB.withConnection("db.financeTest") { implicit connection =>
-
-      for (ddl <- statements) {
-        connection.createStatement.execute(ddl)
-      }
-    }
+//    DB.withConnection("db.financeTest") { implicit connection =>
+//
+//      for (ddl <- statements) {
+//        connection.createStatement.execute(ddl)
+//      }
+//    }
   }
 
   def recreateSchema() = {
