@@ -114,20 +114,22 @@ trait Tables {
   // -------------------------
 
   case class PriceRow(
+                       id: PK[PriceTable],
+                       // TODO - Is fundId still needed here?
                        fundId: PK[FundTable],
                        date: LocalDate,
                        price: BigDecimal
                      )
 
   class PriceTable(tag: Tag) extends Table[PriceRow](tag, "PRICES") {
+    val id = column[PK[PriceTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
     val date = column[LocalDate]("PRICE_DATE")
     val price = column[BigDecimal]("PRICE")
 
-    def * = (fundId, date, price) <> (PriceRow.tupled, PriceRow.unapply)
+    def * = (id, fundId, date, price) <> (PriceRow.tupled, PriceRow.unapply)
 
-    // Primary key
-    val pk = primaryKey("PRICES_PK", (fundId, date))
+    val index1 = index("FUND_ID_DATE", (fundId, date), unique = true)
 
     // Foreign key referencing Funds
     lazy val fundsFk = foreignKey(
@@ -147,16 +149,15 @@ trait Tables {
     import models.org.ludwiggj.finance.LocalDateOrdering._
 
     // TODO - Price should have its own unique id (PK)?
-    def insert(fundId: PK[FundTable], date: LocalDate, price: BigDecimal): DBIO[PK[FundTable]] = {
-      this returning this.map(_.fundId) += PriceRow(fundId, date, price)
+    def insert(fundId: PK[FundTable], date: LocalDate, price: BigDecimal): DBIO[PK[PriceTable]] = {
+      this returning this.map(_.id) += PriceRow(PK[PriceTable](0L), fundId, date, price)
     }
 
-    // TODO - Price should have its own unique id (PK)?
-    def insert(price: Price): DBIO[PK[FundTable]] = {
+    def insert(price: Price): DBIO[PK[PriceTable]] = {
       Funds.getOrInsert(price.fundName).flatMap { fundId =>
         get(price.fundName, price.date).flatMap {
           _ match {
-            case Some(priceRow) => DBIO.successful(priceRow.fundId) // TODO - priceId is really fundId at the moment!
+            case Some(priceRow) => DBIO.successful(priceRow.id)
             case None => {
               try {
                 insert(fundId, price.date, price.inPounds)
@@ -171,7 +172,7 @@ trait Tables {
       }
     }
 
-    def insert(prices: List[Price]): DBIO[List[PK[FundTable]]] = {
+    def insert(prices: List[Price]): DBIO[List[PK[PriceTable]]] = {
       DBIO.sequence(prices.map(insert))
     }
 
@@ -517,197 +518,3 @@ trait Tables {
   }
 
 }
-
-/*
-PRICES
-
-  type PriceFundQuery = BaseJoinQuery[PriceTable, FundTable, PriceRow, FundRow, Seq, PriceTable, FundTable]
-
-  type PriceFundQueryFilter = (PriceTable, FundTable) => Rep[Boolean]
-
-  REPLACED
-
-  def insert(price: Price): DBIO[Int] = {
-    Funds.getOrInsert(price.fundName).flatMap { fundId =>
-      get(price.fundName, price.date).flatMap { priceOption =>
-        priceOption match {
-          case Some(_) => {
-            val fakePriceRowId = -1
-            DBIO.successful(fakePriceRowId)
-          }
-          case None => {
-            try {
-              Prices += PriceRow(fundId, price.date, price.inPounds)
-            } catch {
-              case ex: MySQLIntegrityConstraintViolationException =>
-              // TODO - Exception type?
-              DBIO.failed(new Exception(s"Price: ${ex.getMessage} New price [$price]"))
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // TODO - needed? Delete?
-  def get(fundName: FundName, priceDate: LocalDate): DBIO[Option[Price]] = {
-    getPriceList(pricesOn(priceDate).join(Funds), (p, f) => (p.fundId === f.id) && (f.name === fundName)).map {
-      _.headOption
-    }
-  }
-
-  private def getPriceList(priceFundQuery: PriceFundQuery, filter: PriceFundQueryFilter): DBIO[Seq[Price]] = {
-    getPriceListQuery(priceFundQuery, filter).result.map {
-      _.map {
-        case (PriceRow(_, priceDate, price), FundRow(_, fundName)) => Price(fundName, priceDate, price)
-      }
-    }
-  }
-
-  // TODO - needed? Delete?
-  def get(): DBIO[Seq[Price]] = {
-    getPriceList(Prices.join(Funds), (p, f) => p.fundId === f.id)
-  }
-
-  // TODO - refactor to remove parameters if remove two get() methods below
-  private def getPriceListQuery(priceFundQuery: PriceFundQuery, filter: PriceFundQueryFilter) = {
-    priceFundQuery.on((p, f) => filter(p, f))
-  }
-
-  // TODO - refactor to remove parameters if remove two get() methods below
-  private def getPriceListQuery(priceFundQuery: PriceFundQuery, filter: PriceFundQueryFilter) = {
-    priceFundQuery.on((p, f) => filter(p, f))
-  }
-
-  // latestPrices
-
-  val latestPrices: DBIO[Map[PK[FundTable], Price]] = latestPriceForEachFund()
-
-  latestPrices.map { latestPricesMap =>
-    fundChanges.map { fundChangesMap =>
-      val adjustedPrices = for {
-        (fundId, latestPrice) <- latestPricesMap
-        newFundId <- fundChangesMap.get(fundId)
-        newFundPrice <- latestPricesMap.get(newFundId)
-      } yield if (newFundPrice.date > latestPrice.date) {
-        (fundId, newFundPrice.copy(fundName = latestPrice.fundName))
-      } else (fundId, latestPrice)
-
-      val unadjustedPrices = latestPricesMap.filterKeys(!adjustedPrices.contains(_))
-      adjustedPrices ++ unadjustedPrices
-    }
-  }.flatten
-
-  def latestPrices(dateOfInterest: LocalDate): DBIO[Map[PK[FundTable], Price]] = {
-
-        def latestPriceForEachFund(): DBIO[Map[FundName, Price]] = {
-          val pricesList =
-            (for {
-              (fundId, lastPriceDate) <- latestPriceDates(dateOfInterest)
-              f <- Funds if f.id === fundId
-              p <- Prices if p.fundId === fundId && p.date === lastPriceDate
-            } yield (f.name, lastPriceDate, p.price)
-              ).result
-
-          pricesList.map { prices =>
-            prices.foldLeft(Map[FundName, Price]()) {
-              (m, priceInfo) => {
-                val (fundName, lastPriceDate, price) = priceInfo
-                m + (fundName -> Price(fundName, lastPriceDate.get, price))
-              }
-            }
-          }
-        }
-
-        def fundChanges(): DBIO[Map[PK[FundTable], PK[FundTable]]] = {
-          val changes = FundChange.getFundChangesUpUntil(dateOfInterest.plusDays(1))
-          Funds.getNameChangeIdTuples(changes).map {
-            _.flatten.toMap
-          }
-        }
-
-        fundChanges().flatMap { fundChangesMap =>
-          latestPriceForEachFund().map { latestPricesMap =>
-
-            val adjustedPrices = for {
-              (fundId, latestPrice) <- latestPricesMap
-              newFundId <- fundChangesMap.get(fundId)
-              newFundPrice <- latestPricesMap.get(newFundId)
-            } yield if (newFundPrice.date > latestPrice.date) {
-              (fundId, newFundPrice.copy(fundName = latestPrice.fundName))
-            } else (fundId, latestPrice)
-
-            val unadjustedPrices = latestPricesMap.filterKeys(!adjustedPrices.contains(_))
-            adjustedPrices ++ unadjustedPrices
-          }
-        }
-      }
-
-TRANSACTIONS
-
-  // TODO - delete this?
-  def get(): DBIO[Seq[Transaction]] = {
-    val txQuery = Transactions
-      .join(Prices).on { case (tx, price) => tx.fundId === price.fundId && tx.priceDate === price.date }
-      .join(Funds).on { case ((tx, _), fund) => tx.fundId === fund.id }
-      .join(Users).on { case (((tx, _), _), user) => tx.userId === user.id }
-
-    txQuery.result.map {
-      _.map {
-        case (((tx, price), fund), user) =>
-          Transaction(
-            user.name, tx.date, tx.description, tx.amountIn, tx.amountOut,
-            Price(fund.name, tx.priceDate, price.price), tx.units
-          )
-      }
-    }
-  }
-
-  // insert
-
-  get().flatMap { txs =>
-    if (!txs.contains(transaction)) {
-      val userId = Users.getOrInsert(transaction.userName)
-      // NOTE - Flipped the order of these DB actions around i.e. now Price followed by User
-      //        This should still work OK
-      Prices.insert(transaction.price) andThen Users.getOrInsert(transaction.userName).flatMap { userId =>
-        // NOTE - Could use fundId returned by Prices.insert rather than fetching it explicitly, but
-        //        Prices.insert should really return a priceId
-
-        Funds.get(transaction.fundName).flatMap {
-          _ match {
-            case Some(fundsRow) => insert(fundsRow.id, userId)
-            // Exception type?
-            case None => DBIO.failed(new Exception(s"Could not insert Transaction: fund ${transaction.fundName} not found"))
-          }
-        }
-      }
-    } else {
-      // TODO - sort.... should return the transactionId... fix by changing get() method, see comments below
-      DBIO.successful(new PK[TransactionTable](0))
-    }
-  }
-
-  // get
-
-  // TODO - replace with getId() equivalent..... a la Fund.... returning the tx id
-  // TODO - Therefore query needs to select on everything tested by contains... i.e. Tx canEqual Tx
-  // TODO - as part of this, try to make use of get, getId and insert consistent in terms of naming
-  // TODO - and what the functions return
-
-
-  getTransactionsUntil
-        def getTransactionCandidatesQuery(): DBIO[TransactionCandidates] = {
-        (for {
-          t <- Transactions.filter {
-            _.date <= dateOfInterest
-          }
-          f <- Funds if f.id === t.fundId
-          u <- Users if userFilter(t, u)
-          p <- Prices if t.fundId === p.fundId && t.priceDate === p.date
-          // TODO - Introduce a case class here in the yield??
-        } yield (u.name, f.name, f.id, p, t)).result.map {
-          _.groupBy(row => (row._1, row._2))
-        }
-      }
- */

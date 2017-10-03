@@ -149,7 +149,7 @@ class TransactionSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter wi
       }
 
       inside(exec(Prices.get(kappaFundName, kappaPriceDate)).get) {
-        case PriceRow(_, date, amount) => (date, amount) must equal(
+        case PriceRow(_, _, date, amount) => (date, amount) must equal(
           (kappaPrice.date, kappaPrice.inPounds)
         )
       }

@@ -3,6 +3,7 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.{FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.Fixtures.price
+import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
 import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
 import play.api.Play
@@ -89,7 +90,7 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
       val priceDate = priceKappa.date
       val priceAmount = priceKappa.inPounds
 
-      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, priceDate, priceAmount))
+      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, _: PK[FundTable], priceDate, priceAmount))
     }
 
     "be unchanged if attempt to add price for same date" in {
@@ -102,7 +103,7 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
 
       exec(Prices.insert(priceKappa.copy(inPounds = 2.12)))
 
-      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, priceDate, priceAmount))
+      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, _: PK[FundTable], priceDate, priceAmount))
     }
   }
 
@@ -122,7 +123,7 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
       }
 
       exec(Prices.get(newFundName, capitalistsDreamFundPriceDate)) mustBe
-        Some(PriceRow(priceId, price.date, price.inPounds))
+        Some(PriceRow(priceId, _: PK[FundTable], price.date, price.inPounds))
     }
   }
 
