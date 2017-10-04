@@ -4,22 +4,28 @@ import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.{FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.Fixtures.price
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
-import org.scalatest.{BeforeAndAfter, DoNotDiscover, Inside}
-import org.scalatestplus.play.{ConfiguredApp, PlaySpec}
-import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
+import org.scalatest.{BeforeAndAfter, Inside}
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.db.DBApi
+import play.api.db.evolutions.Evolutions
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 
 import scala.language.postfixOps
 
-@DoNotDiscover
-class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Inside {
+class PriceSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvider[JdbcProfile] with BeforeAndAfter with Inside {
+
+  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   before {
-    TestDatabase.recreateSchema()
+    val dbAPI = app.injector.instanceOf[DBApi]
+    val defaultDatabase = dbAPI.database("default")
+    Evolutions.cleanupEvolutions(defaultDatabase)
+    Evolutions.applyEvolutions(defaultDatabase)
   }
 
-  val databaseLayer = new DatabaseLayer(DatabaseConfigProvider.get[JdbcProfile]("financeTest")(Play.current))
+  val databaseLayer = new DatabaseLayer(app.injector.instanceOf[DatabaseConfigProvider].get)
+
   import databaseLayer._
 
   object SinglePrice {
@@ -66,7 +72,7 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
 
     private val prices = List(
       priceKappa140520,
-      priceKappa140520,
+      priceKappa140523,
       priceNike140620,
       priceNike140621,
       price("nike140625")
@@ -90,7 +96,12 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
       val priceDate = priceKappa.date
       val priceAmount = priceKappa.inPounds
 
-      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, _: PK[FundTable], priceDate, priceAmount))
+      inside(exec(Prices.get(priceFundName, priceDate))) {
+        case Some(PriceRow(id, _, priceDate, priceInPounds)) =>
+          id must equal(priceId)
+          priceDate must equal(priceDate)
+          priceInPounds must equal(priceAmount)
+      }
     }
 
     "be unchanged if attempt to add price for same date" in {
@@ -103,7 +114,12 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
 
       exec(Prices.insert(priceKappa.copy(inPounds = 2.12)))
 
-      exec(Prices.get(priceFundName, priceDate)) mustBe Some(PriceRow(priceId, _: PK[FundTable], priceDate, priceAmount))
+      inside(exec(Prices.get(priceFundName, priceDate))) {
+        case Some(PriceRow(id, _, priceDate, priceInPounds)) =>
+          id must equal(priceId)
+          priceDate must equal(priceDate)
+          priceInPounds must equal(priceAmount)
+      }
     }
   }
 
@@ -122,8 +138,12 @@ class PriceSpec extends PlaySpec with ConfiguredApp with BeforeAndAfter with Ins
         name must equal(newFundName)
       }
 
-      exec(Prices.get(newFundName, capitalistsDreamFundPriceDate)) mustBe
-        Some(PriceRow(priceId, _: PK[FundTable], price.date, price.inPounds))
+      inside(exec(Prices.get(newFundName, capitalistsDreamFundPriceDate))) {
+        case Some(PriceRow(id, _, priceDate, priceInPounds)) =>
+          id must equal(priceId)
+          priceDate must equal(price.date)
+          priceInPounds must equal(priceInPounds)
+      }
     }
   }
 
