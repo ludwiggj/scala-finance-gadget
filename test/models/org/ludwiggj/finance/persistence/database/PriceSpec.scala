@@ -2,8 +2,7 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.{FundName, Price}
-import models.org.ludwiggj.finance.persistence.database.Fixtures.price
-import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import fixtures._
 import org.scalatest.{BeforeAndAfter, Inside}
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.db.DBApi

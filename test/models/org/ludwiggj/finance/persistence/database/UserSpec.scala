@@ -1,11 +1,13 @@
 package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
+import models.org.ludwiggj.finance.persistence.database.fixtures.SingleUser
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
 class UserSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvider[JdbcProfile] with BeforeAndAfter {
@@ -19,59 +21,43 @@ class UserSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvid
     Evolutions.applyEvolutions(defaultDatabase)
   }
 
-  val databaseLayer = new DatabaseLayer(app.injector.instanceOf[DatabaseConfigProvider].get)
-  import databaseLayer._
+  private val config: DatabaseConfig[JdbcProfile] = app.injector.instanceOf[DatabaseConfigProvider].get
 
-  object SingleUser {
-    val username = "Father_Ted"
-    val password = Some("Penitent_Man")
+  "the User API" should {
+    "provide a get method," which {
+      "returns empty if user is not present" in new DatabaseLayer(config) {
+        exec(Users.get("Burt Bacharach")) must equal(None)
+      }
 
-    def insert() = {
-      exec(Users.insert(username, password))
-    }
-  }
-
-  "get" should {
-    "return empty if user is not present" in {
-      exec(Users.get("Burt Bacharach")) must equal(None)
+      "returns the existing user row if it is present" in new DatabaseLayer(config) with SingleUser {
+        exec(Users.get(username)) mustBe Some(
+          UserRow(userId, username, password)
+        )
+      }
     }
 
-    "return existing user row if it is present" in {
-      val userId = SingleUser.insert()
+    "provide a getOrInsert method," which {
+      "inserts the user if it is not present" in new DatabaseLayer(config) with SingleUser {
+        exec(Users.getOrInsert("bob")) must be > PK[UserTable](0L)
+      }
 
-      exec(Users.get(SingleUser.username)) mustBe Some(
-        UserRow(userId, SingleUser.username, SingleUser.password)
-      )
-    }
-  }
-
-  "getOrInsert" should {
-    "insert user if it is not present" in {
-      exec(Users.getOrInsert("bob")) must be > PK[UserTable](0L)
+      "returns the existing user id if the user is present" in new DatabaseLayer(config) with SingleUser {
+        exec(Users.getOrInsert(username)) must equal(userId)
+      }
     }
 
-    "return existing user id if user is present" in {
-      val userId = SingleUser.insert()
+    "provide an authenticate method," which {
+      "returns 0 if user is not present" in new DatabaseLayer(config) {
+        exec(Users.authenticate("dummy user", "blah")) must equal(0)
+      }
 
-      exec(Users.getOrInsert(SingleUser.username)) must equal(userId)
-    }
-  }
+      "returns 1 if user is present and password does not match" in new DatabaseLayer(config) with SingleUser {
+        exec(Users.authenticate(username, "blah")) must equal(0)
+      }
 
-  "authenticate" should {
-    "return 0 if user is not present" in {
-      exec(Users.authenticate("dummy user", "blah")) must equal(0)
-    }
-
-    "return 1 if user is present and password does not match" in {
-      SingleUser.insert()
-
-      exec(Users.authenticate(SingleUser.username, "blah")) must equal(0)
-    }
-
-    "return 1 if user is present and password matches" in {
-      SingleUser.insert()
-
-      exec(Users.authenticate(SingleUser.username, SingleUser.password.get)) must equal(1)
+      "return 1 if user is present and password matches" in new DatabaseLayer(config) with SingleUser {
+        exec(Users.authenticate(username, password.get)) must equal(1)
+      }
     }
   }
 }

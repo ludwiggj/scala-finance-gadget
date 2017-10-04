@@ -1,9 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import models.org.ludwiggj.finance.domain.{Transaction, _}
+import models.org.ludwiggj.finance.domain.{InvestmentRegular, Price, SaleForRegularPayment, Transaction}
 
-object Fixtures {
-
+package object fixtures {
   val userA = "User A"
   val userB = "User B"
 

@@ -2,13 +2,13 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.FundName
-import models.org.ludwiggj.finance.persistence.database.Fixtures.{txUserA, txUserB}
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
+import fixtures._
 
 import scala.math.BigDecimal.RoundingMode
 

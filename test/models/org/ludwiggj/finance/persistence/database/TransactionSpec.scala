@@ -2,7 +2,6 @@ package models.org.ludwiggj.finance.persistence.database
 
 import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.{FundName, InvestmentRegular, Transaction}
-import models.org.ludwiggj.finance.persistence.database.Fixtures._
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import org.joda.time.LocalDate
 import org.scalatest.{BeforeAndAfter, Inside}
@@ -11,6 +10,7 @@ import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
+import fixtures._
 
 class TransactionSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvider[JdbcProfile] with BeforeAndAfter with Inside {
 
