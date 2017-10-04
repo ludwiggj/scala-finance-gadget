@@ -26,7 +26,7 @@ class Portfolios @Inject()(cache: CacheApi, dbConfigProvider: DatabaseConfigProv
   private def getPortfolioDataOnDate(username: String, date: LocalDate): PortfolioList = {
     println(s"getPortfolioDataOnDate: $username-portfolio-$date")
     cache.getOrElse[PortfolioList](s"$username-portfolio-$date", 5.minutes) {
-      if (User.isAdmin(username)) PortfolioList.get(date) else PortfolioList.get(date, username)
+      if (User.isAdmin(username)) exec(PortfolioLists.get(date)) else exec(PortfolioLists.get(date, username))
     }
   }
 

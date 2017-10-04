@@ -536,4 +536,33 @@ trait Tables {
     }
   }
 
+  // --------------------
+  // PORTFOLIO LIST - API
+  // --------------------
+
+  object PortfolioLists {
+
+    def get(dateOfInterest: LocalDate): DBIO[PortfolioList] = {
+
+      Transactions.getTransactionsUntil(dateOfInterest).map { transactions =>
+        transactions.keys.map {
+          _._1
+        }.toList.distinct.sorted.map { userName =>
+          Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest))
+        }
+      }.map { portfolios =>
+        PortfolioList(portfolios)
+      }
+    }
+
+    def get(dateOfInterest: LocalDate, userName: String): DBIO[PortfolioList] = {
+
+      Transactions.getTransactionsUntil(dateOfInterest, userName) map { transactions =>
+        PortfolioList(
+          List(Portfolio(userName, dateOfInterest, HoldingSummaryList(transactions, userName, dateOfInterest)))
+        )
+      }
+    }
+  }
+
 }
