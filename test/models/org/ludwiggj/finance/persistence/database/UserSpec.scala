@@ -8,8 +8,6 @@ import play.api.db.evolutions.Evolutions
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 
-import scala.language.postfixOps
-
 class UserSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfigProvider[JdbcProfile] with BeforeAndAfter {
 
   lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
