@@ -1,8 +1,8 @@
 package models.org.ludwiggj.finance.persistence.database
 
+import models.org.ludwiggj.finance.aLocalDate
 import models.org.ludwiggj.finance.domain.{FundName, Transaction}
 import models.org.ludwiggj.finance.persistence.database.fixtures._
-import models.org.ludwiggj.finance.aLocalDate
 import org.joda.time.LocalDate
 import org.scalatest.{BeforeAndAfter, Inside}
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -33,39 +33,35 @@ class TransactionSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfi
     exec(Transactions.get(tx.fundName, tx.userName, tx.date, tx.description, tx.in, tx.out, tx.priceDate, tx.units))
   }
 
+  private def assertThatCanGetTransaction[T <: Tables](id1: PKs.PK[T#TransactionTable], tx: Transaction) = {
+    // TODO matchPattern is the idiomatic way to do this match, but it fails on txId being shadowed
+    //      It's not clear why
+    inside(get(tx).get) {
+      case databaseLayer.TransactionRow(id, _, _, date, description, amountIn, amountOut, priceDate, units) =>
+        (id, date, description, amountIn, amountOut, priceDate, units) must equal(
+          (
+            id1, tx.date, tx.description, tx.in, tx.out, tx.priceDate, tx.units
+          )
+        )
+    }
+  }
+
   "the Transaction API" should {
     "provide a get method," which {
       "returns empty if the transaction is not present" in new DatabaseLayer(config) {
         get(txUserA("kappa140520")) must equal(None)
       }
 
-      // TODO matchPattern is the idiomatic way to do this match, but it fails on txId for some unknown reason
-      // TODO Should be able to generalise this code, as it appears several times, but am being defeated by type mismatches
+
       "returns the existing transaction if it is present" in new DatabaseLayer(config) with SingleTransaction {
-        inside(get(txUserANike140620).get) {
-          case databaseLayer.TransactionRow(id, _, _, date, description, amountIn, amountOut, priceDate, units) =>
-            (id, date, description, amountIn, amountOut, priceDate, units) must equal(
-              (
-                txId, txUserANike140620.date, txUserANike140620.description, txUserANike140620.in, txUserANike140620.out,
-                txUserANike140620.priceDate, txUserANike140620.units
-              )
-            )
-        }
+        assertThatCanGetTransaction(txId, txUserANike140620)
       }
 
       "returns the existing transaction after an attempt to add transaction for the same date" in
         new DatabaseLayer(config) with SingleTransaction {
           exec(Transactions.insert(txUserANike140620.copy(in = Some(1.34))))
 
-          inside(get(txUserANike140620).get) {
-            case databaseLayer.TransactionRow(id, _, _, date, description, amountIn, amountOut, priceDate, units) =>
-              (id, date, description, amountIn, amountOut, priceDate, units) must equal(
-                (
-                  txId, txUserANike140620.date, txUserANike140620.description, txUserANike140620.in, txUserANike140620.out,
-                  txUserANike140620.priceDate, txUserANike140620.units
-                )
-              )
-          }
+          assertThatCanGetTransaction(txId, txUserANike140620)
         }
     }
 
@@ -98,15 +94,7 @@ class TransactionSpec extends PlaySpec with OneAppPerSuite with HasDatabaseConfi
           )
         }
 
-        inside(get(kappaTx).get) {
-          case databaseLayer.TransactionRow(id, _, _, date, description, amountIn, amountOut, priceDate, units) =>
-            (id, date, description, amountIn, amountOut, priceDate, units) must equal(
-              (
-                txId, kappaTx.date, kappaTx.description, kappaTx.in, kappaTx.out,
-                kappaTx.priceDate, kappaTx.units
-              )
-            )
-        }
+        assertThatCanGetTransaction(txId, kappaTx)
       }
     }
 
