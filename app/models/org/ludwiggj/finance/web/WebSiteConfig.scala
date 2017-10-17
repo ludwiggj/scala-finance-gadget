@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.web
 
 import com.typesafe.config.{Config, ConfigFactory}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class WebSiteConfig private(private val config: Config) {
   def getUrlForPage(targetPage: String) = {
@@ -10,7 +10,7 @@ class WebSiteConfig private(private val config: Config) {
   }
 
   def getLoginFormFields() = {
-    (config.getConfigList("site.login.form.fields") map (FormField(_))).toList
+    (config.getConfigList("site.login.form.fields").asScala map (FormField(_))).toList
   }
 
   def getSubmitButton() = {
@@ -18,8 +18,8 @@ class WebSiteConfig private(private val config: Config) {
   }
 
   def getUserList() = {
-    (config.getConfigList("site.userAccounts") map (User(_))).toList
-    (config.getConfigList("site.userAccounts") map (User(_))).toList
+    (config.getConfigList("site.userAccounts").asScala map (User(_))).toList
+    (config.getConfigList("site.userAccounts").asScala map (User(_))).toList
   }
 
   def getLoginText() = {

@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.domain
 
 import com.typesafe.config.{Config, ConfigFactory}
 import org.joda.time.LocalDate
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 case class FundChange(oldFundName: FundName, newFundName: FundName, fromDate: LocalDate) {
 }
@@ -20,7 +20,7 @@ object FundChange {
   def getFundChangesUpUntil(dateOfInterest: LocalDate): List[FundChange] = {
     def getFundChanges(): List[FundChange] = {
       val config = ConfigFactory.load("fundChanges")
-      (config.getConfigList("fundChanges") map (FundChange(_))).toList
+      (config.getConfigList("fundChanges").asScala map (FundChange(_))).toList
     }
 
     import models.org.ludwiggj.finance.LocalDateOrdering._

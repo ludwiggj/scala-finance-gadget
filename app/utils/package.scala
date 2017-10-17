@@ -1,3 +1,5 @@
+import play.api.Logger
+
 package object utils {
   val pricesHome = "prices"
   val transactionsHome = "transactions"
@@ -7,7 +9,7 @@ package object utils {
     val t0 = System.nanoTime()
     val result = block // call-by-name
     val t1 = System.nanoTime()
-    println(s"Elapsed time ($name): " + (t1 - t0) / Math.pow(10, 9) + "s")
+    Logger.info(s"Elapsed time ($name): " + (t1 - t0) / Math.pow(10, 9) + "s")
     result
   }
 }

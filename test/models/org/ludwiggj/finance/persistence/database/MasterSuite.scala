@@ -1,10 +1,10 @@
 package models.org.ludwiggj.finance.persistence.database
 
-import org.scalatest.{BeforeAndAfter, Suites}
-import org.scalatestplus.play.OneAppPerSuite
-import play.api.test.FakeApplication
-import play.api.{Configuration, Environment, Play}
-
+//import org.scalatest.{BeforeAndAfter, Suites}
+//import org.scalatestplus.play.OneAppPerSuite
+//import play.api.test.FakeApplication
+//import play.api.{Configuration, Environment, Play}
+//
 // This is the "master" suite
 class MasterSuite {
 //  extends Suites(

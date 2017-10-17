@@ -9,6 +9,7 @@ import org.joda.time.LocalDate
 import slick.lifted.MappedTo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.immutable.ListMap
+import play.api.Logger
 
 object PKs {
 
@@ -529,10 +530,7 @@ trait Tables {
 
     def authenticate(username: String, password: String): DBIO[Int] = {
       val q1 = for (u <- Users if u.name === username && u.password === password) yield u
-      val res = Query(q1.length).result.head
-      // TODO - this might need to change...
-      println("^^^^^^^^" + res)
-      res
+      Query(q1.length).result.head
     }
   }
 

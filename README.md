@@ -4,7 +4,7 @@ financeGadget
 # Background #
 
 This is a personal project written in Scala to view my share investment portfolio.
- 
+
 I can log in to my existing financial web site at any time, and view the current value of my portfolio, as well as the
 last 3 months' worth of transactions. However, I also want to view additional information, such as:
 
@@ -24,7 +24,7 @@ The portfolio page is an example of the financial information which can be viewe
 The system consists of several components:
 
 * A **database persistence layer**, based on Slick, to store and retrieve the investment data.
- 
+
 * A **play webapp** which retrieves the information from the database and displays it to the user. The web application
  can be started in two modes:
     * Demo mode. The database is loaded with user accounts and example financial data for demonstration purposes. See
@@ -35,7 +35,7 @@ The system consists of several components:
 
 * **Web site scrapers** which log in to the investment management platform, scrape the investment data from the web site
 and persist it into the database. The data is also persisted into local file storage (flat files) as a backup.
- 
+
 * A **database reloader**, which can be used to reload the information from the flat files into the database.
 
 The components are described in more detail below.
@@ -50,44 +50,72 @@ The components are described in more detail below.
 2. Start the mysql server (see [this page](http://osxdaily.com/2014/11/26/start-stop-mysql-commands-mac-os-x/)
 for further details):
 
-   ```sudo /usr/local/mysql/support-files/mysql.server start```
+   ```
+   sudo /usr/local/mysql/support-files/mysql.server start
+   ```
 
 3. Check that you can log in:
 
-   ```/usr/local/mysql/bin/mysql```
+   ```
+   /usr/local/mysql/bin/mysql
+   ```
 
    You should be able to log in and get the mysql> prompt. Log out via 'exit'.
 
-4. Clone the ssoup repo, build it and publish the jar locally:
+4. Clone this repo:
 
-   ```
-   git clone https://github.com/ludwiggj/ssoup.git
-   cd ssoup
-   sbt publishLocal
-   ```
-
-5. Clone this repo:
- 
    ```
    git clone https://github.com/ludwiggj/financeGadget.git
+
    cd financeGadget
    ```
 
-6. Create the database schemas:
+5. Initialise the ssoup submodule:
 
-   ```. ./conf/db/dbdeploy.sh```
+   ```
+   git submodule init
 
-7. Create a user environment variable USER_HOME, and point it to your home directory. For example, on a Mac:
+   > Submodule 'ssoup' (git@github.com:ludwiggj/ssoup.git) registered for path 'ssoup'
 
-   ```export USER_HOME=~ (Mac)```
+   git submodule update
 
-8. Build the code and run the tests:
+   > Cloning into 'ssoup'...
+     ...
+   ```
 
-   ```sbt clean test```
+6. Build the ssoup submodule and publish the jar locally:
 
-9. To stop the mysql server:
+   ```
+   cd ssoup
 
-   ```sudo /usr/local/mysql/support-files/mysql.server stop```
+   sbt publishLocal
+   ```
+
+7. Create the database schemas:
+
+   ```
+   cd ..
+
+   . ./conf/db/dbdeploy.sh
+   ```
+
+8. Create a user environment variable USER_HOME, and point it to your home directory. For example, on a Mac:
+
+   ```
+   export USER_HOME=~ (Mac)
+   ```
+
+9. Build the code and run the tests:
+
+   ```
+   sbt clean test
+   ```
+
+10. To stop the mysql server:
+
+   ```
+   sudo /usr/local/mysql/support-files/mysql.server stop
+   ```
 
 # The Demo #
 
@@ -95,31 +123,40 @@ for further details):
 
 1. Start the mysql server:
 
-   ```sudo /usr/local/mysql/support-files/mysql.server start```
-   
+   ```
+   sudo /usr/local/mysql/support-files/mysql.server start
+   ```
+
 2. Start the web application:
 
-   ```sbt -Dconfig.file=conf/demo.conf run```
+   ```
+   . ./startDemo.sh
+
+   // This runs the command:
+   sbt -Dconfig.file=conf/demo/demo.conf -Dlogger.file=conf/demo/logback-demo.xml run
+   ```
 
 3. Open the [finance gadget home page](http://localhost:9000).
 
 4. Once finished, stop the web application and the mysql database:
-   ```sudo /usr/local/mysql/support-files/mysql.server stop```
+   ```
+   sudo /usr/local/mysql/support-files/mysql.server stop
+   ```
 
 ## Logging In ##
 
 The application requires the user to log in. There are three available accounts:
- 
+
 | Username | Password | Notes                                          |
 |    ---   |    ---   |  ---                                           |
 | MissA    | A        | Can view her own data only.                    |
 | MisterB  | B        | Can view his own data only.                    |
-| Admin    | Admin    | Can view investments of both MissA and MisterB | 
+| Admin    | Admin    | Can view investments of both MissA and MisterB |
 
 ## Investment Summary Page ##
 
 Following a successful login, the user is shown an investment summary page:
- 
+
 ![investment summary page](images/financePortfolioDateList.png?raw=true "Investment Summary page")
 
 This shows a list of **investment dates**, and the total value of the user's portfolio on each date. The investment date
@@ -130,7 +167,7 @@ If any additional transactions have occurred since the most recent investment da
 date is displayed together with the value of the user's portfolio on that date.
 
 The dates are shown in reverse order, from the most recent date backwards. If there are too many rows to show on
-one page additional links are provided to support navigation between each page of results. 
+one page additional links are provided to support navigation between each page of results.
 
 ## Portfolio Page ##
 
@@ -158,7 +195,7 @@ the holdings is:
 
 The scraper parses the holding information and persists it into the database, and also local flat files in the
 **holdings** directory. The file name format is:
- 
+
 **holdings_YY_MM_DD_\<userName\>.txt**
 
 where **userName** is the name of the user. The file contains the holdings for the named user on the specified date.
@@ -177,10 +214,10 @@ The format of the scraped transaction data is shown below:
 | Holding                  | Date       | Description              | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
 | :----------------------- | :--------- | :----------------------- | :------- | :-------- | ---------- | --------:| ------------:| ---------------- |
 | H Bear Beer Emporium     | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
-| Quantum Inc              | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |	
+| Quantum Inc              | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |
 
 The transaction flat files are stored in the **data** directory. The file name format is:
- 
+
 **txs_YY_MM_DD_\<userName\>.txt**
 
 where **userName** is the name of the user. The file contains the recent transactions for the named user up to and
@@ -192,7 +229,7 @@ Currently the WebSite Transaction Scraper is triggered manually.
 
 MySql is used to store the data scraped by the previously described components. The schema is normalised; the key
 representations (users, prices, transactions and funds) are stored in separate tables:
- 
+
 ![schema](images/financeERD.png?raw=true "Schema")
 
 The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versioning of
@@ -244,4 +281,4 @@ Java library for parsing HTML. This is used to parse the HTML scraped from the i
 
 * sbt 0.13.15
 
-Graeme Ludwig, 21/06/17.
+Graeme Ludwig, 17/10/17.

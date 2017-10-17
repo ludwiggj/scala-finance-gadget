@@ -2,7 +2,7 @@ package models.org.ludwiggj.finance.web
 
 import com.typesafe.config.Config
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class User private(val name: String, val reportName: String, private val attributes: List[Attribute]) {
   override def toString =
@@ -19,7 +19,7 @@ object User {
   def apply(config: Config) = new User(
     config.getString("name"),
     config.getString("reportName"),
-    (config.getConfigList("attributes") map (Attribute(_))).toList
+    (config.getConfigList("attributes").asScala map (Attribute(_))).toList
   )
 
   def isAdmin(username: String) = {

@@ -1,37 +1,38 @@
+<!--Default play configuration (dev mode), extended with file appender-->
 <configuration>
 
-    <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
-
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${USER_HOME}/financeGadgetTest.log</file>
-        <encoder>
-            <pattern>%date [%level] from %logger in %thread - %message%n%xException</pattern>
-        </encoder>
-    </appender>
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%coloredLevel %logger{15} - %message%n%xException{10}</pattern>
+            <pattern>%date %coloredLevel %logger{15} - %message%n%xException{10}</pattern>
         </encoder>
     </appender>
 
-    <logger name="ch.qos.logback" level="ERROR">
+    <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT"/>
-    </logger>
+    </appender>
 
-    <logger name="play" level="ERROR">
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
-    </logger>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${application.home:-.}/logs/application.log</file>
+        <encoder>
+            <pattern>%date [%level] %logger{15} - %message%n%xException{10}</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="application" level="ERROR">
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
-    </logger>
+    <logger name="play" level="INFO"/>
+    <logger name="application" level="INFO"/>
 
-    <root level="ERROR">
+    <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF"/>
+    <!-- https://hibernate.atlassian.net/browse/HV-1323 -->
+    <logger name="org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator" level="ERROR"/>
+
+    <root level="WARN">
+        <appender-ref ref="ASYNCSTDOUT"/>
+    </root>
+
+    <root level="INFO">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

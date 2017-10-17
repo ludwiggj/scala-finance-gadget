@@ -3,13 +3,14 @@ package models.org.ludwiggj.finance.persistence.database
 import models.org.ludwiggj.finance.persistence.database.PKs.PK
 import models.org.ludwiggj.finance.persistence.database.fixtures.SingleUser
 import org.scalatest.BeforeAndAfter
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.PlaySpec
 import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions.{applyEvolutions, cleanupEvolutions}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
-class UserSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with OneAppPerSuite with BeforeAndAfter {
+class UserSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with GuiceOneAppPerSuite with BeforeAndAfter {
 
   before {
     val databaseApi = app.injector.instanceOf[DBApi]

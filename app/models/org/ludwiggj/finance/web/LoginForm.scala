@@ -1,6 +1,7 @@
 package models.org.ludwiggj.finance.web
 
 import com.gargoylesoftware.htmlunit.html.{HtmlForm, HtmlInput, HtmlSubmitInput}
+import play.api.Logger
 
 class LoginForm private(private val webClient: WebClient,
                         private val baseUrl: String,
@@ -26,7 +27,7 @@ class LoginForm private(private val webClient: WebClient,
       f => form.getInputByName(f.htmlName).asInstanceOf[HtmlInput].setValueAttribute(user.attributeValue(f.name))
     }
 
-    println(s"Logging in to $baseUrl as ${user.name}")
+    Logger.info(s"Logging in to $baseUrl as ${user.name}")
 
     HtmlPage(form.getInputByName(submitButton).asInstanceOf[HtmlSubmitInput].click(), logoutText)
   }

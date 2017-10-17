@@ -5,15 +5,16 @@ import models.org.ludwiggj.finance.domain.{FundName, Price}
 import models.org.ludwiggj.finance.persistence.database.fixtures._
 import org.scalatest.BeforeAndAfter
 import org.scalatest.Inside._
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.PlaySpec
 import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions.{applyEvolutions, cleanupEvolutions}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
 import scala.language.postfixOps
 
-class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with OneAppPerSuite with BeforeAndAfter {
+class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with GuiceOneAppPerSuite with BeforeAndAfter {
 
   before {
     // See https://stackoverflow.com/questions/31884182/play-2-4-2-play-slick-1-0-0-how-do-i-apply-database-evolutions-to-a-slick-man

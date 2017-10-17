@@ -5,13 +5,14 @@ import models.org.ludwiggj.finance.domain.{FundName, Transaction}
 import models.org.ludwiggj.finance.persistence.database.fixtures._
 import org.joda.time.LocalDate
 import org.scalatest.{BeforeAndAfter, Inside}
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.PlaySpec
 import play.api.db.DBApi
 import play.api.db.evolutions.Evolutions.{applyEvolutions, cleanupEvolutions}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
-class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with OneAppPerSuite with BeforeAndAfter with Inside {
+class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with GuiceOneAppPerSuite with BeforeAndAfter with Inside {
 
   before {
     val databaseApi = app.injector.instanceOf[DBApi]

@@ -1,6 +1,5 @@
-import play.ebean.sbt.PlayEbean // TODO ???
 import play.routes.compiler.InjectedRoutesGenerator
-import play.sbt.{PlayJava, PlayScala} // TODO ???
+import play.sbt.PlayScala
 import play.sbt.PlayImport._
 import play.sbt.routes.RoutesKeys._
 
@@ -10,42 +9,37 @@ version := "1.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.3"
 
 scalacOptions ++= Seq("-deprecation", "-feature")
 
 libraryDependencies ++= Seq(
   jdbc,
-  cache,
+  ehcache,
   ws,
+  guice,
   "mysql" % "mysql-connector-java" % "5.1.38",
   "org.filippodeluca.ssoup" %% "ssoup" % "1.0-SNAPSHOT",
-  "com.typesafe" % "config" % "1.0.2",
-  "net.sourceforge.htmlunit" % "htmlunit" % "2.20",
-  "junit" % "junit" % "4.11" % "test",
-  "org.scalamock" %% "scalamock-scalatest-support" % "3.2.1" % "test",
-  "org.scalamock" %% "scalamock-core" % "3.2.1" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0" % "test",
-  "com.github.nscala-time" %% "nscala-time" % "1.2.0",
-  "com.typesafe.play" %% "play-slick" % "1.0.1",
-  "com.typesafe.play" %% "play-slick-evolutions" % "1.0.1",
-  "org.slf4j" % "slf4j-nop" % "1.6.4",
+  "com.typesafe" % "config" % "1.3.2",
+  "net.sourceforge.htmlunit" % "htmlunit" % "2.27",
+  "junit" % "junit" % "4.12" % "test",
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "test",
+  "org.scalamock" %% "scalamock-core" % "3.6.0" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
+  "com.github.nscala-time" %% "nscala-time" % "2.16.0",
+  "com.typesafe.play" %% "play-slick" % "3.0.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.hamcrest" % "hamcrest-all" % "1.3"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
-// Play provides two styles of routers, one expects its actions to be injected, the
-// other, legacy style, accesses its actions statically.
-
+// Play routers expect their actions to be injected
 routesGenerator := InjectedRoutesGenerator
 
 routesImport += "utils.Binders._"
-
-// TODO - not sure about this one...
-// lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
 fork in run := false
 

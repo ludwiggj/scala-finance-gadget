@@ -7,27 +7,32 @@ import models.org.ludwiggj.finance.domain.PortfolioList
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.web.User
 import org.joda.time.LocalDate
+import play.api.Logger
 import play.api.cache._
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
 import scala.collection.immutable.SortedMap
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class Portfolios @Inject()(cache: CacheApi, dbConfigProvider: DatabaseConfigProvider) extends Controller with Secured {
+class Portfolios @Inject()(cache: SyncCacheApi, dbConfigProvider: DatabaseConfigProvider) extends InjectedController with Secured {
 
   val databaseLayer = new DatabaseLayer(dbConfigProvider.get[JdbcProfile])
+
   import databaseLayer._
 
   def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
 
   private def getPortfolioDataOnDate(username: String, date: LocalDate): PortfolioList = {
-    println(s"getPortfolioDataOnDate: $username-portfolio-$date")
-    cache.getOrElse[PortfolioList](s"$username-portfolio-$date", 5.minutes) {
+    var logMsg = s"getPortfolioDataOnDate: $username-portfolio-$date"
+    val portfolioList = cache.getOrElseUpdate[PortfolioList](s"$username-portfolio-$date", 5.minutes) {
+      logMsg += " >>> NOT found in cache!"
       if (User.isAdmin(username)) exec(PortfolioLists.get(date)) else exec(PortfolioLists.get(date, username))
     }
+    Logger.info(logMsg)
+    portfolioList
   }
 
   def onDate(date: LocalDate) = {
@@ -48,7 +53,7 @@ class Portfolios @Inject()(cache: CacheApi, dbConfigProvider: DatabaseConfigProv
             exec(Transactions.getDatesSince(date, username))
         }
 
-        val allPortfolioDates = cache.getOrElse[List[LocalDate]](s"$username-allPortfolioDates", 5.minutes) {
+        val allPortfolioDates = cache.getOrElseUpdate[List[LocalDate]](s"$username-allPortfolioDates", 5.minutes) {
           exec(Transactions.getRegularInvestmentDates()) match {
             case dateList if (dateList.isEmpty) => dateList // TODO - should fetch all tx'es here?
             case dateList => transactionDatesSince(dateList.head) ++ dateList

@@ -3,13 +3,14 @@ package controllers
 import javax.inject.Inject
 
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
+import play.api.Logger
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
-class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Controller {
+class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends InjectedController {
 
   def index = Action {
     Redirect(routes.Portfolios.all())
@@ -23,9 +24,9 @@ class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Co
       "username" -> text,
       "password" -> text) verifying("Invalid username or password", result => result match {
       case (username, password) => {
-        println("username=" + username + " password=" + password);
-        val userList = exec(Users.authenticate(username, password))
-        userList == 1
+        val authenticated = exec(Users.authenticate(username, password)) == 1
+        Logger.info(s"authenticate user [$username] result [$authenticated]")
+        authenticated
       }
       case _ => false
     }))
@@ -49,7 +50,7 @@ class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Co
 }
 
 trait Secured {
-  self: Controller =>
+  self: InjectedController =>
 
   // Retrieve the username.
   def username(request: RequestHeader) = request.session.get("username")
