@@ -43,5 +43,8 @@ routesImport += "utils.Binders._"
 
 fork in run := false
 
+// Enable cached dependency resolution
+updateOptions := updateOptions.value.withCachedResolution(true)
+
 // Uncomment the following line if working offline
 // offline := true

@@ -113,9 +113,9 @@ for further details):
 
 10. To stop the mysql server:
 
-   ```
-   sudo /usr/local/mysql/support-files/mysql.server stop
-   ```
+    ```
+    sudo /usr/local/mysql/support-files/mysql.server stop
+    ```
 
 # The Demo #
 
@@ -131,8 +131,10 @@ for further details):
 
    ```
    . ./startDemo.sh
+   ```
 
-   // This runs the command:
+   This runs the command:
+   ```
    sbt -Dconfig.file=conf/demo/demo.conf -Dlogger.file=conf/demo/logback-demo.xml run
    ```
 
