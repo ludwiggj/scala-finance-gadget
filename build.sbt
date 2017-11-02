@@ -31,7 +31,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "3.0.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-  "org.hamcrest" % "hamcrest-all" % "1.3"
+  "org.hamcrest" % "hamcrest-all" % "1.3",
+  "com.h2database" % "h2" % "1.4.192"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

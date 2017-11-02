@@ -7,6 +7,13 @@ CREATE TABLE USERS (
   UNIQUE(NAME)
 ) AUTO_INCREMENT=0;
 
+INSERT INTO USERS
+   (NAME, PASSWORD)
+VALUES
+   ('Admin', 'Admin'),
+   ('MissA', 'A'),
+   ('MisterB', 'B');
+
 # --- !Downs
 
 DROP TABLE IF EXISTS USERS;

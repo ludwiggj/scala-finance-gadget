@@ -189,10 +189,9 @@ trait Tables {
 
     def latestPrices(dateOfInterest: LocalDate): DBIO[LatestPriceForEachFundMap] = {
       def latestPrices() = {
-        val dateDifference = SimpleFunction.binary[LocalDate, LocalDate, Int]("DATEDIFF")
 
         Prices
-          .filter { p => ((dateDifference(p.date, dateOfInterest)) <= 1) && (p.price =!= BigDecimal(0.0)) }
+          .filter { p => (p.date <= dateOfInterest.plusDays(1)) && (p.price =!= BigDecimal(0.0)) }
           .groupBy(p => p.fundId)
           .map { case (fundId, group) => {
             (fundId, group.map(_.date).max)

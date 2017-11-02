@@ -1,12 +1,12 @@
 # --- !Ups
 
-INSERT IGNORE INTO USERS
-   (NAME, PASSWORD)
+INSERT INTO FUNDS
+   (NAME)
 VALUES
-   ('Admin', 'Admin'),
-   ('MissA', 'A'),
-   ('MisterB', 'B');
+   ('H Bear Beer Emporium'),
+   ('Hoobs Soups'),
+   ('Quantum Inc');
 
 # --- !Downs
 
-DELETE FROM USERS WHERE NAME IN ('Admin', 'MissA', 'MisterB');
+DELETE FROM FUNDS;
