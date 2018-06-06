@@ -1,24 +1,20 @@
 package models.org.ludwiggj.finance.web
 
-import models.org.ludwiggj.finance.builders.LoginFormBuilder
 import models.org.ludwiggj.finance.domain.Transaction
 
-class WebSiteTransactionFactory private(private val loginFormBuilder: LoginFormBuilder, private val userName: String)
-  extends {
-    val financeEntityTableSelector = s"table[id~=dgTransactions] tr"
-  } with HtmlPageFinanceRowParser {
+class WebSiteTransactionFactory private(private val login: Login, private val userName: String)
+  extends HtmlPageFinanceRowParser(login,
+    userName,
+    financeEntityTableSelector = s"table[id~=dgTransactions] tr") {
 
   def getTransactions(): List[Transaction] = {
-    val loginForm = loginFormBuilder.loggingIntoPage("transactions").build()
-    val loggedInPage = loginForm.loginAs(userName)
-    val txRows = parseRows(loggedInPage)
-    loggedInPage.logOff()
-    (for (txRow <- txRows) yield Transaction(userName, txRow.toString)).toList
+    val txs: Iterable[Transaction] = for (txRow <- getRows()) yield Transaction(userName, txRow.toString)
+    txs.toList
   }
 }
 
 object WebSiteTransactionFactory {
-  def apply(loginFormBuilder: LoginFormBuilder, userName: String) = {
-    new WebSiteTransactionFactory(loginFormBuilder, userName)
+  def apply(login: Login, userName: String) = {
+    new WebSiteTransactionFactory(login, userName)
   }
 }

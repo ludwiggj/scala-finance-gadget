@@ -1,25 +1,18 @@
 package models.org.ludwiggj.finance.web
 
-import models.org.ludwiggj.finance.builders.LoginFormBuilder
 import models.org.ludwiggj.finance.domain.Holding
 
-class WebSiteHoldingFactory private(private val loginFormBuilder: LoginFormBuilder, private val userName: String)
-  extends {
-    val financeEntityTableSelector = s"table[id~=Holdings] tr"
-  }
-  with HtmlPageFinanceRowParser {
+class WebSiteHoldingFactory private(private val login: Login, private val userName: String)
+  extends HtmlPageFinanceRowParser(login, userName, financeEntityTableSelector = s"table[id~=Holdings] tr") {
 
   def getHoldings(): List[Holding] = {
-    val loginForm = loginFormBuilder.loggingIntoPage("valuations").build()
-    val loggedInPage = loginForm.loginAs(userName)
-    val txRows = parseRows(loggedInPage)
-    loggedInPage.logOff()
-    (for (txRow <- txRows) yield Holding(userName, txRow.toString)).toList
+    val holdings: Iterable[Holding] = for (txRow <- getRows()) yield Holding(userName, txRow.toString)
+    holdings.toList
   }
 }
 
 object WebSiteHoldingFactory {
-  def apply(loginFormBuilder: LoginFormBuilder, userName: String) = {
-    new WebSiteHoldingFactory(loginFormBuilder, userName)
+  def apply(login: Login, userName: String) = {
+    new WebSiteHoldingFactory(login, userName)
   }
 }

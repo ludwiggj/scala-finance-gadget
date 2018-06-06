@@ -7,7 +7,8 @@ import models.org.ludwiggj.finance.domain.separator
 trait FileFinanceRowParser {
   val fileName: String
 
-  def getLines() = {
+  def getLines(): List[Array[String]] = {
+    // TODO - Alter, see where this breaks?
     val resource =
       if (fileName.startsWith("/")) getClass.getResource(s"$fileName")
       else new File(fileName).toURI().toURL()

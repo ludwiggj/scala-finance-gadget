@@ -1,0 +1,481 @@
+{
+  "_links": {
+    "view": {
+      "href": "/investments/investment-overview.html"
+    },
+    "self": null
+  },
+  "_data": {
+    "_links": {
+      "switch": {
+        "href": "/investments/stocks-and-shares-isa/switch-fund?id=80509341"
+      }
+    },
+    "_data": {
+      "formattedAsOfDate": "04 June 2018",
+      "total": {
+        "raw": 51397.08,
+        "pence": "08",
+        "pounds": "51,397",
+        "currency": "£",
+        "negative": false
+      },
+      "summaries": [
+        {
+          "item": "1",
+          "name": "F&C Responsible UK Income 2 Inc",
+          "percentage": {
+            "raw": 20.49000,
+            "asString": "20.49%"
+          }
+        },
+        {
+          "item": "2",
+          "name": "EdenTree Amity European B",
+          "percentage": {
+            "raw": 15.61000,
+            "asString": "15.61%"
+          }
+        },
+        {
+          "item": "3",
+          "name": "Janus Henderson UKRsInc I I",
+          "percentage": {
+            "raw": 13.54000,
+            "asString": "13.54%"
+          }
+        },
+        {
+          "item": "4",
+          "name": "Janus Henderson GlSusEq I A",
+          "percentage": {
+            "raw": 8.89000,
+            "asString": "8.89%"
+          }
+        },
+        {
+          "item": "5",
+          "name": "M&G Feeder of Property Ptfl I Acc",
+          "percentage": {
+            "raw": 8.18000,
+            "asString": "8.18%"
+          }
+        },
+        {
+          "item": "6",
+          "name": "Unicorn UK Ethical Income B Acc",
+          "percentage": {
+            "raw": 6.00000,
+            "asString": "6.00%"
+          }
+        },
+        {
+          "item": "7",
+          "name": "6 other funds",
+          "percentage": {
+            "raw": 27.29000,
+            "asString": "27.29%"
+          }
+        }
+      ],
+      "details": [
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=IO47&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "1",
+            "name": "F&C Responsible UK Income 2 Inc",
+            "units": "5,412.8100",
+            "price": {
+              "raw": 1.945000,
+              "pence": "94",
+              "pounds": "1",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 10527.92,
+              "pence": "92",
+              "pounds": "10,527",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 20.49000,
+              "asString": "20.49%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=IO47&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=FR37&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "2",
+            "name": "EdenTree Amity European B",
+            "units": "2,963.2780",
+            "price": {
+              "raw": 2.708000,
+              "pence": "71",
+              "pounds": "2",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 8024.56,
+              "pence": "56",
+              "pounds": "8,024",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 15.61000,
+              "asString": "15.61%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=FR37&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=NT49&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "3",
+            "name": "Janus Henderson UKRsInc I I",
+            "units": "4,422.5400",
+            "price": {
+              "raw": 1.574000,
+              "pence": "57",
+              "pounds": "1",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 6961.08,
+              "pence": "08",
+              "pounds": "6,961",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 13.54000,
+              "asString": "13.54%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=NT49&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=0Z9T&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "4",
+            "name": "Janus Henderson GlSusEq I A",
+            "units": "1,378.5900",
+            "price": {
+              "raw": 3.316000,
+              "pence": "32",
+              "pounds": "3",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 4571.40,
+              "pence": "40",
+              "pounds": "4,571",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 8.89000,
+              "asString": "8.89%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=0Z9T&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=I11C&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "5",
+            "name": "M&G Feeder of Property Ptfl I Acc",
+            "units": "298.9310",
+            "price": {
+              "raw": 14.056400,
+              "pence": "06",
+              "pounds": "14",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 4201.89,
+              "pence": "89",
+              "pounds": "4,201",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 8.18000,
+              "asString": "8.18%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=I11C&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=MPYQ&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "6",
+            "name": "Unicorn UK Ethical Income B Acc",
+            "units": "2,517.1880",
+            "price": {
+              "raw": 1.225700,
+              "pence": "23",
+              "pounds": "1",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 3085.32,
+              "pence": "32",
+              "pounds": "3,085",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 6.00000,
+              "asString": "6.00%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=MPYQ&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GVVY&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "7",
+            "name": "Royal London Sus Ldrs Trst C Inc",
+            "units": "1,639.9200",
+            "price": {
+              "raw": 1.819000,
+              "pence": "82",
+              "pounds": "1",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 2983.01,
+              "pence": "01",
+              "pounds": "2,983",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 5.80000,
+              "asString": "5.80%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GVVY&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GN17&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "8",
+            "name": "Liontrust SF Eurpn Gth 2 Acc",
+            "units": "1,162.8210",
+            "price": {
+              "raw": 2.311000,
+              "pence": "31",
+              "pounds": "2",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 2687.28,
+              "pence": "28",
+              "pounds": "2,687",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 5.23000,
+              "asString": "5.23%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GN17&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=MEM0&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "9",
+            "name": "Schroder GlblCitiesRlEsttInc Z Inc",
+            "units": "5,023.4000",
+            "price": {
+              "raw": 0.534600,
+              "pence": "53",
+              "pounds": "0",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 2685.51,
+              "pence": "51",
+              "pounds": "2,685",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 5.23000,
+              "asString": "5.23%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=MEM0&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GRGX&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "10",
+            "name": "F&C Responsible UK Eq Gth 2 Inc",
+            "units": "2,679.6400",
+            "price": {
+              "raw": 0.885400,
+              "pence": "89",
+              "pounds": "0",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 2372.55,
+              "pence": "55",
+              "pounds": "2,372",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 4.62000,
+              "asString": "4.62%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GRGX&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=SN54&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "11",
+            "name": "Kames Ethical Equity B Acc",
+            "units": "808.9262",
+            "price": {
+              "raw": 2.353400,
+              "pence": "35",
+              "pounds": "2",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 1903.73,
+              "pence": "73",
+              "pounds": "1,903",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 3.70000,
+              "asString": "3.70%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=SN54&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        },
+        {
+          "_links": {
+            "factsheet": {
+              "href": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GN20&specialunittype=ORDN&MPCategoryCode=&Category=",
+              "attribute": "(PDF)"
+            }
+          },
+          "_data": {
+            "item": "12",
+            "name": "Liontrust SF Gbl Gth 2 Acc",
+            "units": "867.8090",
+            "price": {
+              "raw": 1.605000,
+              "pence": "60",
+              "pounds": "1",
+              "currency": "£",
+              "negative": false
+            },
+            "value": {
+              "raw": 1392.83,
+              "pence": "83",
+              "pounds": "1,392",
+              "currency": "£",
+              "negative": false
+            },
+            "percentage": {
+              "raw": 2.71000,
+              "asString": "2.71%"
+            },
+            "factsheet": "https://digital.feprecisionplus.com/factsheethtml/aegonc/en-gb/?CitiCode=GN20&specialunittype=ORDN&MPCategoryCode=&Category=",
+            "type": null
+          }
+        }
+      ]
+    }
+  }
+}

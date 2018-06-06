@@ -4,11 +4,10 @@ import java.util.concurrent.TimeoutException
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
-import models.org.ludwiggj.finance.builders.LoginFormBuilder._
 import models.org.ludwiggj.finance.domain.{Holding, Price}
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
-import models.org.ludwiggj.finance.web.{NotAuthenticatedException, User, WebSiteConfig, WebSiteHoldingFactory}
+import models.org.ludwiggj.finance.web._
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Configuration, Environment, Play}
@@ -30,12 +29,12 @@ object WebSiteHoldingScraper extends App {
   import databaseLayer._
 
   private val config = WebSiteConfig("acme")
-  private val loginFormBuilder = aLoginForm().basedOnConfig(config)
+  private val loginForm = LoginForm(config, targetPage = "valuations")
   private val users = config.getUserList()
 
   def getHoldings(user: User) = Future[(User, List[Holding])] {
     def getHoldings(): List[Holding] = {
-      WebSiteHoldingFactory(loginFormBuilder, user.name).getHoldings() map {
+      WebSiteHoldingFactory(loginForm, user.name).getHoldings() map {
         holding => holding.copy(userName = user.reportName)
       }
     }

@@ -1,5 +1,7 @@
 # financeGadget #
 
+TODO: Add need to set $USER env var, otherwise UserSpec (and other tests) fail to run...
+
 ## Background ##
 
 financeGadget is a Scala web application to view share investment portfolio information.
@@ -575,3 +577,35 @@ However, it's still nice to know that the data can be reloaded into the database
 <br>
 
 Graeme Ludwig, 17/10/17.
+
+
+TODO:
+
+Update relevant details from MySQL installation...
+
+MySQL Installer
+ https://dev.mysql.com/downloads/windows/installer/5.6.html
+ (mysql-installer-community-5.6.40.1.msi)
+ Installed server only...
+ It insisted I set admin password (set to password)
+
+Added sql directory to PATH
+
+mysql --host=localhost --user=root --password=password
+SET PASSWORD FOR root@localhost=PASSWORD('');
+
+So can now do:
+
+mysql
+mysql -u=root
+
+bash dbdeploy.sh
+
+------------
+
+https://customerdashboard.aegon.co.uk/login
+https://customerdashboard.aegon.co.uk/investments/stocks-and-shares-isa/view?id=80509341
+https://customerdashboard.aegon.co.uk/investments/investment-fund-trading-view?id=80509341&productType=stocks-and-shares-isa&productName=Stocks%20and%20Shares%20ISA
+
+https://customerdashboard.aegon.co.uk/investments/stocks-and-shares-isa/view?id=80487607
+https://customerdashboard.aegon.co.uk/investments/investment-fund-trading-view?id=80487607&productType=stocks-and-shares-isa&productName=Stocks%20and%20Shares%20ISA

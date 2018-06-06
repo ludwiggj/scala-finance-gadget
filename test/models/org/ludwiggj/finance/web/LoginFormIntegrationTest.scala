@@ -1,6 +1,5 @@
 package models.org.ludwiggj.finance.web
 
-import models.org.ludwiggj.finance.builders.LoginFormBuilder.aLoginForm
 import org.scalatest.{FunSuite, Ignore, Matchers}
 
 // TODO - These tests will only pass when live config is available (which is
@@ -10,8 +9,7 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
 
   test("login form works with third party library") {
     val config = WebSiteConfig("acme")
-    val loginForm =
-      aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
+    val loginForm = LoginForm(config, targetPage = "transactions")
 
     val userName = config.getUserList()(0).name
 
@@ -30,8 +28,7 @@ class LoginFormIntegrationTest extends FunSuite with Matchers {
   test("NotAuthenticatedException thrown if cannot log into target page") {
     intercept[NotAuthenticatedException] {
       val config = WebSiteConfig("acmeWithUserWithIncorrectPassword")
-      val loginForm =
-        aLoginForm().basedOnConfig(config).loggingIntoPage("transactions").build();
+      val loginForm = LoginForm(config, targetPage = "transactions")
 
       val userName = config.getUserList()(0).name
 

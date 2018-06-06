@@ -1,0 +1,1070 @@
+{
+  "_links": {
+    "view": {
+      "href": "/investments/detailed-transactions.html"
+    },
+    "self": null
+  },
+  "_data": {
+    "transactions": [
+      {
+        "transactionTypeId": 619,
+        "name": "Sale Request",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": 0.000000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          6,
+          4
+        ],
+        "dateString": "04/06/18",
+        "numberOfUnits": 0,
+        "unitPrice": {
+          "raw": 0.000000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 1228,
+        "name": "Distribution",
+        "fundName": "CII Cash",
+        "amount": {
+          "raw": 0E-12,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          26
+        ],
+        "dateString": "26/05/18",
+        "numberOfUnits": 0.000000,
+        "unitPrice": {
+          "raw": 0.000000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2482,
+        "name": "Ongoing Adviser Charge",
+        "fundName": "CII Cash",
+        "amount": {
+          "raw": -21.190000000000,
+          "pence": "19",
+          "pounds": "21",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          18
+        ],
+        "dateString": "18/05/18",
+        "numberOfUnits": -21.190000,
+        "unitPrice": {
+          "raw": 1.000000,
+          "pence": "00",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "CHARGE"
+      },
+      {
+        "transactionTypeId": 2572,
+        "name": "Admin Charge",
+        "fundName": "CII Cash",
+        "amount": {
+          "raw": -12.290000000000,
+          "pence": "29",
+          "pounds": "12",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          18
+        ],
+        "dateString": "18/05/18",
+        "numberOfUnits": -12.290000,
+        "unitPrice": {
+          "raw": 1.000000,
+          "pence": "00",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "CHARGE"
+      },
+      {
+        "transactionTypeId": 2320,
+        "name": "Transfer out of fund",
+        "fundName": "CII Cash",
+        "amount": {
+          "raw": 33.480000000000,
+          "pence": "48",
+          "pounds": "33",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          17
+        ],
+        "dateString": "17/05/18",
+        "numberOfUnits": 33.480000,
+        "unitPrice": {
+          "raw": 1.000000,
+          "pence": "00",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 2462,
+        "name": "Pending trade out",
+        "fundName": "CII Pending Trades",
+        "amount": {
+          "raw": -33.480000000000,
+          "pence": "48",
+          "pounds": "33",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          17
+        ],
+        "dateString": "17/05/18",
+        "numberOfUnits": -33.480000,
+        "unitPrice": {
+          "raw": 1.000000,
+          "pence": "00",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 2461,
+        "name": "Pending trade in",
+        "fundName": "CII Pending Trades",
+        "amount": {
+          "raw": 33.480000000000,
+          "pence": "48",
+          "pounds": "33",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          11
+        ],
+        "dateString": "11/05/18",
+        "numberOfUnits": 33.480000,
+        "unitPrice": {
+          "raw": 1.000000,
+          "pence": "00",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 2319,
+        "name": "Transfer out of fund",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": -33.471800000000,
+          "pence": "47",
+          "pounds": "33",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          11
+        ],
+        "dateString": "11/05/18",
+        "numberOfUnits": -16.820000,
+        "unitPrice": {
+          "raw": 1.990000,
+          "pence": "99",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 619,
+        "name": "Sale Request",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": 0E-12,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          11
+        ],
+        "dateString": "11/05/18",
+        "numberOfUnits": 16.820000,
+        "unitPrice": {
+          "raw": 0.000000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII Janus Henderson GlSusEq I A",
+        "amount": {
+          "raw": 0.015763300000,
+          "pence": "02",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": 0.004900,
+        "unitPrice": {
+          "raw": 3.217000,
+          "pence": "22",
+          "pounds": "3",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII F&C Responsible UK Eq Gth 2 Inc",
+        "amount": {
+          "raw": 0.001578240000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": 0.001800,
+        "unitPrice": {
+          "raw": 0.876800,
+          "pence": "88",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII Unicorn UK Ethical Income B Acc",
+        "amount": {
+          "raw": -0.000121170000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": -0.000100,
+        "unitPrice": {
+          "raw": 1.211700,
+          "pence": "21",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": -0.001766700000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": -0.000900,
+        "unitPrice": {
+          "raw": 1.963000,
+          "pence": "96",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII Liontrust SF Eurpn Gth 2 Acc",
+        "amount": {
+          "raw": -0.000916000000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": -0.000400,
+        "unitPrice": {
+          "raw": 2.290000,
+          "pence": "29",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII Janus Henderson UKRsInc I I",
+        "amount": {
+          "raw": 0.007093200000,
+          "pence": "01",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": 0.004600,
+        "unitPrice": {
+          "raw": 1.542000,
+          "pence": "54",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII Liontrust SF Gbl Gth 2 Acc",
+        "amount": {
+          "raw": -0.000464400000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": -0.000300,
+        "unitPrice": {
+          "raw": 1.548000,
+          "pence": "55",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII EdenTree Amity European B",
+        "amount": {
+          "raw": 0.000275500000,
+          "pence": "00",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": 0.000100,
+        "unitPrice": {
+          "raw": 2.755000,
+          "pence": "76",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 59,
+        "name": "Corrective Trade Adjustment",
+        "fundName": "CII M&G Feeder of Property Ptfl I Acc",
+        "amount": {
+          "raw": -0.009778230000,
+          "pence": "01",
+          "pounds": "0",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          5,
+          4
+        ],
+        "dateString": "04/05/18",
+        "numberOfUnits": -0.000700,
+        "unitPrice": {
+          "raw": 13.968900,
+          "pence": "97",
+          "pounds": "13",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "OTHER"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Royal London Sus Ldrs Trst C Inc",
+        "amount": {
+          "raw": -446.850553800000,
+          "pence": "85",
+          "pounds": "446",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -251.888700,
+        "unitPrice": {
+          "raw": 1.774000,
+          "pence": "77",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Royal London Sus Ldrs Trst C Inc",
+        "amount": {
+          "raw": 29.783153800000,
+          "pence": "78",
+          "pounds": "29",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 16.788700,
+        "unitPrice": {
+          "raw": 1.774000,
+          "pence": "77",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII F&C Responsible UK Eq Gth 2 Inc",
+        "amount": {
+          "raw": 26.814209920000,
+          "pence": "81",
+          "pounds": "26",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 30.581900,
+        "unitPrice": {
+          "raw": 0.876800,
+          "pence": "88",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII F&C Responsible UK Eq Gth 2 Inc",
+        "amount": {
+          "raw": -360.879832320000,
+          "pence": "88",
+          "pounds": "360",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -411.587400,
+        "unitPrice": {
+          "raw": 0.876800,
+          "pence": "88",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": -1707.375980700000,
+          "pence": "38",
+          "pounds": "1,707",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -869.778900,
+        "unitPrice": {
+          "raw": 1.963000,
+          "pence": "96",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": 62.743957900000,
+          "pence": "74",
+          "pounds": "62",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 31.963300,
+        "unitPrice": {
+          "raw": 1.963000,
+          "pence": "96",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Liontrust SF Gbl Gth 2 Acc",
+        "amount": {
+          "raw": -206.338957200000,
+          "pence": "34",
+          "pounds": "206",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -133.293900,
+        "unitPrice": {
+          "raw": 1.548000,
+          "pence": "55",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Liontrust SF Eurpn Gth 2 Acc",
+        "amount": {
+          "raw": -409.010488000000,
+          "pence": "01",
+          "pounds": "409",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -178.607200,
+        "unitPrice": {
+          "raw": 2.290000,
+          "pence": "29",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII EdenTree Amity European B",
+        "amount": {
+          "raw": 72.868097000000,
+          "pence": "87",
+          "pounds": "72",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 26.449400,
+        "unitPrice": {
+          "raw": 2.755000,
+          "pence": "76",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII EdenTree Amity European B",
+        "amount": {
+          "raw": -1242.756807000000,
+          "pence": "76",
+          "pounds": "1,242",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -451.091400,
+        "unitPrice": {
+          "raw": 2.755000,
+          "pence": "76",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Kames Ethical Equity B Acc",
+        "amount": {
+          "raw": -658.928427190000,
+          "pence": "93",
+          "pounds": "658",
+          "currency": "£",
+          "negative": true
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": -285.534700,
+        "unitPrice": {
+          "raw": 2.307700,
+          "pence": "31",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Kames Ethical Equity B Acc",
+        "amount": {
+          "raw": 96.943246220000,
+          "pence": "94",
+          "pounds": "96",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 42.008600,
+        "unitPrice": {
+          "raw": 2.307700,
+          "pence": "31",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Schroder GlblCitiesRlEsttInc Z Inc",
+        "amount": {
+          "raw": 2561.431660000000,
+          "pence": "43",
+          "pounds": "2,561",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          4,
+          30
+        ],
+        "dateString": "30/04/18",
+        "numberOfUnits": 5023.400000,
+        "unitPrice": {
+          "raw": 0.509900,
+          "pence": "51",
+          "pounds": "0",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Unicorn UK Ethical Income B Acc",
+        "amount": {
+          "raw": 2925.476009820000,
+          "pence": "48",
+          "pounds": "2,925",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          3,
+          31
+        ],
+        "dateString": "31/03/18",
+        "numberOfUnits": 2517.188100,
+        "unitPrice": {
+          "raw": 1.162200,
+          "pence": "16",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII M&G Feeder of Property Ptfl I Acc",
+        "amount": {
+          "raw": 4161.338516190000,
+          "pence": "34",
+          "pounds": "4,161",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          3,
+          31
+        ],
+        "dateString": "31/03/18",
+        "numberOfUnits": 298.931700,
+        "unitPrice": {
+          "raw": 13.920700,
+          "pence": "92",
+          "pounds": "13",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Janus Henderson GlSusEq I A",
+        "amount": {
+          "raw": 4219.848991100000,
+          "pence": "85",
+          "pounds": "4,219",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          3,
+          31
+        ],
+        "dateString": "31/03/18",
+        "numberOfUnits": 1378.585100,
+        "unitPrice": {
+          "raw": 3.061000,
+          "pence": "06",
+          "pounds": "3",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Janus Henderson UKRsInc I I",
+        "amount": {
+          "raw": 6549.774927400000,
+          "pence": "77",
+          "pounds": "6,549",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          3,
+          31
+        ],
+        "dateString": "31/03/18",
+        "numberOfUnits": 4422.535400,
+        "unitPrice": {
+          "raw": 1.481000,
+          "pence": "48",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII F&C Responsible UK Income 2 Inc",
+        "amount": {
+          "raw": 11695.055169000000,
+          "pence": "06",
+          "pounds": "11,695",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          2,
+          28
+        ],
+        "dateString": "28/02/18",
+        "numberOfUnits": 6267.446500,
+        "unitPrice": {
+          "raw": 1.866000,
+          "pence": "87",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Liontrust SF Gbl Gth 2 Acc",
+        "amount": {
+          "raw": 1548.706650400000,
+          "pence": "71",
+          "pounds": "1,548",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          1,
+          30
+        ],
+        "dateString": "30/01/18",
+        "numberOfUnits": 1001.103200,
+        "unitPrice": {
+          "raw": 1.547000,
+          "pence": "55",
+          "pounds": "1",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII Liontrust SF Eurpn Gth 2 Acc",
+        "amount": {
+          "raw": 3149.674352800000,
+          "pence": "67",
+          "pounds": "3,149",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2018,
+          1,
+          30
+        ],
+        "dateString": "30/01/18",
+        "numberOfUnits": 1341.428600,
+        "unitPrice": {
+          "raw": 2.348000,
+          "pence": "35",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      },
+      {
+        "transactionTypeId": 2304,
+        "name": "Transfer in",
+        "fundName": "CII EdenTree Amity European B",
+        "amount": {
+          "raw": 9577.649557300000,
+          "pence": "65",
+          "pounds": "9,577",
+          "currency": "£",
+          "negative": false
+        },
+        "date": [
+          2017,
+          12,
+          31
+        ],
+        "dateString": "31/12/17",
+        "numberOfUnits": 3387.919900,
+        "unitPrice": {
+          "raw": 2.827000,
+          "pence": "83",
+          "pounds": "2",
+          "currency": "£",
+          "negative": false
+        },
+        "transactionType": "PAYMENT"
+      }
+    ],
+    "lastTransactionDate": [
+      2017,
+      12,
+      31
+    ]
+  }
+}

@@ -28,12 +28,23 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.4" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
   "com.github.nscala-time" %% "nscala-time" % "2.16.0",
-  "com.typesafe.play" %% "play-slick" % "3.0.1",
-  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
+  "com.typesafe.play" %% "play-slick" % "3.0.3",
+  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.3",
+  "com.typesafe.slick" %% "slick" % "3.2.3",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.hamcrest" % "hamcrest-all" % "1.3",
   "com.h2database" % "h2" % "1.4.192"
 )
+
+val circeVersion = "0.9.3"
+
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-parser",
+  "io.circe" %% "circe-optics",
+  "io.circe" %% "circe-literal"
+).map(_ % circeVersion)
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
