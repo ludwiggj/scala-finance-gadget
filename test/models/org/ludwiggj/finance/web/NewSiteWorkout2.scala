@@ -9,7 +9,7 @@ import io.circe.literal._
 import io.circe.optics.JsonPath.root
 import io.circe.parser.parse
 import io.circe.{Decoder, Encoder, HCursor, Json}
-import models.org.ludwiggj.finance.domain.{FundName, Holding, Price}
+import models.org.ludwiggj.finance.domain._
 import org.joda.time.LocalDate
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
@@ -51,8 +51,9 @@ object NewSiteWorkout2 {
     parse(holdings).getOrElse((Json.Null))
   }
 
-  def transactions(userId: String): String = {
-    dataByPost(s"${url("transactions")}$userId")
+  def transactions(userId: String): Json = {
+    val transactions = dataByPost(s"${url("transactions")}$userId")
+    parse(transactions).getOrElse(Json.Null)
   }
 
   def jsonToHoldings(username: String, json: Json): List[Holding] = {
@@ -70,11 +71,42 @@ object NewSiteWorkout2 {
     }
 
     // Dummy Encoder - required for compilation, though I don't actually want to encode Holdings into json
-    implicit val encodeTx: Encoder[Holding] = new Encoder[Holding] {
+    implicit val encodeHolding: Encoder[Holding] = new Encoder[Holding] {
       final def apply(h: Holding): Json = Json.obj()
     }
 
     root._data._data.details.each._data.as[Holding].getAll(json)
+  }
+
+  def jsonToTransactions(username: String, json: Json): List[Transaction] = {
+    val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd/MM/yy")
+
+    implicit val decodeTx: Decoder[Transaction] = (c: HCursor) => for {
+      name <- c.downField("name").as[String]
+      dateStr <- c.downField("dateString").as[String]
+      amount <- c.downField("amount").downField("raw").as[BigDecimal]
+      date = dtf.parseLocalDate(dateStr)
+      fundName <- c.downField("fundName").as[String]
+      unitPrice <- c.downField("unitPrice").downField("raw").as[BigDecimal]
+      numberOfUnits <- c.downField("numberOfUnits").as[BigDecimal]
+    } yield {
+      Transaction(
+        username,
+        date,
+        TransactionType.aTransactionType(name),
+        if (amount > 0) Some(amount) else None,
+        if (amount < 0) Some(amount.abs) else None,
+        Price(FundName(fundName), date, unitPrice),
+        numberOfUnits.abs
+      )
+    }
+
+    // Dummy Encoder - required for compilation, though I don't actually want to encode Transactions into json
+    implicit val encodeTx: Encoder[Transaction] = new Encoder[Transaction] {
+      final def apply(tx: Transaction): Json = Json.obj()
+    }
+
+    root._data.transactions.each.as[Transaction].getAll(json)
   }
 
   def main(args: Array[String]): Unit = {
@@ -84,9 +116,10 @@ object NewSiteWorkout2 {
       login(user.username, user.password)
       println("Holdings:")
       val holdingsJson = holdings(user.accountId)
-      println(holdingsJson)
       jsonToHoldings(user.name, holdingsJson).foreach(println)
-      println(s"Txs:\n${transactions(user.accountId)}")
+      println(s"Txs:")
+      val transactionsJson = transactions(user.accountId)
+      jsonToTransactions(user.name, transactionsJson).foreach(println)
       logout()
     }
   }
