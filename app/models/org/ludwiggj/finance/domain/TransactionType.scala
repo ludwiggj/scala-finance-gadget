@@ -18,9 +18,16 @@ case object CorrectiveTradeAdjustment extends TransactionType {
 case object Distribution extends TransactionType {
   val name = "Distribution"
 }
+case object DistributionReinvestment extends TransactionType {
+  val name = "Distribution Reinvestment"
+}
 
 case object DividendReinvestment extends TransactionType {
   val name = "Dividend Reinvestment"
+}
+
+case object FundPurchase extends TransactionType {
+  val name = "Fund purchase"
 }
 
 case object InvestmentLumpSum extends TransactionType {
@@ -41,6 +48,10 @@ case object PendingTradeIn extends TransactionType {
 
 case object PendingTradeOut extends TransactionType {
   val name = "Pending trade out"
+}
+
+case object PurchaseRequest extends TransactionType {
+  val name = "Purchase Request"
 }
 
 case object SaleForRegularPayment extends TransactionType {
@@ -86,11 +97,11 @@ case object Unspecified extends TransactionType {
 object TransactionType {
   def aTransactionType(value: String): TransactionType = {
     Vector(
-      AdminCharge, CorrectiveTradeAdjustment, Distribution, DividendReinvestment,
-      InvestmentLumpSum, InvestmentRegular, OngoingAdviserCharge, PendingTradeIn,
-      PendingTradeOut, SaleForRegularPayment, SaleRequest, SwitchIn, SwitchOut,
-      TaxReclaimReinvestment, TransferIn, TransferOut, UnitShareConversionIn,
-      UnitShareConversionOut
+      AdminCharge, CorrectiveTradeAdjustment, Distribution, DistributionReinvestment,
+      DividendReinvestment, FundPurchase, InvestmentLumpSum, InvestmentRegular,
+      OngoingAdviserCharge, PendingTradeIn, PendingTradeOut, PurchaseRequest,
+      SaleForRegularPayment, SaleRequest, SwitchIn, SwitchOut, TaxReclaimReinvestment,
+      TransferIn, TransferOut, UnitShareConversionIn, UnitShareConversionOut
     ).find(_.name == value).getOrElse(Unspecified)
   }
 }

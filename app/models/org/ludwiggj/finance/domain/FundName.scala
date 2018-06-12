@@ -1,8 +1,9 @@
 package models.org.ludwiggj.finance.domain
 
 class FundName private(val name: String) extends Ordered[FundName] {
-  def canEqual(f: FundName) = (name == f.name)
+  def canEqual(f: FundName): Boolean = (name == f.name)
 
+  // TODO - Not sure hashCode comparison is needed or wise
   override def equals(that: Any): Boolean = {
     that match {
       case that: FundName => that.canEqual(this) && (this.hashCode == that.hashCode)
@@ -11,10 +12,7 @@ class FundName private(val name: String) extends Ordered[FundName] {
   }
 
   override def hashCode: Int = {
-    val prime = 31
-    var result = 1
-    result = prime * result + name.hashCode;
-    return result
+    if (name == null) 0 else name.hashCode
   }
 
   override def toString = name

@@ -9,7 +9,10 @@ package object fixtures {
   val price: Map[String, Price] = Map(
     "kappa140512" -> Price("Kappa", "12/05/2014", 2.50),
     "kappa140516" -> Price("Kappa", "16/05/2014", 0.0),
+    // TODO - reduce these to a single entry
     "kappa140520" -> Price("Kappa", "20/05/2014", 1.12),
+    "kappa140520_2" -> Price("Kappa", "20/05/2014", 1695.055169),
+    "kappa140520_3" -> Price("Kappa", "20/05/2014", 21695.055169),
     "kappa140523" -> Price("Kappa", "23/05/2014", 1.65),
     "kappaII140524" -> Price("Kappa II", "24/05/2014", 1.66),
     "nike140520" -> Price("Nike", "20/05/2014", 2.97),

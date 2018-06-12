@@ -2,8 +2,8 @@ package utils
 
 import java.util.concurrent.TimeoutException
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
+import com.typesafe.config.ConfigFactory
 import models.org.ludwiggj.finance.domain.Transaction
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
@@ -17,6 +17,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
+import scala.collection.JavaConverters._
 
 object WebSiteTransactionScraper extends App {
 
@@ -28,66 +29,64 @@ object WebSiteTransactionScraper extends App {
 
   import databaseLayer._
 
-  private val config = WebSiteConfig("acme")
-  private val loginForm = LoginForm(config, targetPage = "transactions")
-  private val users = config.getUserList()
+  private val config = ConfigFactory.load("acme2")
+  private val users = (config.getConfigList("site.userAccounts").asScala map (User(_))).toList
   private val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
-  def getTransactions(user: User): Future[(User, List[Transaction])] = Future {
-    def getTransactions(): List[Transaction] = {
-      WebSiteTransactionFactory(loginForm, user.name).getTransactions() map {
-        tx => tx.copy(userName = user.reportName)
-      }
-    }
-
+  private def getTransactions(user: User): Future[(User, List[Transaction])] = Future {
     val userName = user.name
-    val emptyResult = (user, List())
 
-    time(s"processTransactions($userName)",
-      try {
-        val transactions: List[Transaction] = getTransactions()
+    time(s"processTransactions($userName)", {
+      val transactions: List[Transaction] = WebFacade.getTransactions(user)
 
-        println(s"Total transactions ($userName): ${transactions size}")
+      println(s"Total transactions ($userName): ${transactions size}")
 
-        (user, transactions)
-      } catch {
-        case ex: ElementNotFoundException =>
-          println(s"Cannot retrieve transactions for $userName [ElementNotFoundException]. Error ${ex.toString}")
-          emptyResult
-
-        case ex: NotAuthenticatedException =>
-          println(s"Cannot retrieve transactions for $userName [NotAuthenticatedException]. Error ${ex.toString}")
-          emptyResult
-      }
-    )
+      (user, transactions)
+    })
   }
 
-  def scrape() = {
-    def processTransactions(listOfUserTransactions: List[(User, List[Transaction])]) = {
-      def persistTransactionsToFile(user: User, transactions: List[Transaction]): Unit = {
-        def generatePersistedTransactionsFileName(user: User): String = {
-          s"$transactionsHome/txs_${date}_${user.reportName}.txt"
-        }
-
-        val persister = FilePersister(generatePersistedTransactionsFileName(user))
-        persister.write(transactions)
+  private def processTransactions(listOfUserTransactions: List[(User, List[Transaction])]): Unit = {
+    def persistTransactionsToFile(user: User, transactions: List[Transaction]): Unit = {
+      def generatePersistedTransactionsFileName(user: User): String = {
+        s"$transactionsHome/txs_${date}_${user.reportName}.txt"
       }
 
-      for {
-        (user, transactions) <- listOfUserTransactions
-      } {
-        persistTransactionsToFile(user, transactions)
-        exec(Transactions.insert(transactions))
-      }
+      val persister = FilePersister(generatePersistedTransactionsFileName(user))
+      persister.write(transactions)
     }
 
+    for {
+      (user, transactions) <- listOfUserTransactions
+    } {
+      persistTransactionsToFile(user, transactions)
+        // TODO - Remove this debug code, used to investigate failing
+        // TODO   tx inserts and unexpected duplicates
+//      transactions.foreach { tx =>
+//        println("Tx insert: " + tx)
+//        if (tx.in.isDefined && tx.in.get >= 10000) {
+//          println("Skip!")
+//        } else {
+//          exec(Transactions.insert(List(tx)))
+//        }
+//      }
+      exec(Transactions.insert(transactions))
+    }
+  }
+
+  private def scrape(): Unit = {
     time("Whole thing",
       try {
-        val listOfFutures = users map { user =>
+        // TODO - Does not work in parallel
+//        val listOfFutures: List[Future[(User, List[Transaction])]] = users map { user =>
+//          getTransactions(user)
+//        }
+
+        // Can do this way for a single user
+        val listOfFutures: List[Future[(User, List[Transaction])]] = List(users(0)) map { user =>
           getTransactions(user)
         }
 
-        val combinedFuture = Future.sequence(listOfFutures)
+        val combinedFuture: Future[List[(User, List[Transaction])]] = Future.sequence(listOfFutures)
 
         Await.ready(combinedFuture, 30 seconds).value.get match {
           case Success(listOfUserTransactions) =>

@@ -4,12 +4,11 @@ import java.sql.Timestamp
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import models.org.ludwiggj.finance.domain.TransactionType.aTransactionType
-import models.org.ludwiggj.finance.domain.{Transaction, _}
+import models.org.ludwiggj.finance.domain._
 import org.joda.time.LocalDate
 import slick.lifted.MappedTo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.immutable.ListMap
-import play.api.Logger
 
 object PKs {
 
@@ -120,13 +119,15 @@ trait Tables {
                        fundId: PK[FundTable],
                        date: LocalDate,
                        price: BigDecimal
-                     )
+                     ) {
+    val scaledPrice: BigDecimal = Price.scaled(price)
+  }
 
   class PriceTable(tag: Tag) extends Table[PriceRow](tag, "PRICES") {
     val id = column[PK[PriceTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
     val date = column[LocalDate]("PRICE_DATE")
-    val price = column[BigDecimal]("PRICE")
+    val price = column[BigDecimal]("PRICE", O.SqlType("decimal(11, 4)"))
 
     def * = (id, fundId, date, price) <> (PriceRow.tupled, PriceRow.unapply)
 
@@ -333,9 +334,17 @@ trait Tables {
     def insert(tx: Transaction): DBIO[PK[TransactionTable]] = {
       get(tx.fundName, tx.userName, tx.date, tx.description, tx.in, tx.out, tx.priceDate, tx.units).flatMap {
         _ match {
-          case Some(txRow) => DBIO.successful(txRow.id)
+          case Some(txRow) => {
+            // TODO - Remove debug
+            println("Found tx: " + txRow)
+            DBIO.successful(txRow.id)
+          }
           case None =>
+            // TODO - Remove debug
+            println(s"NOT found tx: (${tx.fundName}, ${tx.userName}, ${tx.date}, ${tx.description}, ${tx.in}, ${tx.out}, ${tx.priceDate}, ${tx.units}")
             // NOTE - Flipped the order of these DB actions around i.e. now Price followed by User. This should be OK.
+            // TODO - Consider following alternative!
+            // Prices.insert(tx.price) andThen Users.get(tx.userName).map(_.get.id).flatMap { userId =>
             Prices.insert(tx.price) andThen Users.getOrInsert(tx.userName).flatMap { userId =>
               // NOTE - Could use fundId returned by Prices.insert rather than fetching it explicitly, but
               //        Prices.insert should really return a priceId
