@@ -43,6 +43,7 @@ case class Holding(userName: String, price: Price, units: BigDecimal) extends Pe
 
 object Holding {
 
+  // TODO - Remove
   def apply(userName: String, row: String): Holding = {
     val holdingPattern = (
       """.*?<span.*?>([^<]+)</span>""" +

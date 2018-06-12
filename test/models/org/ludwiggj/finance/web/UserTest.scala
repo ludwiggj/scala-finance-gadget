@@ -17,6 +17,9 @@ class UserTest extends FunSuite with MockFactory with Matchers {
     inAnyOrder {
       (config.getString _).expects("name").returning("userName")
       (config.getString _).expects("reportName").returning("reportName")
+      (config.getString _).expects("username").returning("username")
+      (config.getString _).expects("password").returning("password")
+      (config.getString _).expects("accountId").returning("accountId")
       (config.getConfigList _).expects("attributes").returning(attributes)
       (attribute1.getString _).expects("name").returning("attr1")
       (attribute1.getString _).expects("value").returning("value1")
@@ -28,6 +31,9 @@ class UserTest extends FunSuite with MockFactory with Matchers {
 
     user.name should equal ("userName")
     user.reportName should equal ("reportName")
+    user.username should equal ("username")
+    user.password should equal ("password")
+    user.accountId should equal ("accountId")
     user.attributeValue("attr1") should equal ("value1")
     user.attributeValue("attr2") should equal ("value2")
   }

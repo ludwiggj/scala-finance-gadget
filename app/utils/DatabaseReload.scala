@@ -1,7 +1,7 @@
 package utils
 
 import java.io.{File, FilenameFilter}
-
+import models.org.ludwiggj.finance.domain.{Price, Transaction}
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.{FilePriceFactory, FileTransactionFactory}
 import play.api.db.slick.DatabaseConfigProvider
@@ -42,30 +42,59 @@ object DatabaseReload extends App {
     exec(Users.filterNot(_.name inSet List("Admin", "Me", "Spouse")).delete)
   }
 
-  private def reloadTransactions() = {
+  private def reloadTransactions(): Unit = {
     val transactionPattern =
       """txs.*_([a-zA-Z]+)\.txt""".r
-    for (
-      aFile <- new File(transactionsHome).listFiles(isAFileWithUserNameMatching(transactionPattern))
-    ) {
-      val fileName = aFile.getName
-      val transactionPattern(userName) = fileName
-      val transactions = FileTransactionFactory(userName, s"$transactionsHome/$fileName").getTransactions()
 
-      println(s"Persisting transactions for [$userName], file [$fileName]")
-      exec(Transactions.insert(transactions))
+    val txsToPersist: List[Transaction] = (for {
+      aFile <- new File(transactionsHome).listFiles(isAFileWithUserNameMatching(transactionPattern))
+      fileName = aFile.getName
+      transactionPattern(userName) = fileName
+      _ = println(s"Reading transactions for [$userName], file [$fileName]")
+    } yield FileTransactionFactory(userName, s"$transactionsHome/$fileName").getTransactions().filter(
+      _.shouldBePersistedIntoDb
+    )).toList.flatten
+
+    // Persisting transactions in smaller groups to avoid DB errors
+    // Tried to configure DB connection to avoid this, but to no avail
+    val persistInGroups: List[Transaction] => Unit = (txsToPersist: List[Transaction]) => {
+      val txGroupSize = 25
+      println(s"About to persist ${txsToPersist.length} transactions in groups of $txGroupSize")
+
+      txsToPersist.grouped(txGroupSize).toList.zipWithIndex.foreach { case (transactions, index) =>
+        val startTxNumber = (index * txGroupSize) + 1
+        println(s"Persisting tx's ${startTxNumber} - ${startTxNumber + transactions.length - 1}")
+        exec(Transactions.insert(transactions))
+      }
     }
+
+    persistInGroups(txsToPersist)
   }
 
-  private def reloadPrices() = {
+  private def reloadPrices(): Unit = {
     val pricePattern = """prices.*\.txt""".r
-    for (
+
+    val pricesToPersist: List[Price] = (for {
       aFile <- new File(pricesHome).listFiles(isAFileMatching(pricePattern))
-    ) {
-      val fileName = aFile.getName
-      println(s"Persisting prices, file [$fileName]")
-      exec(Prices.insert(FilePriceFactory(s"$pricesHome/$fileName").getPrices()))
+      fileName = aFile.getName
+      _ = println(s"Reading prices, file [$fileName]")
+    } yield FilePriceFactory(s"$pricesHome/$fileName").getPrices()
+      ).toList.flatten
+
+    // Persisting prices in smaller groups to avoid DB errors
+    // Tried to configure DB connection to avoid this, but to no avail
+    val persistInGroups: List[Price] => Unit = (pricesToPersist: List[Price]) => {
+      val priceGroupSize = 50
+      println(s"About to persist ${pricesToPersist.length} prices in groups of $priceGroupSize")
+
+      pricesToPersist.grouped(priceGroupSize).toList.zipWithIndex.foreach { case (prices, index) =>
+        val startPriceNumber = (index * priceGroupSize) + 1
+        println(s"Persisting prices ${startPriceNumber} - ${startPriceNumber + prices.length - 1}")
+        exec(Prices.insert(prices))
+      }
     }
+
+    persistInGroups(pricesToPersist)
   }
 
   try {

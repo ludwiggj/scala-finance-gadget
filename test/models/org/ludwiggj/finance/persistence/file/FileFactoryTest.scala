@@ -25,7 +25,7 @@ class FileFactoryTest extends FunSuite with Matchers {
 
       (actualTransactions head).toString() should equal(
         s"Tx [userName: $userA, holding: M&G Feeder of Property Portfolio I Fund Acc, date: 25/04/2014, "
-          + "description: Investment Regular, in: Some(200.0), out: None, price date: 25/04/2014, price: 11.5308, "
+          + "category: Investment Regular, in: Some(200.0000), out: None, price date: 25/04/2014, price: 11.5308, "
           + "units: 17.3449]"
       )
     }

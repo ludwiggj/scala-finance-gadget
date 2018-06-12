@@ -33,25 +33,17 @@ class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] wit
       }
 
       "returns the existing price if it is present" in new DatabaseLayer(dbConfig) with SinglePrice {
-        val priceFundName = priceKappa.fundName
-        val priceDate = priceKappa.date
-        val priceAmount = priceKappa.inPoundsScaled
-
-        inside(exec(Prices.get(priceFundName, priceDate)).get) { case pr: PriceRow =>
-          (pr.id, pr.date, pr.scaledPrice) must equal(existingPriceId, priceDate, priceAmount)
+        inside(exec(Prices.get(priceKappa.fundName, priceKappa.date)).get) { case pr: PriceRow =>
+          (pr.id, pr.date, pr.price) must equal(existingPriceId, priceKappa.date, priceKappa.inPounds)
         }
       }
 
       "returns the existing price after an attempt to add the price again for the same date" in
         new DatabaseLayer(dbConfig) with SinglePrice {
-          val priceFundName = priceKappa.fundName
-          val priceDate = priceKappa.date
-          val priceAmount = priceKappa.inPoundsScaled
-
           exec(Prices.insert(priceKappa.copy(inPounds = 2.12)))
 
-          inside(exec(Prices.get(priceFundName, priceDate)).get) { case pr:PriceRow =>
-            (pr.id, pr.date, pr.scaledPrice) must equal(existingPriceId, priceDate, priceAmount)
+          inside(exec(Prices.get(priceKappa.fundName, priceKappa.date)).get) { case pr: PriceRow =>
+            (pr.id, pr.date, pr.price) must equal(existingPriceId, priceKappa.date, priceKappa.inPounds)
           }
         }
     }

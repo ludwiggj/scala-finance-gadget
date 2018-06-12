@@ -31,14 +31,14 @@ class TransactionSuite extends FunSuite with Matchers with TestTransactionsMulti
 
   test("Transaction.toFileFormat") {
     tx("mgFeeder140425").toFileFormat should equal(
-      "M&G Feeder of Property Portfolio I Fund Acc|25/04/2014|Investment Regular|200.0||25/04/2014|11.5308|17.3449"
+      "M&G Feeder of Property Portfolio I Fund Acc|25/04/2014|Investment Regular|200.0000||25/04/2014|11.5308|17.3449"
     )
   }
 
   test("Transaction.toString") {
     tx("mgFeeder140425").toString should equal(
       s"Tx [userName: $userA, holding: M&G Feeder of Property Portfolio I Fund Acc, date: 25/04/2014, "
-        + "description: Investment Regular, in: Some(200.0), out: None, price date: 25/04/2014, price: 11.5308, "
+        + "category: Investment Regular, in: Some(200.0000), out: None, price date: 25/04/2014, price: 11.5308, "
         + "units: 17.3449]"
     )
   }

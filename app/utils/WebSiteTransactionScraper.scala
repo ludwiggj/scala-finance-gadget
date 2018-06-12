@@ -55,21 +55,15 @@ object WebSiteTransactionScraper extends App {
       persister.write(transactions)
     }
 
+
+    // Start here
     for {
       (user, transactions) <- listOfUserTransactions
     } {
       persistTransactionsToFile(user, transactions)
-        // TODO - Remove this debug code, used to investigate failing
-        // TODO   tx inserts and unexpected duplicates
-//      transactions.foreach { tx =>
-//        println("Tx insert: " + tx)
-//        if (tx.in.isDefined && tx.in.get >= 10000) {
-//          println("Skip!")
-//        } else {
-//          exec(Transactions.insert(List(tx)))
-//        }
-//      }
-      exec(Transactions.insert(transactions))
+      exec(Transactions.insert(transactions.filter {
+        _.shouldBePersistedIntoDb
+      }))
     }
   }
 
@@ -77,12 +71,12 @@ object WebSiteTransactionScraper extends App {
     time("Whole thing",
       try {
         // TODO - Does not work in parallel
-//        val listOfFutures: List[Future[(User, List[Transaction])]] = users map { user =>
-//          getTransactions(user)
-//        }
+        //        val listOfFutures: List[Future[(User, List[Transaction])]] = users map { user =>
+        //          getTransactions(user)
+        //        }
 
         // Can do this way for a single user
-        val listOfFutures: List[Future[(User, List[Transaction])]] = List(users(0)) map { user =>
+        val listOfFutures: List[Future[(User, List[Transaction])]] = List(users(1)) map { user =>
           getTransactions(user)
         }
 

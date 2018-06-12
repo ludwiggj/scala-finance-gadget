@@ -2,13 +2,13 @@ package models.org.ludwiggj.finance.web
 
 import io.circe._
 import io.circe.literal._
-import models.org.ludwiggj.finance.domain.{FundName, Price, TransactionType}
+import models.org.ludwiggj.finance.domain.{FundName, Price, TransactionCategory}
 import org.joda.time.LocalDate
 
 object TransactionWorkout2 {
 
   case class Tx(date: LocalDate,
-                description: TransactionType,
+                description: TransactionCategory,
                 in: Option[BigDecimal],
                 out: Option[BigDecimal],
                 price: Price,
@@ -35,7 +35,7 @@ object TransactionWorkout2 {
       } yield {
         Tx(
           date,
-          TransactionType.aTransactionType(name),
+          TransactionCategory.aTransactionCategory(name),
           if (amount > 0) Some(amount) else None,
           if (amount < 0) Some(amount.abs) else None,
           Price(FundName(fundName), date, unitPrice),

@@ -28,15 +28,15 @@ object HoldingSummary {
   def apply(transactions: List[Transaction], price: Price): HoldingSummary = {
 
     val amountIn = transactions
-      .filter { tx => (tx.description == InvestmentRegular) || (tx.description == InvestmentLumpSum) }
+      .filter(_.isCashIn)
       .flatMap(_.in).sum
 
     val unitsIn = transactions
-      .filter { tx => tx.in.isDefined || (tx.description == UnitShareConversionIn) }
+      .filter(_.isUnitsIn)
       .map(_.units).sum
 
     val unitsOut = transactions
-      .filter { tx => tx.out.isDefined || (tx.description == UnitShareConversionOut) }
+      .filter(_.isUnitsOut)
       .map(_.units).sum
 
     HoldingSummary(amountIn, unitsIn, Some(unitsOut), price)

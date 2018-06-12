@@ -3,7 +3,7 @@ package models.org.ludwiggj.finance.persistence.database
 import java.sql.Timestamp
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import models.org.ludwiggj.finance.domain.TransactionType.aTransactionType
+import models.org.ludwiggj.finance.domain.TransactionCategory.aTransactionCategory
 import models.org.ludwiggj.finance.domain._
 import org.joda.time.LocalDate
 import slick.lifted.MappedTo
@@ -119,15 +119,13 @@ trait Tables {
                        fundId: PK[FundTable],
                        date: LocalDate,
                        price: BigDecimal
-                     ) {
-    val scaledPrice: BigDecimal = Price.scaled(price)
-  }
+                     )
 
   class PriceTable(tag: Tag) extends Table[PriceRow](tag, "PRICES") {
     val id = column[PK[PriceTable]]("ID", O.AutoInc, O.PrimaryKey)
     val fundId = column[PK[FundTable]]("FUND_ID")
     val date = column[LocalDate]("PRICE_DATE")
-    val price = column[BigDecimal]("PRICE", O.SqlType("decimal(11, 4)"))
+    val price = column[BigDecimal]("PRICE", O.SqlType(s"decimal(11, ${Price.numberOfDecimalPlaces})"))
 
     def * = (id, fundId, date, price) <> (PriceRow.tupled, PriceRow.unapply)
 
@@ -155,11 +153,13 @@ trait Tables {
     }
 
     def insert(price: Price): DBIO[PK[PriceTable]] = {
-      Funds.getOrInsert(price.fundName).flatMap { fundId =>
-        get(price.fundName, price.date).flatMap {
-          _ match {
-            case Some(priceRow) => DBIO.successful(priceRow.id)
-            case None => {
+      get(price.fundName, price.date).flatMap {
+        _ match {
+          case Some(priceRow) => {
+            DBIO.successful(priceRow.id)
+          }
+          case None => {
+            Funds.getOrInsert(price.fundName).flatMap { fundId =>
               try {
                 insert(fundId, price.date, price.inPounds)
               } catch {
@@ -256,9 +256,9 @@ trait Tables {
   // TRANSACTIONS - table definition
   // -------------------------------
 
-  implicit val transactionTypeMapper = MappedColumnType.base[TransactionType, String](
+  implicit val transactionCategoryMapper = MappedColumnType.base[TransactionCategory, String](
     tt => tt.name,
-    s => aTransactionType(s)
+    s => aTransactionCategory(s)
   )
 
   case class TransactionRow(
@@ -266,7 +266,7 @@ trait Tables {
                              fundId: PK[FundTable],
                              userId: PK[UserTable],
                              date: LocalDate,
-                             description: TransactionType,
+                             category: TransactionCategory,
                              amountIn: Option[BigDecimal] = None,
                              amountOut: Option[BigDecimal] = None,
                              priceDate: LocalDate,
@@ -278,14 +278,14 @@ trait Tables {
     val fundId = column[PK[FundTable]]("FUND_ID")
     val userId = column[PK[UserTable]]("USER_ID")
     val date = column[LocalDate]("TRANSACTION_DATE")
-    val description = column[TransactionType]("DESCRIPTION", O.Length(254, varying = true))
-    val amountIn = column[Option[BigDecimal]]("AMOUNT_IN")
-    val amountOut = column[Option[BigDecimal]]("AMOUNT_OUT")
+    val category = column[TransactionCategory]("CATEGORY", O.Length(254, varying = true))
+    val amountIn = column[Option[BigDecimal]]("AMOUNT_IN", O.SqlType(s"decimal(11, ${Transaction.numberOfDecimalPlaces})"))
+    val amountOut = column[Option[BigDecimal]]("AMOUNT_OUT", O.SqlType(s"decimal(11, ${Transaction.numberOfDecimalPlaces})"))
     val priceDate = column[LocalDate]("PRICE_DATE")
-    val units = column[BigDecimal]("UNITS")
+    val units = column[BigDecimal]("UNITS", O.SqlType(s"decimal(11, ${Transaction.numberOfDecimalPlaces})"))
 
     def * = (
-      id, fundId, userId, date, description, amountIn, amountOut, priceDate, units
+      id, fundId, userId, date, category, amountIn, amountOut, priceDate, units
     ) <> (TransactionRow.tupled, TransactionRow.unapply)
 
     // Foreign keys
@@ -324,34 +324,25 @@ trait Tables {
       }
     }
 
-    def insert(fundId: PK[FundTable], userId: PK[UserTable], date: LocalDate, description: TransactionType,
+    def insert(fundId: PK[FundTable], userId: PK[UserTable], date: LocalDate, category: TransactionCategory,
                in: Option[BigDecimal], out: Option[BigDecimal], priceDate: LocalDate,
                units: BigDecimal): DBIO[PK[TransactionTable]] = {
       this returning this.map(_.id) +=
-        TransactionRow(PK[TransactionTable](0L), fundId, userId, date, description, in, out, priceDate, units)
+        TransactionRow(PK[TransactionTable](0L), fundId, userId, date, category, in, out, priceDate, units)
     }
 
     def insert(tx: Transaction): DBIO[PK[TransactionTable]] = {
-      get(tx.fundName, tx.userName, tx.date, tx.description, tx.in, tx.out, tx.priceDate, tx.units).flatMap {
+      get(tx.fundName, tx.userName, tx.date, tx.category, tx.in, tx.out, tx.priceDate, tx.units).flatMap {
         _ match {
           case Some(txRow) => {
-            // TODO - Remove debug
-            println("Found tx: " + txRow)
             DBIO.successful(txRow.id)
           }
           case None =>
-            // TODO - Remove debug
-            println(s"NOT found tx: (${tx.fundName}, ${tx.userName}, ${tx.date}, ${tx.description}, ${tx.in}, ${tx.out}, ${tx.priceDate}, ${tx.units}")
-            // NOTE - Flipped the order of these DB actions around i.e. now Price followed by User. This should be OK.
-            // TODO - Consider following alternative!
-            // Prices.insert(tx.price) andThen Users.get(tx.userName).map(_.get.id).flatMap { userId =>
             Prices.insert(tx.price) andThen Users.getOrInsert(tx.userName).flatMap { userId =>
-              // NOTE - Could use fundId returned by Prices.insert rather than fetching it explicitly, but
-              //        Prices.insert should really return a priceId
               Funds.get(tx.fundName).flatMap {
                 _ match {
                   case Some(fundsRow) => insert(
-                    fundsRow.id, userId, tx.date, tx.description, tx.in,
+                    fundsRow.id, userId, tx.date, tx.category, tx.in,
                     tx.out, tx.priceDate, tx.units
                   )
                   // Exception type?
@@ -369,14 +360,14 @@ trait Tables {
       DBIO.sequence(transactions.map(insert))
     }
 
-    def get(fundName: FundName, userName: String, date: LocalDate, description: TransactionType, in: Option[BigDecimal],
+    def get(fundName: FundName, userName: String, date: LocalDate, category: TransactionCategory, in: Option[BigDecimal],
             out: Option[BigDecimal], priceDate: LocalDate, units: BigDecimal): DBIO[Option[TransactionRow]] = {
 
       val txQuery = Transactions
         .join(Funds).on { case (tx, fund) => tx.fundId === fund.id }
         .join(Users).on { case ((tx, _), user) => tx.userId === user.id }
         .filter { case ((tx, fund), user) =>
-          fund.name === fundName && user.name === userName && tx.date === date && tx.description === description &&
+          fund.name === fundName && user.name === userName && tx.date === date && tx.category === category &&
             tx.priceDate === priceDate && tx.units === units
         }
         .map {
@@ -400,7 +391,7 @@ trait Tables {
 
     def getRegularInvestmentDates(): DBIO[List[LocalDate]] = {
       def transactionFilter(t: TransactionTable) = {
-        t.description === (InvestmentRegular: TransactionType)
+        t.category === (InvestmentRegular: TransactionCategory)
       }
 
       getDates(transactionFilter _)
@@ -444,7 +435,7 @@ trait Tables {
           (
             f.id,
             Transaction(
-              u.name, t.date, t.description, t.amountIn, t.amountOut,
+              u.name, t.date, t.category, t.amountIn, t.amountOut,
               Price(f.name, p.date, p.price), t.units
             )
           )

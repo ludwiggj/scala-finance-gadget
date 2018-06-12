@@ -93,7 +93,7 @@ object NewSiteWorkout2 {
       Transaction(
         username,
         date,
-        TransactionType.aTransactionType(name),
+        TransactionCategory.aTransactionCategory(name),
         if (amount > 0) Some(amount) else None,
         if (amount < 0) Some(amount.abs) else None,
         Price(FundName(fundName), date, unitPrice),

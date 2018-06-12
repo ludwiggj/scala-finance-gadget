@@ -38,9 +38,9 @@ class PortfolioListSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProf
           val userAPortfolio = portfolios.next()
           val userAPortfolioDelta = userAPortfolio.delta
 
-          userAPortfolioDelta.amountIn must equal(285.6)
-          userAPortfolioDelta.gain.setScale(2, RoundingMode.DOWN) must equal(-2.07)
-          userAPortfolioDelta.gainPct.setScale(2, RoundingMode.DOWN) must equal(-0.72)
+          userAPortfolioDelta.amountIn must equal(285.6481)
+          userAPortfolioDelta.gain.setScale(2, RoundingMode.DOWN) must equal(426657.80)
+          userAPortfolioDelta.gainPct.setScale(2, RoundingMode.DOWN) must equal(149364.83)
 
           val userBPortfolio = portfolios.next()
           val userBPortfolioDelta = userBPortfolio.delta
