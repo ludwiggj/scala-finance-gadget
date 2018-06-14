@@ -9,7 +9,7 @@ import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener
 import org.apache.commons.logging.LogFactory
 import org.w3c.css.sac.{CSSParseException, ErrorHandler}
 
-object WebClient {
+class WebClient {
   private def turnLoggingOff: Unit = {
     LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
 
@@ -64,4 +64,8 @@ object WebClient {
     val value: Page = webClient.getPage(wr)
     value.getWebResponse.getContentAsString
   }
+}
+
+object WebClient {
+  def apply() = new WebClient()
 }

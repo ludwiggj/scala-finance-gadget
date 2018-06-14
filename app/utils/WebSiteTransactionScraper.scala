@@ -37,7 +37,7 @@ object WebSiteTransactionScraper extends App {
     val userName = user.name
 
     time(s"processTransactions($userName)", {
-      val transactions: List[Transaction] = WebFacade.getTransactions(user)
+      val transactions: List[Transaction] = WebFacade(user).getTransactions()
 
       println(s"Total transactions ($userName): ${transactions size}")
 
@@ -70,13 +70,7 @@ object WebSiteTransactionScraper extends App {
   private def scrape(): Unit = {
     time("Whole thing",
       try {
-        // TODO - Does not work in parallel
-        //        val listOfFutures: List[Future[(User, List[Transaction])]] = users map { user =>
-        //          getTransactions(user)
-        //        }
-
-        // Can do this way for a single user
-        val listOfFutures: List[Future[(User, List[Transaction])]] = List(users(1)) map { user =>
+        val listOfFutures: List[Future[(User, List[Transaction])]] = users map { user =>
           getTransactions(user)
         }
 

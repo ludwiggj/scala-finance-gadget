@@ -14,7 +14,7 @@ class LoginForm private(private val baseUrl: String,
 
   def loginAs(userName: String): HtmlEntity = {
     val user: User = userByName(userName)
-    val page: HtmlEntity = WebClient.getPage(baseUrl)
+    val page: HtmlEntity = WebClient().getPage(baseUrl)
     val form: HtmlForm = page.getForms.head
 
     fields foreach {

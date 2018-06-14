@@ -13,12 +13,13 @@ import models.org.ludwiggj.finance.domain._
 import org.joda.time.LocalDate
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
-// TODO - Make a class so it can be run in parallel futures
-object WebFacade {
+class WebFacade(val user: User) {
   private val config = ConfigFactory.load("acme2")
   private val baseUrl = urlConfigItem("base")
   private val loginUrl = url("login")
   private val logoutUrl = url("logout")
+
+  private val webClient = WebClient()
 
   private def urlConfigItem(configItem: String): String = {
     config.getString("site.url." + configItem)
@@ -28,26 +29,27 @@ object WebFacade {
     s"$baseUrl${urlConfigItem(configItem)}"
   }
 
-  private def login(username: String, password: String): Unit = {
-    val html = WebClient.getPage(loginUrl)
+  private def login(): Unit = {
+    println(s"Logging into $loginUrl as ${user.username}")
+    val html = webClient.getPage(loginUrl)
     val form = html.getForms.head
-    form.getInputByName("username").asInstanceOf[HtmlInput].setValueAttribute(username)
-    form.getInputByName("password").asInstanceOf[HtmlInput].setValueAttribute(password)
+    form.getInputByName("username").asInstanceOf[HtmlInput].setValueAttribute(user.username)
+    form.getInputByName("password").asInstanceOf[HtmlInput].setValueAttribute(user.password)
     form.getElementsByTagName("button").get(0).click()
   }
 
   private def logout(): Unit = {
-    WebClient.getPage(loginUrl)
+    webClient.getPage(loginUrl)
   }
 
   private def dataByPost(url: String): String = {
     val wr = new WebRequest(new URL(url), HttpMethod.POST)
     wr.setAdditionalHeader("Content-Type", "application/json; charset=utf-8")
     wr.setAdditionalHeader("Accept", "application/json, text/javascript, */*; q=0.01")
-    WebClient.getPage(wr)
+    webClient.getPage(wr)
   }
 
-  private def jsonToHoldings(username: String, json: Json): List[Holding] = {
+  private def jsonToHoldings(json: Json): List[Holding] = {
     val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy")
     val datePath = root._data._data.formattedAsOfDate.string
     val maybeDate = datePath.getOption(json)
@@ -58,7 +60,7 @@ object WebFacade {
       units <- c.downField("units").as[String]
       price <- c.downField("price").downField("raw").as[BigDecimal]
     } yield {
-      Holding(username, Price(FundName(name), date, price), BigDecimal(units.replaceAll(",", "")))
+      Holding(user.reportName, Price(FundName(name), date, price), BigDecimal(units.replaceAll(",", "")))
     }
 
     // Dummy Encoder - required for compilation, though I don't actually want to encode Holdings into json
@@ -69,16 +71,16 @@ object WebFacade {
     root._data._data.details.each._data.as[Holding].getAll(json)
   }
 
-  def getHoldings(user: User): List[Holding] = {
-    login(user.username, user.password)
+  def getHoldings(): List[Holding] = {
+    login()
     val holdings = parse(dataByPost(s"${url("holdings")}${user.accountId}")).getOrElse((Json.Null))
     logout()
-    jsonToHoldings(user.reportName, holdings).filter(
+    jsonToHoldings(holdings).filter(
       h => (h.name != FundName("Cash")) && (h.name != FundName("Pending Trades"))
     )
   }
 
-  private def jsonToTransactions(username: String, json: Json): List[Transaction] = {
+  private def jsonToTransactions(json: Json): List[Transaction] = {
     val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd/MM/yy")
 
     implicit val decodeTx: Decoder[Transaction] = (c: HCursor) => for {
@@ -91,7 +93,7 @@ object WebFacade {
       numberOfUnits <- c.downField("numberOfUnits").as[BigDecimal]
     } yield {
       Transaction(
-        username,
+        user.reportName,
         date,
         TransactionCategory.aTransactionCategory(name),
         if (amount > 0) Some(amount) else None,
@@ -109,10 +111,16 @@ object WebFacade {
     root._data.transactions.each.as[Transaction].getAll(json)
   }
 
-  def getTransactions(user: User): List[Transaction] = {
-    login(user.username, user.password)
+  def getTransactions(): List[Transaction] = {
+    login()
     val transactions = parse(dataByPost(s"${url("transactions")}${user.accountId}")).getOrElse(Json.Null)
     logout()
-    jsonToTransactions(user.reportName, transactions)
+    jsonToTransactions(transactions)
+  }
+}
+
+object WebFacade {
+  def apply(user: User): WebFacade = {
+    new WebFacade(user)
   }
 }

@@ -115,9 +115,10 @@ object TransactionCategory {
     Vector(
       AdminCharge, CorrectiveTradeAdjustment, Distribution, DistributionReinvestment,
       DividendReinvestment, FundPurchase, InvestmentLumpSum, InvestmentRegular,
-      OngoingAdviserCharge, PendingTradeIn, PendingTradeOut, PurchaseRequest,
-      SaleForRegularPayment, SaleRequest, SwitchIn, SwitchOut, TaxReclaimReinvestment,
-      TransferIn, TransferOut, UnitShareConversionIn, UnitShareConversionOut
+      MoveMoney, OngoingAdviserCharge, PendingTradeIn, PendingTradeOut,
+      PurchaseRequest, SaleForRegularPayment, SaleRequest, SwitchIn, SwitchOut,
+      TaxReclaimReinvestment, TransferIn, TransferOut, UnitShareConversionIn,
+      UnitShareConversionOut
     ).find(_.name == value).getOrElse(Unspecified)
   }
 }
