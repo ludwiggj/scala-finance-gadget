@@ -23,19 +23,19 @@ class FormattableLocalDateSuite extends FunSuite with Matchers {
 
   test("Parse date throws IllegalArgumentException if year has two digits") {
     intercept[IllegalArgumentException] {
-      val localDate = aLocalDate("15/03/12")
+      aLocalDate("15/03/12")
     }
   }
 
   test("Parse date throws IllegalArgumentException if date has single digit") {
     intercept[IllegalArgumentException] {
-      val localDate = aLocalDate("1/03/2012")
+      aLocalDate("1/03/2012")
     }
   }
 
   test("Parse date throws IllegalArgumentException if month has single digit") {
     intercept[IllegalArgumentException] {
-      val localDate = aLocalDate("01/3/2012")
+      aLocalDate("01/3/2012")
     }
   }
 

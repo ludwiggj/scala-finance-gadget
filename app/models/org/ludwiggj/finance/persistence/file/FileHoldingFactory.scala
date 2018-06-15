@@ -6,13 +6,13 @@ class FileHoldingFactory private(val userName: String, private val holdingFileNa
   val fileName = holdingFileName
 } with FileFinanceRowParser {
 
-  def getHoldings(): List[Holding] = {
-    getLines() map (Holding(userName, _))
+  def fetchHoldings(): List[Holding] = {
+    fetchLines() map (Holding(userName, _))
   }
 }
 
 object FileHoldingFactory {
-  def apply(userName: String, fileName: String) = {
+  def apply(userName: String, fileName: String): FileHoldingFactory = {
     new FileHoldingFactory(userName, fileName)
   }
 }

@@ -44,7 +44,7 @@ class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends In
 
   // Logout and clean the session.
   def logout = Action {
-    Redirect(routes.Application.login).withNewSession.flashing(
+    Redirect(routes.Application.login()).withNewSession.flashing(
       "success" -> "You've been logged out")
   }
 }
@@ -53,12 +53,12 @@ trait Secured {
   self: InjectedController =>
 
   // Retrieve the username.
-  def username(request: RequestHeader) = request.session.get("username")
+  def username(request: RequestHeader): Option[String] = request.session.get("username")
 
   // Redirect to login if the user is not authorized.
   def onUnauthorized(request: RequestHeader): Result
 
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) =
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result): EssentialAction =
     Security.Authenticated(username, onUnauthorized) { user =>
       Action(request => f(user)(request))
     }

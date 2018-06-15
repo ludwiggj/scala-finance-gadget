@@ -3,6 +3,7 @@ package models.org.ludwiggj.finance.web
 import io.circe.literal._
 import io.circe.{Decoder, DecodingFailure, Json}
 
+// TODO - Move into scalaScratch repo
 object CursorWorkout {
 
   case class Foo(firstName: String, lastName: String, age: Int, stuff: List[Boolean])

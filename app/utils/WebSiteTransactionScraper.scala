@@ -5,6 +5,7 @@ import java.util.concurrent.TimeoutException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import com.typesafe.config.ConfigFactory
 import models.org.ludwiggj.finance.domain.Transaction
+import models.org.ludwiggj.finance.json.TransactionParser
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web._
@@ -21,7 +22,7 @@ import scala.collection.JavaConverters._
 
 object WebSiteTransactionScraper extends App {
 
-  lazy val app = new GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
+  lazy val app = GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
     "config.resource" -> "application.conf"
   ))).build()
 
@@ -29,7 +30,7 @@ object WebSiteTransactionScraper extends App {
 
   import databaseLayer._
 
-  private val config = ConfigFactory.load("acme2")
+  private val config = ConfigFactory.load("acme")
   private val users = (config.getConfigList("site.userAccounts").asScala map (User(_))).toList
   private val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
@@ -37,7 +38,14 @@ object WebSiteTransactionScraper extends App {
     val userName = user.name
 
     time(s"processTransactions($userName)", {
-      val transactions: List[Transaction] = WebFacade(user).getTransactions()
+      val webFacade = WebFacade(user, config)
+      webFacade.login()
+
+      val transactions: List[Transaction] = TransactionParser.fromJsonString(
+        webFacade.get("transactions"), user.reportName
+      )
+
+      webFacade.logout()
 
       println(s"Total transactions ($userName): ${transactions size}")
 

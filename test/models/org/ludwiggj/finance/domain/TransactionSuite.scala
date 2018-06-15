@@ -14,7 +14,7 @@ class TransactionSuite extends FunSuite with Matchers with TestTransactionsMulti
   }
 
   test("Two transactions with different fields should not be equal") {
-    tx("mgFeeder140425") should not equal (tx("ecclesiastical140502"))
+    tx("mgFeeder140425") should not equal tx("ecclesiastical140502")
   }
 
   test("Transaction.fundName") {

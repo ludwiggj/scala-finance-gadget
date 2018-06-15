@@ -24,7 +24,7 @@ class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] wit
     applyEvolutions(defaultDatabase)
   }
 
-  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
+  lazy val dbConfigProvider: DatabaseConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   "the Price database API" should {
     "provide a get method," which {
@@ -54,10 +54,10 @@ class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] wit
 
         exec(Funds.get(newFundName)) mustBe None
 
-        val capitalistsDreamFundPriceDate = aLocalDate("20/05/2014")
-        val price = Price(newFundName, capitalistsDreamFundPriceDate, 1.2)
+        private val capitalistsDreamFundPriceDate = aLocalDate("20/05/2014")
+        private val price = Price(newFundName, capitalistsDreamFundPriceDate, 1.2)
 
-        val priceId = exec(Prices.insert(price))
+        private val priceId = exec(Prices.insert(price))
 
         inside(exec(Funds.get(newFundName)).get) { case FundRow(_, name) =>
           name must equal(newFundName)
@@ -100,7 +100,7 @@ class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] wit
 
       "includes prices from name change fund if date of interest is one day before the fund change date" in {
         new DatabaseLayer(dbConfig) with MultiplePricesForSingleFundAndItsRenamedEquivalent {
-          val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
+          private val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
           exec(Prices.latestPrices(aLocalDate("23/05/2014"))).values.toList must contain theSameElementsAs
             List(expectedUpdatedPrice, priceKappaII140524)
@@ -109,7 +109,7 @@ class PriceSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] wit
 
       "includes prices from name change fund if date of interest is the fund change date" in {
         new DatabaseLayer(dbConfig) with MultiplePricesForSingleFundAndItsRenamedEquivalent {
-          val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
+          private val expectedUpdatedPrice = price("kappaII140524").copy(fundName = FundName("Kappa"))
 
           exec(Prices.latestPrices(aLocalDate("24/05/2014"))).values.toList must contain theSameElementsAs
             List(expectedUpdatedPrice, priceKappaII140524)

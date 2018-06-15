@@ -9,6 +9,7 @@ import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 import scala.io.Source
 
+// TODO - Rework
 object TransactionWorkout {
 
   case class Tx(date: LocalDate,

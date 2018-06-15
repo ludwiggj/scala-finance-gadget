@@ -23,7 +23,7 @@ class Portfolios @Inject()(cache: SyncCacheApi, dbConfigProvider: DatabaseConfig
 
   import databaseLayer._
 
-  def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login())
+  def onUnauthorized(request: RequestHeader): Result = Results.Redirect(routes.Application.login())
 
   private def getPortfolioDataOnDate(username: String, date: LocalDate): PortfolioList = {
     var logMsg = s"getPortfolioDataOnDate: $username-portfolio-$date"
@@ -35,7 +35,7 @@ class Portfolios @Inject()(cache: SyncCacheApi, dbConfigProvider: DatabaseConfig
     portfolioList
   }
 
-  def onDate(date: LocalDate) = {
+  def onDate(date: LocalDate): EssentialAction = {
     IsAuthenticated { username =>
       implicit request =>
         val portfolios = getPortfolioDataOnDate(username, date)
@@ -43,7 +43,7 @@ class Portfolios @Inject()(cache: SyncCacheApi, dbConfigProvider: DatabaseConfig
     }
   }
 
-  def all(page: Int) = {
+  def all(page: Int): EssentialAction = {
     IsAuthenticated { username =>
       implicit request =>
         def transactionDatesSince(date: LocalDate): List[LocalDate] = {
@@ -55,32 +55,30 @@ class Portfolios @Inject()(cache: SyncCacheApi, dbConfigProvider: DatabaseConfig
 
         val allPortfolioDates = cache.getOrElseUpdate[List[LocalDate]](s"$username-allPortfolioDates", 5.minutes) {
           exec(Transactions.getRegularInvestmentDates()) match {
-            case dateList if (dateList.isEmpty) => dateList // TODO - should fetch all tx'es here?
+            case dateList if dateList.isEmpty => dateList // TODO - should fetch all tx'es here?
             case dateList => transactionDatesSince(dateList.head) ++ dateList
           }
         }
 
-        def portfolioDatesForPage(page: Int) = {
+        def portfolioDatesForPage(page: Int): List[LocalDate] = {
           val noOfItemsPerPage = 12
 
-          allPortfolioDates.drop((page - 1) * noOfItemsPerPage).take(noOfItemsPerPage)
+          allPortfolioDates.slice((page - 1) * noOfItemsPerPage, (page - 1) * noOfItemsPerPage + noOfItemsPerPage)
         }
 
         // TODO - This (and other methods in this class) are not tested
         def getPortfolios(dates: List[LocalDate]): Map[LocalDate, PortfolioList] = {
-          val portfolios = (dates map (date => {
+          val portfolios = dates map (date => {
             val thePortfolios = getPortfolioDataOnDate(username, date)
 
             (date, thePortfolios)
-          }))
+          })
 
           SortedMap(portfolios: _*)(LocalDateOrdering.reverse)
         }
 
-        def adjacentPages() = {
-          def earlierDataIsAvailable = {
-            !portfolioDatesForPage(page + 1).isEmpty
-          }
+        def adjacentPages(): (Option[Int], Option [Int]) = {
+          def earlierDataIsAvailable: Boolean = portfolioDatesForPage(page + 1).nonEmpty
 
           val previousPage = if (earlierDataIsAvailable) Some(page + 1) else None
 

@@ -23,7 +23,7 @@ class FundSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with
     applyEvolutions(defaultDatabase)
   }
 
-  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
+  lazy val dbConfigProvider: DatabaseConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   private val nonExistentFund = FundName("fundThatIsNotPresent")
 

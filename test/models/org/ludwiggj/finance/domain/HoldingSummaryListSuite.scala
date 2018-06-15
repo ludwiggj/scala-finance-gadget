@@ -22,7 +22,7 @@ class HoldingSummaryListSuite extends FunSuite with Matchers with TestHoldingSum
     val holdingSummaryListIterator = holdingSummaryList("aberdeen140915").iterator
     val holdingSummaryAberdeenA = holdingSummaryListIterator.next()
     val holdingSummaryAberdeenB = holdingSummaryListIterator.next()
-    holdingSummaryListIterator.hasNext shouldBe (false)
+    holdingSummaryListIterator.hasNext shouldBe false
 
     assertThat(holdingSummaryList("aberdeen140915").total.bigDecimal, is(closeTo(BigDecimal(1128.957).bigDecimal, tolerance)))
     assertHoldingSummary(holdingSummaryAberdeenA, 450.50, 281.1054, 8.7910, 272.3144, 384.589)
@@ -33,7 +33,7 @@ class HoldingSummaryListSuite extends FunSuite with Matchers with TestHoldingSum
     val holdingSummaryListIterator = holdingSummaryList("aberdeen140930").iterator
     val holdingSummaryAberdeenA = holdingSummaryListIterator.next()
     val holdingSummaryAberdeenB = holdingSummaryListIterator.next()
-    holdingSummaryListIterator.hasNext shouldBe (false)
+    holdingSummaryListIterator.hasNext shouldBe false
 
     assertThat(holdingSummaryAberdeenA.total.bigDecimal, is(closeTo(BigDecimal(0.0).bigDecimal, tolerance)))
     assertHoldingSummary(holdingSummaryAberdeenA, 450.50, 281.1054, 281.1054, 0.0, 0.0)
@@ -43,7 +43,7 @@ class HoldingSummaryListSuite extends FunSuite with Matchers with TestHoldingSum
   test("HoldingSummaryList should handle fund changeovers and transfer income between funds") {
     val holdingSummaryListIterator = holdingSummaryList("aberdeen141001").iterator
     val holdingSummaryAberdeenB = holdingSummaryListIterator.next()
-    holdingSummaryListIterator.hasNext shouldBe (false)
+    holdingSummaryListIterator.hasNext shouldBe false
 
     assertThat(holdingSummaryList("aberdeen141001").total.bigDecimal, is(closeTo(BigDecimal(1270.658).bigDecimal, tolerance)))
     assertHoldingSummary(holdingSummaryAberdeenB, 1250.50, 73.8407, 0.0, 73.8407, 1270.658)

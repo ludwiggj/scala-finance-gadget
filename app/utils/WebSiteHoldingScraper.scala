@@ -3,7 +3,8 @@ package utils
 import java.util.concurrent.TimeoutException
 import com.github.nscala_time.time.Imports.{DateTime, DateTimeFormat}
 import com.typesafe.config.ConfigFactory
-import models.org.ludwiggj.finance.domain.{Holding, Price}
+import models.org.ludwiggj.finance.domain.{FundName, Holding, Price}
+import models.org.ludwiggj.finance.json.HoldingParser
 import models.org.ludwiggj.finance.persistence.database.DatabaseLayer
 import models.org.ludwiggj.finance.persistence.file.FilePersister
 import models.org.ludwiggj.finance.web._
@@ -19,7 +20,7 @@ import scala.collection.JavaConverters._
 
 object WebSiteHoldingScraper extends App {
 
-  lazy val app = new GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
+  lazy val app = GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
     "config.resource" -> "application.conf"
   ))).build()
 
@@ -27,14 +28,23 @@ object WebSiteHoldingScraper extends App {
 
   import databaseLayer._
 
-  private val config = ConfigFactory.load("acme2")
+  private val config = ConfigFactory.load("acme")
   private val users = (config.getConfigList("site.userAccounts").asScala map (User(_))).toList
 
   private def getHoldings(user: User): Future[(User, List[Holding])] = Future {
     val userName = user.name
 
     time(s"processHoldings($userName)", {
-      val holdings = WebFacade(user).getHoldings()
+      val webFacade = WebFacade(user, config)
+      webFacade.login()
+
+      val holdings: List[Holding] = HoldingParser.fromJsonString(
+        webFacade.get("holdings"), user.reportName
+      ).filter(
+        h => (h.name != FundName("Cash")) && (h.name != FundName("Pending Trades"))
+      )
+
+      webFacade.logout()
 
       val holdingsTotal = holdings.map(h => h.value).sum
       println(s"Total holdings ($userName): £$holdingsTotal")
@@ -47,11 +57,11 @@ object WebSiteHoldingScraper extends App {
     val date = DateTime.now.toString(DateTimeFormat.forPattern("yy_MM_dd"))
 
     def persistHoldingsToFile(userReportName: String, holdings: List[Holding]): Unit = {
-      FilePersister(fileName = s"$holdingsHome/holdings_${date}_${userReportName}.txt").write(holdings)
+      FilePersister(fileName = s"$holdingsHome/holdings_${date}_$userReportName.txt").write(holdings)
     }
 
     def persistPricesToFile(userReportName: String, prices: List[Price]): Unit = {
-      FilePersister(fileName = s"$pricesHome/prices_${date}_${userReportName}.txt").write(prices)
+      FilePersister(fileName = s"$pricesHome/prices_${date}_$userReportName.txt").write(prices)
     }
 
     for {
@@ -65,8 +75,8 @@ object WebSiteHoldingScraper extends App {
     }
   }
 
-  private def displayTotalHoldingAmount(listOfUserHoldings: List[(User, List[Holding])]) = {
-    val allHoldings = listOfUserHoldings.map(_._2).flatten
+  private def displayTotalHoldingAmount(listOfUserHoldings: List[(User, List[Holding])]): Unit = {
+    val allHoldings = listOfUserHoldings.flatMap(_._2)
     val totalHoldingAmount = allHoldings.map(h => h.value).sum
     println(s"Total £$totalHoldingAmount")
   }
@@ -74,9 +84,7 @@ object WebSiteHoldingScraper extends App {
   private def scrape(): Unit = {
     time("Whole thing",
       try {
-        val listOfFutures: List[Future[(User, List[Holding])]] = users map {
-          getHoldings(_)
-        }
+        val listOfFutures: List[Future[(User, List[Holding])]] = users map getHoldings
 
         val combinedFuture: Future[List[(User, List[Holding])]] = Future.sequence(listOfFutures)
 

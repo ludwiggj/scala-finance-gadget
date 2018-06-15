@@ -7,6 +7,7 @@ import io.circe.parser._
 
 import scala.io.Source
 
+// TODO Rework
 object HoldingWorkout {
 
   case class Hold(name: String, units: BigDecimal, price: BigDecimal)

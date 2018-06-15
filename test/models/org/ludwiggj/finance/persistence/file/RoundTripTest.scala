@@ -9,14 +9,14 @@ class RoundTripTest extends FunSuite with Matchers {
 
   test("transactions can be persisted and reconstituted") {
     new TestTransactionsMultipleFunds {
-      val txFile = s"${TEST_RESOURCES_DIR}/tx_round_trip_test.txt"
+      private val txFile = s"${TEST_RESOURCES_DIR}/tx_round_trip_test.txt"
 
       println(s"About to persist transactions: $txsMultipleFunds")
 
       FilePersister(txFile).write(txsMultipleFunds)
 
-      val reconstitutedTransactions =
-        FileTransactionFactory(userA, txFile).getTransactions()
+      private val reconstitutedTransactions =
+        FileTransactionFactory(userA, txFile).fetchTransactions()
 
       println(s"reconstitutedTransactions: $reconstitutedTransactions")
 
@@ -26,13 +26,13 @@ class RoundTripTest extends FunSuite with Matchers {
 
   test("holdings can be persisted and reconstituted") {
     new TestHoldings {
-      val holdingFile = s"${TEST_RESOURCES_DIR}/holdings_round_trip_test.txt"
+      private val holdingFile = s"${TEST_RESOURCES_DIR}/holdings_round_trip_test.txt"
 
       println(s"About to persist transactions: $holdingsMultipleFunds")
 
       FilePersister(holdingFile).write(holdingsMultipleFunds)
 
-      val reconstitutedHoldings = FileHoldingFactory(userA, holdingFile).getHoldings()
+      private val reconstitutedHoldings = FileHoldingFactory(userA, holdingFile).fetchHoldings()
 
       println(s"reconstitutedHoldings: $reconstitutedHoldings")
 
@@ -42,13 +42,13 @@ class RoundTripTest extends FunSuite with Matchers {
 
   test("prices can be persisted and reconstituted") {
     new TestPrices {
-      val priceFile = s"${TEST_RESOURCES_DIR}/price_round_trip_test.txt"
+      private val priceFile = s"${TEST_RESOURCES_DIR}/price_round_trip_test.txt"
 
       println(s"About to persist prices: $pricesMultipleFunds")
 
       FilePersister(priceFile).write(pricesMultipleFunds)
 
-      val reconstitutedPrices = FilePriceFactory(priceFile).getPrices()
+      private val reconstitutedPrices = FilePriceFactory(priceFile).fetchPrices()
 
       println(s"reconstitutedPrices: $reconstitutedPrices")
 

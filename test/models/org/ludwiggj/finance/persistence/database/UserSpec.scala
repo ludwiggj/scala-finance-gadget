@@ -19,7 +19,7 @@ class UserSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfile] with
     applyEvolutions(defaultDatabase)
   }
 
-  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
+  lazy val dbConfigProvider: DatabaseConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   "the User database API" should {
     "provide a get method," which {

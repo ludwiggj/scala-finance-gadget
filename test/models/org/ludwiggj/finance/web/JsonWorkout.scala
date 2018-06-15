@@ -6,6 +6,7 @@ import io.circe.optics.JsonPath._
 import io.circe.parser._
 import io.circe.syntax._
 
+// TODO - Move into scalaScratch repo
 object JsonWorkout {
 
   def workout1(): Unit = {

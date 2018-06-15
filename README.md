@@ -61,30 +61,7 @@ The system consists of the following components:
    $ cd financeGadget
    ```
 
-3. Initialise and update the ssoup submodule:
-
-   ```
-   $ git submodule init
-
-   > Submodule 'ssoup' (git@github.com:ludwiggj/ssoup.git) registered for path 'ssoup'
-
-   $ git submodule update
-
-   > Cloning into 'ssoup'...
-     ...
-   ```
-
-4. Build the ssoup submodule and publish the jar locally:
-
-   ```
-   $ cd ssoup
-
-   $ sbt publishLocal
-
-   $ cd ..
-   ```
-
-5. Run the sbt build tool, build the code and run the tests:
+3. Run the sbt build tool, build the code and run the tests:
    ```
    $ sbt
    [info] Loading settings from idea.sbt ...
@@ -224,6 +201,8 @@ An example of the Portfolio Page in administrator mode is shown below:
 The database schema is normalised; the key representations (users, prices, transactions and funds) are stored in
 separate tables:
 
+// TODO - Update schema diagram
+
 ![schema](images/financeERD.png "Schema")
 
 The **play_evolutions** table is used by the play evolutions component, which manages the deployment and versioning of
@@ -267,8 +246,7 @@ date, including gain/loss information across the whole portfolio.
 
 * Play slick 3.0.1, to integrate slick with play.
 
-* [SSoup](https://github.com/filosganga/ssoup "SSoup"), a Scala wrapper around the [JSoup](http://jsoup.org "JSoup")
-Java library for parsing HTML. This is used to parse the HTML scraped from the investment management platform.
+* Circe 0.9.3, for parsing Json. This is used to parse the Json returned by the investment management platform.
 
 * Typesafe config 1.3.2, to store details of the accounts used to access the investment management platform.
 
@@ -500,7 +478,7 @@ The scraper logs in to the financial web site as each user, retrieving the detai
 for each one. If the config file lists multiple accounts then each one is processed in parallel via Futures. The
 format of the scraped transaction data is shown below:
 
-| Holding                  | Date       | Description              | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
+| Holding                  | Date       | Category                 | In (GBP) | Out (GBP) | Price date | Price(p) | Units/Shares | Int charge (GBP) |
 | :----------------------- | :--------- | :----------------------- | :------- | :-------- | ---------- | --------:| ------------:| ---------------- |
 | H Bear Beer Emporium     | 25/09/2015 | Investment Regular       | 200.00   |           | 25/09/2015 | 1,344.54 | 14.8750      |                  |
 | Quantum Inc              | 11/09/2015 | Sale for Regular Payment |          | 25.67     | 11/09/2015 | 136.40   | 18.8187      |                  |
@@ -579,7 +557,9 @@ However, it's still nice to know that the data can be reloaded into the database
 Graeme Ludwig, 17/10/17.
 
 
-TODO:
+TODO: (README)
+
+Identify all "Unidentified" transactions in persisted files...
 
 Update relevant details from MySQL installation...
 
@@ -600,16 +580,3 @@ mysql
 mysql -u=root
 
 bash dbdeploy.sh
-
-------------
-
-https://customerdashboard.aegon.co.uk/login
-https://customerdashboard.aegon.co.uk/investments/stocks-and-shares-isa/view?id=80509341
-https://customerdashboard.aegon.co.uk/investments/investment-fund-trading-view?id=80509341&productType=stocks-and-shares-isa&productName=Stocks%20and%20Shares%20ISA
-
-https://customerdashboard.aegon.co.uk/investments/stocks-and-shares-isa/view?id=80487607
-https://customerdashboard.aegon.co.uk/investments/investment-fund-trading-view?id=80487607&productType=stocks-and-shares-isa&productName=Stocks%20and%20Shares%20ISA
-
-// TODO
-
-// Identify all "Unidentified" transactions in persisted files...

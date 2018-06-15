@@ -21,7 +21,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     applyEvolutions(defaultDatabase)
   }
 
-  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
+  lazy val dbConfigProvider: DatabaseConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   // TODO - Make the DatabaseLayer implicit?
   private def get(tx: Transaction)(databaseLayer: DatabaseLayer) = {
@@ -65,17 +65,17 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
   "provide an insert method," which {
     "inserts the user, fund and price if they are not present" in new DatabaseLayer(dbConfig) {
 
-      val kappaTx = txUserA("kappa140520")
-      val kappaFundName = kappaTx.fundName
-      val kappaPrice = kappaTx.price
-      val kappaPriceDate = kappaPrice.date
-      val kappaUserName = kappaTx.userName
+      private val kappaTx = txUserA("kappa140520")
+      private val kappaFundName = kappaTx.fundName
+      private val kappaPrice = kappaTx.price
+      private val kappaPriceDate = kappaPrice.date
+      private val kappaUserName = kappaTx.userName
 
       exec(Users.get(kappaUserName)) mustBe None
       exec(Funds.get(kappaFundName)) mustBe None
       exec(Prices.get(kappaFundName, kappaPriceDate)) mustBe None
 
-      val txId = exec(Transactions.insert(kappaTx))
+      private val txId = exec(Transactions.insert(kappaTx))
 
       inside(exec(Users.get(kappaUserName)).get) {
         case UserRow(_, name, _) => name must equal(userA)
@@ -99,7 +99,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     "returns the unique investment dates in order with most recent date first" in
       new DatabaseLayer(dbConfig) with RegularInvestmentTransactions {
 
-        val expectedDates: List[LocalDate] = List(priceNike150520.date, priceNike140620.date, priceNike140520.date)
+        private val expectedDates: List[LocalDate] = List(priceNike150520.date, priceNike140620.date, priceNike140520.date)
 
         exec(Transactions.getRegularInvestmentDates()) must contain theSameElementsInOrderAs expectedDates
       }
@@ -108,7 +108,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
   "provide a getDatesSince method," which {
     "returns all transaction dates after specified date in order with most recent date first" in
       new DatabaseLayer(dbConfig) with MultipleTransactionsForSingleUser {
-        val expectedDates: List[LocalDate] = List(priceNike140625.date, priceNike140621.date)
+        private val expectedDates: List[LocalDate] = List(priceNike140625.date, priceNike140621.date)
 
         exec(Transactions.getDatesSince(aLocalDate("20/06/2014"))) must contain theSameElementsInOrderAs expectedDates
       }
@@ -116,7 +116,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     "returns all transaction dates after specified date for specified user in order with most recent date first" in
       new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
 
-        val expectedDates: List[LocalDate] = List(priceNike140625.date, priceNike140621.date)
+        private val expectedDates: List[LocalDate] = List(priceNike140625.date, priceNike140621.date)
 
         exec(Transactions.getDatesSince(aLocalDate("20/06/2014"), userA)) must contain theSameElementsInOrderAs expectedDates
       }
@@ -126,7 +126,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     "returns all transactions up to and including date for both users" in
       new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
 
-        val transactionMap: TransactionsPerUserAndFund = exec(Transactions.getTransactionsUntil(aLocalDate("22/06/2014")))
+        private val transactionMap: TransactionsPerUserAndFund = exec(Transactions.getTransactionsUntil(aLocalDate("22/06/2014")))
 
         transactionMap must contain(
           (userA, FundName("Kappa")) -> (Seq(txUserAKappa140520), priceKappa140520)
@@ -146,7 +146,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     "omits more transactions for an earlier date" in {
       new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
 
-        val transactionMap: TransactionsPerUserAndFund = exec(Transactions.getTransactionsUntil(aLocalDate("20/06/2014")))
+        private val transactionMap: TransactionsPerUserAndFund = exec(Transactions.getTransactionsUntil(aLocalDate("20/06/2014")))
 
         transactionMap must contain(
           (userA, FundName("Kappa")) -> (Seq(txUserAKappa140520), priceKappa140520)
@@ -163,7 +163,7 @@ class TransactionSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProfil
     "returns all transactions up to and including date for a specified user" in
       new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
 
-        val transactionMap: TransactionsPerUserAndFund =
+        private val transactionMap: TransactionsPerUserAndFund =
           exec(Transactions.getTransactionsUntil(aLocalDate("22/06/2014"), userB))
 
         transactionMap must contain(

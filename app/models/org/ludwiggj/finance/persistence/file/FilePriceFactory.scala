@@ -7,8 +7,8 @@ class FilePriceFactory private(private val priceFileName: String) extends {
   val fileName = priceFileName
 } with FileFinanceRowParser {
 
-  def getPrices(): List[Price] = {
-    getLines() map (line => {
+  def fetchPrices(): List[Price] = {
+    fetchLines() map (line => {
       val fundName = FundName(line(0))
       val priceDate = aLocalDate(line(1))
       val priceInPounds = aBigDecimal(line(2))

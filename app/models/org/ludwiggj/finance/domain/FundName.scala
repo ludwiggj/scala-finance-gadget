@@ -3,7 +3,6 @@ package models.org.ludwiggj.finance.domain
 class FundName private(val name: String) extends Ordered[FundName] {
   def canEqual(f: FundName): Boolean = (name == f.name)
 
-  // TODO - Not sure hashCode comparison is needed or wise
   override def equals(that: Any): Boolean = {
     that match {
       case that: FundName => that.canEqual(this) && (this.hashCode == that.hashCode)
@@ -15,7 +14,7 @@ class FundName private(val name: String) extends Ordered[FundName] {
     if (name == null) 0 else name.hashCode
   }
 
-  override def toString = name
+  override def toString: String = name
 
   override def compare(that: FundName): Int = {
     this.name.compareTo(that.name)
@@ -23,7 +22,7 @@ class FundName private(val name: String) extends Ordered[FundName] {
 }
 
 object FundName {
-  def apply(inputName: String) = {
+  def apply(inputName: String): FundName = {
     new FundName(inputName.replaceAll("&amp;", "&").replaceAll("\\^", "").trim)
   }
 }

@@ -11,7 +11,7 @@ import scala.util.matching.Regex
 
 object DatabaseReload extends App {
 
-  lazy val app = new GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
+  lazy val app = GuiceApplicationBuilder(configuration = Configuration.load(Environment.simple(), Map(
     "config.resource" -> "application.conf"
   ))).build()
 
@@ -20,19 +20,15 @@ object DatabaseReload extends App {
   import databaseLayer._
   import profile.api._
 
-  private def isAFileWithUserNameMatching(pattern: Regex) = new FilenameFilter {
-    override def accept(dir: File, name: String) = {
-      name match {
-        case pattern(_) => true
-        case _ => false
-      }
+  private def isAFileWithUserNameMatching(pattern: Regex): FilenameFilter = (_: File, name: String) => {
+    name match {
+      case pattern(_) => true
+      case _ => false
     }
   }
 
-  private def isAFileMatching(pattern: Regex) = new FilenameFilter {
-    override def accept(dir: File, name: String) = {
-      pattern.findFirstIn(name).isDefined
-    }
+  private def isAFileMatching(pattern: Regex): FilenameFilter = (_: File, name: String) => {
+    pattern.findFirstIn(name).isDefined
   }
 
   private def deleteAllData() = {
@@ -51,7 +47,7 @@ object DatabaseReload extends App {
       fileName = aFile.getName
       transactionPattern(userName) = fileName
       _ = println(s"Reading transactions for [$userName], file [$fileName]")
-    } yield FileTransactionFactory(userName, s"$transactionsHome/$fileName").getTransactions().filter(
+    } yield FileTransactionFactory(userName, s"$transactionsHome/$fileName").fetchTransactions().filter(
       _.shouldBePersistedIntoDb
     )).toList.flatten
 
@@ -63,7 +59,7 @@ object DatabaseReload extends App {
 
       txsToPersist.grouped(txGroupSize).toList.zipWithIndex.foreach { case (transactions, index) =>
         val startTxNumber = (index * txGroupSize) + 1
-        println(s"Persisting tx's ${startTxNumber} - ${startTxNumber + transactions.length - 1}")
+        println(s"Persisting tx's $startTxNumber - ${startTxNumber + transactions.length - 1}")
         exec(Transactions.insert(transactions))
       }
     }
@@ -78,7 +74,7 @@ object DatabaseReload extends App {
       aFile <- new File(pricesHome).listFiles(isAFileMatching(pricePattern))
       fileName = aFile.getName
       _ = println(s"Reading prices, file [$fileName]")
-    } yield FilePriceFactory(s"$pricesHome/$fileName").getPrices()
+    } yield FilePriceFactory(s"$pricesHome/$fileName").fetchPrices()
       ).toList.flatten
 
     // Persisting prices in smaller groups to avoid DB errors
@@ -89,7 +85,7 @@ object DatabaseReload extends App {
 
       pricesToPersist.grouped(priceGroupSize).toList.zipWithIndex.foreach { case (prices, index) =>
         val startPriceNumber = (index * priceGroupSize) + 1
-        println(s"Persisting prices ${startPriceNumber} - ${startPriceNumber + prices.length - 1}")
+        println(s"Persisting prices $startPriceNumber - ${startPriceNumber + prices.length - 1}")
         exec(Prices.insert(prices))
       }
     }

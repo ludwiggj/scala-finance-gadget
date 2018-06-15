@@ -12,8 +12,8 @@ case class Holding(userName: String, price: Price, units: BigDecimal) extends Pe
 
   def name: FundName = price.fundName
 
-  override def toString =
-    s"Financial Holding [userName: ${userName}, name: ${price.fundName}, units: $units, date: ${FormattableLocalDate(price.date)}, " +
+  override def toString: String =
+    s"Financial Holding [userName: $userName, name: ${price.fundName}, units: $units, date: ${FormattableLocalDate(price.date)}, " +
       s"price: £${price.inPounds}, value: £$value]"
 
   def toFileFormat: String = s"${price.fundName}$separator$units$separator${FormattableLocalDate(price.date)}$separator${price.inPounds}" +
@@ -21,7 +21,6 @@ case class Holding(userName: String, price: Price, units: BigDecimal) extends Pe
 
   def canEqual(h: Holding): Boolean = (userName == h.userName) && (name == h.name) && (priceDate == h.priceDate)
 
-  // TODO - Not sure hashCode comparison is useful or wise
   override def equals(that: Any): Boolean =
     that match {
       case that: Holding => that.canEqual(this) && (this.hashCode == that.hashCode)
@@ -35,31 +34,13 @@ case class Holding(userName: String, price: Price, units: BigDecimal) extends Pe
     result = prime * result + (if (userName == null) 0 else userName.hashCode)
     result = prime * result + (if (name == null) 0 else name.hashCode)
     result = prime * result + (if (priceDate == null) 0 else priceDate.hashCode)
-    return result
+    result
   }
 
   override def compare(that: Holding): Int = this.name.compare(that.name)
 }
 
 object Holding {
-
-  // TODO - Remove
-  def apply(userName: String, row: String): Holding = {
-    val holdingPattern = (
-      """.*?<span.*?>([^<]+)</span>""" +
-        """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?"""
-      ).r
-
-    val holdingPattern(fundName, units, date, priceInPence, _) = stripAllWhitespaceExceptSpace(row)
-    val priceInPounds = s"${aBigDecimal(priceInPence) / 100}"
-
-    Holding(userName, Array(fundName, units, date, priceInPounds))
-  }
-
   def apply(userName: String, row: Array[String]): Holding = {
     val fundName = row(0)
     val date = row(2)

@@ -5,13 +5,13 @@ import models.org.ludwiggj.finance.persistence.database.TransactionsPerUserAndFu
 import org.joda.time.LocalDate
 
 case class HoldingSummaryList(holdings: List[HoldingSummary]) {
-  def amountIn = holdings.map(_.amountIn).sum
+  def amountIn: BigDecimal = holdings.map(_.amountIn).sum
 
-  def total = holdings.map(_.total).sum
+  def total: BigDecimal = holdings.map(_.total).sum
 
-  def iterator = holdings.iterator
+  def iterator: Iterator[HoldingSummary] = holdings.iterator
 
-  override def toString = holdings.foldLeft("")(
+  override def toString: String = holdings.foldLeft("")(
     (str: String, holdingSummary: HoldingSummary) => str + holdingSummary + "\n"
   )
 }

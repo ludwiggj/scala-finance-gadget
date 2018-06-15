@@ -22,28 +22,27 @@ class PortfolioListSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProf
     applyEvolutions(defaultDatabase)
   }
 
-  lazy val dbConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
-  val tolerance = BigDecimal(1e-3).bigDecimal
+  lazy val dbConfigProvider: DatabaseConfigProvider = app.injector.instanceOf[DatabaseConfigProvider]
 
   "the PortfolioList database API" should {
     "provide a get method," which {
       "returns a list based on all transactions up to and including date for both users" in
         new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
-          val portfolioList = exec(PortfolioLists.get(aLocalDate("22/06/2014")))
+          private val portfolioList = exec(PortfolioLists.get(aLocalDate("22/06/2014")))
 
           portfolioList.iterator.size must equal(2)
 
-          val portfolios = portfolioList.iterator
+          private val portfolios = portfolioList.iterator
 
-          val userAPortfolio = portfolios.next()
-          val userAPortfolioDelta = userAPortfolio.delta
+          private val userAPortfolio = portfolios.next()
+          private val userAPortfolioDelta = userAPortfolio.delta
 
           userAPortfolioDelta.amountIn must equal(285.6481)
           userAPortfolioDelta.gain.setScale(2, RoundingMode.DOWN) must equal(426657.80)
           userAPortfolioDelta.gainPct.setScale(2, RoundingMode.DOWN) must equal(149364.83)
 
-          val userBPortfolio = portfolios.next()
-          val userBPortfolioDelta = userBPortfolio.delta
+          private val userBPortfolio = portfolios.next()
+          private val userBPortfolioDelta = userBPortfolio.delta
 
           userBPortfolioDelta.amountIn must equal(9.12)
           userBPortfolioDelta.gain.setScale(2, RoundingMode.DOWN) must equal(0.0)
@@ -53,12 +52,12 @@ class PortfolioListSpec extends PlaySpec with HasDatabaseConfigProvider[JdbcProf
       "returns a list based on all transactions up to and including date for specific users" in
         new DatabaseLayer(dbConfig) with MultipleTransactionsForTwoUsersAndTwoFunds {
           // Price will be latest price up to and including 25/6/14 i.e. 3.24 on 25/6/14
-          val portfolioList = exec(PortfolioLists.get(aLocalDate("24/06/2014"), "User B"))
+          private val portfolioList = exec(PortfolioLists.get(aLocalDate("24/06/2014"), "User B"))
 
           portfolioList.iterator.size must equal(1)
 
-          val userBPortfolio = portfolioList.iterator.next()
-          val userBPortfolioDelta = userBPortfolio.delta
+          private val userBPortfolio = portfolioList.iterator.next()
+          private val userBPortfolioDelta = userBPortfolio.delta
 
           userBPortfolioDelta.amountIn must equal(9.12)
           userBPortfolioDelta.gain.setScale(2, RoundingMode.DOWN) must equal(0.69)

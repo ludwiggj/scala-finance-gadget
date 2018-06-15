@@ -4,22 +4,22 @@ import java.net.{MalformedURLException, URL}
 import java.util.logging.Level
 
 import com.gargoylesoftware.htmlunit.{BrowserVersion, IncorrectnessListener, Page, ScriptException, WebRequest}
-import com.gargoylesoftware.htmlunit.html.HTMLParserListener
+import com.gargoylesoftware.htmlunit.html.{HTMLParserListener, HtmlPage}
 import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener
 import org.apache.commons.logging.LogFactory
 import org.w3c.css.sac.{CSSParseException, ErrorHandler}
 
 class WebClient {
-  private def turnLoggingOff: Unit = {
-    LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
+  private def turnLoggingOff(): Unit = {
+    LogFactory.getFactory.setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
 
     java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF)
     java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF)
   }
 
-  val incorrectnessListener: IncorrectnessListener = (message: String, origin: scala.Any) => {}
+  val incorrectnessListener: IncorrectnessListener = (_: String, _: scala.Any) => {}
 
-  val errorHandler = new ErrorHandler {
+  val errorHandler: ErrorHandler = new ErrorHandler {
     override def warning(exception: CSSParseException): Unit = {}
 
     override def fatalError(exception: CSSParseException): Unit = {}
@@ -27,17 +27,17 @@ class WebClient {
     override def error(exception: CSSParseException): Unit = {}
   }
 
-  val javaScriptErrorListener = new JavaScriptErrorListener {
-    override def scriptException(arg0: HtmlUnitHtmlPage, arg1: ScriptException): Unit = {}
+  val javaScriptErrorListener: JavaScriptErrorListener = new JavaScriptErrorListener {
+    override def scriptException(arg0: HtmlPage, arg1: ScriptException): Unit = {}
 
-    override def timeoutError(arg0: HtmlUnitHtmlPage, arg1: Long, arg2: Long): Unit = {}
+    override def timeoutError(arg0: HtmlPage, arg1: Long, arg2: Long): Unit = {}
 
-    override def malformedScriptURL(arg0: HtmlUnitHtmlPage, arg1: String, arg2: MalformedURLException): Unit = {}
+    override def malformedScriptURL(arg0: HtmlPage, arg1: String, arg2: MalformedURLException): Unit = {}
 
-    override def loadScriptError(arg0: HtmlUnitHtmlPage, arg1: URL, arg2: Exception): Unit = {}
+    override def loadScriptError(arg0: HtmlPage, arg1: URL, arg2: Exception): Unit = {}
   }
 
-  val htmlParserListener = new HTMLParserListener {
+  val htmlParserListener: HTMLParserListener = new HTMLParserListener {
 
     override def warning(arg0: String, arg1: URL, arg2: String, arg3: Int, arg4: Int, arg5: String): Unit = {}
 
@@ -47,7 +47,7 @@ class WebClient {
   // Start here
   val webClient = new com.gargoylesoftware.htmlunit.WebClient(BrowserVersion.CHROME)
 
-  turnLoggingOff
+  turnLoggingOff()
   webClient.setIncorrectnessListener(incorrectnessListener)
   webClient.setCssErrorHandler(errorHandler)
   webClient.setJavaScriptErrorListener(javaScriptErrorListener)
@@ -56,8 +56,8 @@ class WebClient {
   webClient.getOptions.setThrowExceptionOnScriptError(false)
   webClient.getOptions.setCssEnabled(false)
 
-  def getPage(url: String): HtmlEntity = {
-    HtmlPage(webClient.getPage(url))
+  def getPage(url: String): HtmlPage = {
+    webClient.getPage(url)
   }
 
   def getPage(wr: WebRequest): String = {

@@ -17,8 +17,8 @@ abstract case class Transaction(userName: String,
 
   val priceInPounds: BigDecimal = price.inPounds
 
-  override def toString =
-    s"Tx [userName: ${userName}, holding: ${price.fundName}, date: ${FormattableLocalDate(date)}, " +
+  override def toString: String =
+    s"Tx [userName: $userName, holding: ${price.fundName}, date: ${FormattableLocalDate(date)}, " +
       s"category: $category, in: $in, out: $out, price date: ${FormattableLocalDate(price.date)}, " +
       s"price: ${price.inPounds}, units: $units]"
 
@@ -44,8 +44,8 @@ abstract case class Transaction(userName: String,
     result = prime * result + (if (fundName == null) 0 else fundName.hashCode)
     result = prime * result + (if (date == null) 0 else date.hashCode)
     result = prime * result + (if (category == null) 0 else category.hashCode)
-    result = prime * result + (if (!in.isDefined) 0 else in.hashCode)
-    result = prime * result + (if (!out.isDefined) 0 else out.hashCode)
+    result = prime * result + (if (in.isEmpty) 0 else in.hashCode)
+    result = prime * result + (if (out.isEmpty) 0 else out.hashCode)
     result = prime * result + (if (priceDate == null) 0 else priceDate.hashCode)
     result = prime * result + units.intValue()
     result
@@ -73,8 +73,9 @@ abstract case class Transaction(userName: String,
 
 object Transaction {
 
-  import models.org.ludwiggj.finance.aLocalDate
   import TransactionCategory.aTransactionCategory
+  import models.org.ludwiggj.finance.aLocalDate
+
   import scala.util.{Failure, Success, Try}
 
   val numberOfDecimalPlaces = 4
@@ -84,35 +85,8 @@ object Transaction {
 
     decimal match {
       case Success(value) => Some(value)
-      case Failure(ex) => None
+      case Failure(_) => None
     }
-  }
-
-  // TODO - Remove
-  def apply(userName: String, row: String): Transaction = {
-    val txPattern = (
-      """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?<td[^>]*>(.*?)</td>.*?""" +
-        """.*?<td[^>]*>(.*?)</td>.*?""" +
-        """.*?<span.*?>([^<]+)</span>.*?""" +
-        """.*?<span.*?>([^<]+)</span>.*?""" +
-        """.*?<td[^>]*>(.*?)</td>.*?""" +
-        """.*?<td[^>]*>(.*?)</td>.*?""" +
-        """.*?<td[^>]*>(.*?)</td>.*?""" +
-        """.*?<td[^>]*>(.*?)</td>""" +
-        """.*?"""
-      ).r
-
-    val txPattern(fundName, date, category, in, out, priceDate, priceInPence, units, _) =
-      stripAllWhitespaceExceptSpace(row)
-
-    val priceInPounds = Try(aBigDecimal(priceInPence) / 100) match {
-      case Success(price) => s"$price"
-      case Failure(ex: NumberFormatException) => "0"
-      case Failure(ex) => throw ex
-    }
-
-    Transaction(userName, Array(fundName, date, category.trim, in, out, priceDate, priceInPounds, units))
   }
 
   def apply(userName: String, row: Array[String]): Transaction = {

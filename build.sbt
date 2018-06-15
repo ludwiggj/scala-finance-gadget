@@ -19,7 +19,6 @@ libraryDependencies ++= Seq(
   ws,
   guice,
   "mysql" % "mysql-connector-java" % "5.1.38",
-  "org.filippodeluca.ssoup" %% "ssoup" % "1.0-SNAPSHOT",
   "com.typesafe" % "config" % "1.3.2",
   "net.sourceforge.htmlunit" % "htmlunit" % "2.27",
   "junit" % "junit" % "4.12" % "test",
