@@ -1,7 +1,5 @@
 # financeGadget #
 
-TODO: Add need to set $USER env var, otherwise UserSpec (and other tests) fail to run...
-
 ## Background ##
 
 financeGadget is a Scala web application to view share investment portfolio information.
@@ -51,7 +49,7 @@ The system consists of the following components:
 
 1. Install the following pre-requisites:
 
-   * [sbt 1.0.1](http://www.scala-sbt.org/1.x/docs/Setup.html)
+   * [sbt 1.4.9](https://www.scala-sbt.org/download.html)
 
 2. Clone this repo:
 
@@ -99,7 +97,8 @@ The system consists of the following components:
    Web Console server running at http://localhost:8082 (only local connections)
    [finance] $
    ```
-   This loads the H2 console in a browser window:
+   This loads the H2 console in a browser window. Ensure that the *JDBC URL* field is set to jdbc:h2:mem:demo, and
+   that the user name and password fields are empty, as shown below:
 
    ![h2 browser login](images/h2BrowserLogin.png "H2 Browser Login")
 
@@ -194,6 +193,8 @@ An example of the Portfolio Page in administrator mode is shown below:
 
 ![portfolio page admin view](images/financePortfolioOnDateAdmin.png "Portfolio Page Admin View")
 
+You can return to the summary page via the browser back key,
+
 <br>
 
 ## Database Schema ##
@@ -234,7 +235,7 @@ date, including gain/loss information across the whole portfolio.
 
 * Scala 2.12.3.
 
-* sbt 1.0.1
+* sbt 1.4.9
 
 * MySql 5.6.22.
 
@@ -555,28 +556,4 @@ However, it's still nice to know that the data can be reloaded into the database
 <br>
 
 Graeme Ludwig, 17/10/17.
-
-
-TODO: (README)
-
-Identify all "Unidentified" transactions in persisted files...
-
-Update relevant details from MySQL installation...
-
-MySQL Installer
- https://dev.mysql.com/downloads/windows/installer/5.6.html
- (mysql-installer-community-5.6.40.1.msi)
- Installed server only...
- It insisted I set admin password (set to password)
-
-Added sql directory to PATH
-
-mysql --host=localhost --user=root --password=password
-SET PASSWORD FOR root@localhost=PASSWORD('');
-
-So can now do:
-
-mysql
-mysql -u=root
-
-bash dbdeploy.sh
+(Updated 27/03/21)

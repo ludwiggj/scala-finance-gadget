@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-literal"
 ).map(_ % circeVersion)
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+resolvers += ("scalaz-bintray" at "http://dl.bintray.com/scalaz/releases").withAllowInsecureProtocol(true)
 
 // Play routers expect their actions to be injected
 routesGenerator := InjectedRoutesGenerator

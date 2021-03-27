@@ -1,0 +1,9 @@
+.idea
+logs
+project/project
+project/target
+target
+test/resources/holdings_round_trip_test.txt
+test/resources/price_round_trip_test.txt
+test/resources/tx_round_trip_test.txt
+.bsp
